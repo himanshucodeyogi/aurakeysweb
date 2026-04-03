@@ -2,7 +2,7 @@
 // Fetches live stats from the analytics backend when available.
 // Set ANALYTICS_BACKEND_URL in your backend and expose /api/public-stats.
 
-const BACKEND_URL = ''; // e.g. 'https://api.aurakeys.example.com' — fill when backend is ready
+const BACKEND_URL = 'https://aurakeysbackend.vercel.app'; // trailing slash nahi — fetch me already /api/... hai
 
 async function loadStats() {
   if (!BACKEND_URL) return; // no backend yet — keep "—" placeholders
