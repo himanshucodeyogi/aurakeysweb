@@ -155,7 +155,7 @@
         <div class="section-tag">Screenshots</div>
         <h2>See it in <span class="gradient-text">action</span></h2>
       </div>
-      <div class="screenshots-row">
+      <div class="screenshots-row" id="screenshotsRow">
         <div class="screenshot-slot">
           <img src="img/screen1.jpeg" alt="AuraKeys Home Screen" loading="lazy" />
           <p class="screenshot-label">Home</p>
@@ -172,6 +172,12 @@
           <img src="img/screen4.jpeg" alt="AuraKeys Settings" loading="lazy" />
           <p class="screenshot-label">Settings</p>
         </div>
+      </div>
+      <div class="screenshot-dots" id="screenshotDots">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
       </div>
     </div>
   </section>
@@ -347,6 +353,15 @@
     <img id="lightboxImg" src="" alt="" />
     <span class="lightbox-label" id="lightboxLabel"></span>
   </div>
+
+  <!-- Scroll progress bar -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <!-- Back to top -->
+  <button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
+
+  <!-- Download toast -->
+  <div class="toast" id="downloadToast">⬇ Download shuru ho gaya! Unknown sources se install allow karo.</div>
 
   <script src="app.js"></script>
 </body>

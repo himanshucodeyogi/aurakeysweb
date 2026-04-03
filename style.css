@@ -11,6 +11,19 @@
      --dim       #4A4A5A
    ═══════════════════════════════════════════════════════════════ */
 
+/* ─── Scroll progress bar ────────────────────────────────────── */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--purple));
+  z-index: 200;
+  pointer-events: none;
+  transition: width 0.1s linear;
+}
+
 :root {
   --bg:        #0F0F13;
   --card:      #1A1A24;
@@ -47,6 +60,11 @@ a { color: inherit; text-decoration: none; }
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 24px;
+}
+
+/* ─── Scroll offset fix (sticky navbar) ─────────────────────── */
+section[id] {
+  scroll-margin-top: 72px;
 }
 
 /* ─── Navbar ─────────────────────────────────────────────────── */
@@ -94,6 +112,21 @@ a { color: inherit; text-decoration: none; }
 }
 
 .nav-links a:hover { color: var(--text); }
+
+.nav-links a.active {
+  color: var(--text);
+  position: relative;
+}
+.nav-links a.active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 1px;
+}
 
 .btn-nav {
   padding: 8px 18px;
@@ -327,6 +360,7 @@ a { color: inherit; text-decoration: none; }
 .feature-card:hover {
   border-color: rgba(138, 180, 248, 0.4);
   transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(138, 180, 248, 0.07);
 }
 
 .feature-card--accent {
@@ -363,6 +397,29 @@ a { color: inherit; text-decoration: none; }
 .screenshot-slot {
   border-radius: var(--radius);
   overflow: hidden;
+  border: 1px solid var(--border);
+  cursor: zoom-in;
+  animation: screenshot-glow 4s ease-in-out infinite;
+}
+
+.screenshot-slot:nth-child(1) { animation-delay: 0s; }
+.screenshot-slot:nth-child(2) { animation-delay: 1s; }
+.screenshot-slot:nth-child(3) { animation-delay: 2s; }
+.screenshot-slot:nth-child(4) { animation-delay: 3s; }
+
+@keyframes screenshot-glow {
+  0%    {
+    box-shadow: 0 0 28px 8px rgba(138, 180, 248, 0.55), 0 0 10px 2px rgba(187, 134, 252, 0.35);
+    border-color: rgba(138, 180, 248, 0.85);
+  }
+  22%   { box-shadow: none; border-color: var(--border); }
+  100%  { box-shadow: none; border-color: var(--border); }
+}
+
+.screenshot-slot:hover {
+  animation-play-state: paused;
+  border-color: rgba(138, 180, 248, 0.45);
+  box-shadow: 0 0 20px 4px rgba(138, 180, 248, 0.2);
 }
 
 .screenshot-slot img {
@@ -399,7 +456,26 @@ a { color: inherit; text-decoration: none; }
   margin-top: 10px;
 }
 
-.screenshot-slot { cursor: zoom-in; }
+/* Screenshot dots (mobile swipe indicator) */
+.screenshot-dots {
+  display: none;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 14px;
+}
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background 0.25s, width 0.25s, border-radius 0.25s;
+  flex-shrink: 0;
+}
+.dot.active {
+  background: var(--accent);
+  width: 20px;
+  border-radius: 3px;
+}
 
 /* ─── Lightbox ───────────────────────────────────────────────── */
 .lightbox {
@@ -561,6 +637,15 @@ a { color: inherit; text-decoration: none; }
   font-variant-numeric: tabular-nums;
 }
 
+@keyframes stat-pulse {
+  0%, 100% { opacity: 0.35; }
+  50%       { opacity: 0.8; }
+}
+.stat-value.loading {
+  animation: stat-pulse 1.4s ease-in-out infinite;
+  color: var(--dim);
+}
+
 .stat-label {
   font-size: 13px;
   color: var(--text2);
@@ -626,6 +711,7 @@ a { color: inherit; text-decoration: none; }
 .feedback-card:hover {
   border-color: rgba(138, 180, 248, 0.4);
   transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(138, 180, 248, 0.07);
 }
 
 .feedback-icon {
@@ -707,6 +793,65 @@ a { color: inherit; text-decoration: none; }
 .footer-privacy {
   font-size: 12px !important;
   color: var(--dim) !important;
+}
+
+/* ─── Back to top ────────────────────────────────────────────── */
+.back-to-top {
+  position: fixed;
+  bottom: 28px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s, transform 0.2s, border-color 0.2s, color 0.2s;
+  z-index: 90;
+  color: var(--text2);
+  font-size: 18px;
+  font-family: var(--font);
+}
+.back-to-top.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.back-to-top:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-3px);
+}
+
+/* ─── Download toast ─────────────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(16px);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: 12px 20px;
+  font-size: 14px;
+  color: var(--text);
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s, transform 0.3s;
+  max-width: calc(100vw - 48px);
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  white-space: nowrap;
+}
+.toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 /* ─── Hamburger menu ─────────────────────────────────────────── */
@@ -862,6 +1007,9 @@ a { color: inherit; text-decoration: none; }
   /* Features — 1 column on very small screens */
   .features-grid { grid-template-columns: 1fr; gap: 10px; }
   .feature-card  { padding: 18px; }
+
+  /* Screenshot dots visible on mobile */
+  .screenshot-dots { display: flex; }
 
   /* Screenshots — horizontal scroll */
   .screenshots-row {
