@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AuraKeys Admin Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ── Admin-specific styles ── */
+    body { background: var(--bg); }
+
+    .admin-login {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 40px;
+      width: 100%;
+      max-width: 380px;
+      text-align: center;
+    }
+
+    .login-card h2 { font-size: 22px; margin-bottom: 8px; }
+    .login-card p  { color: var(--text2); font-size: 13px; margin-bottom: 24px; }
+
+    .input-field {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 14px;
+      margin-bottom: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .input-field:focus { border-color: var(--accent); }
+
+    .login-error {
+      color: #FF5252;
+      font-size: 13px;
+      margin-top: -8px;
+      margin-bottom: 12px;
+      display: none;
+    }
+
+    /* ── Dashboard layout ── */
+    .dashboard { display: none; }
+
+    .admin-nav {
+      background: var(--nav);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .admin-nav-brand { display: flex; align-items: center; gap: 8px; font-weight: 700; }
+    .admin-badge     { padding: 2px 10px; background: rgba(187,134,252,0.15); color: var(--purple); border-radius: 20px; font-size: 11px; }
+
+    .admin-content { padding: 28px 24px; max-width: 1200px; margin: 0 auto; }
+
+    /* ── Summary cards ── */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .summary-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .summary-label { color: var(--text2); font-size: 12px; margin-bottom: 6px; }
+    .summary-value { font-size: 30px; font-weight: 800; color: var(--accent); }
+    .summary-sub   { font-size: 11px; color: var(--dim); margin-top: 4px; }
+
+    /* ── Table ── */
+    .table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .table-header h3 { font-size: 16px; font-weight: 700; }
+
+    .table-controls { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    .search-input {
+      padding: 8px 14px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 13px;
+      outline: none;
+      width: 220px;
+    }
+    .search-input:focus { border-color: var(--accent); }
+
+    .filter-select {
+      padding: 8px 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text2);
+      font-family: var(--font);
+      font-size: 13px;
+      outline: none;
+    }
+
+    .table-wrap {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow-x: auto;
+    }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+    th {
+      padding: 12px 14px;
+      text-align: left;
+      color: var(--text2);
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+    }
+    th:hover { color: var(--text); }
+
+    td {
+      padding: 11px 14px;
+      color: var(--text);
+      border-bottom: 1px solid rgba(42,42,58,0.6);
+      white-space: nowrap;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    tr:hover td { background: rgba(138,180,248,0.04); }
+
+    .tag-yes { color: var(--green); font-size: 11px; font-weight: 600; }
+    .tag-no  { color: var(--dim);   font-size: 11px; }
+
+    .btn-detail {
+      padding: 4px 12px;
+      background: rgba(138,180,248,0.12);
+      border: 1px solid rgba(138,180,248,0.25);
+      color: var(--accent);
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-detail:hover { background: rgba(138,180,248,0.22); }
+
+    /* ── Pagination ── */
+    .pagination { display: flex; align-items: center; gap: 10px; margin-top: 16px; justify-content: flex-end; }
+    .page-btn {
+      padding: 6px 14px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text2);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .page-btn:hover    { border-color: var(--accent); color: var(--accent); }
+    .page-btn.active   { background: var(--accent); color: #0F0F13; border-color: var(--accent); font-weight: 700; }
+    .page-btn:disabled { opacity: 0.35; cursor: default; }
+    .page-info { color: var(--text2); font-size: 12px; }
+
+    /* ── Detail modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 600px;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 28px;
+      margin: 16px;
+    }
+
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .modal-header h3 { font-size: 17px; font-weight: 700; }
+    .modal-close { color: var(--text2); cursor: pointer; font-size: 20px; }
+    .modal-close:hover { color: var(--text); }
+
+    .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-key   { color: var(--text2); }
+    .detail-value { color: var(--text); font-weight: 500; text-align: right; }
+
+    .events-title { font-size: 14px; font-weight: 700; margin: 20px 0 10px; }
+
+    .event-item {
+      padding: 8px 12px;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      margin-bottom: 6px;
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .event-type  { color: var(--accent); font-weight: 600; }
+    .event-meta  { color: var(--text2); }
+    .event-time  { color: var(--dim); font-size: 11px; }
+
+    .logout-btn {
+      padding: 7px 16px;
+      border: 1px solid var(--border);
+      color: var(--text2);
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      background: transparent;
+      font-family: var(--font);
+    }
+    .logout-btn:hover { color: var(--text); border-color: var(--text2); }
+
+    .loading-row td { color: var(--dim); text-align: center; padding: 32px; }
+
+    @media (max-width: 900px) {
+      .summary-grid   { grid-template-columns: repeat(2, 1fr); }
+      .table-controls { flex-wrap: wrap; }
+    }
+
+    @media (max-width: 600px) {
+      .login-card     { padding: 28px 20px; }
+      .admin-content  { padding: 16px; }
+      .summary-grid   { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .summary-value  { font-size: 24px; }
+      .table-header   { flex-direction: column; align-items: flex-start; }
+      .table-controls { width: 100%; flex-direction: column; gap: 8px; }
+      .search-input   { width: 100%; }
+      .filter-select  { width: 100%; }
+      /* On mobile, table scrolls horizontally */
+      .table-wrap     { font-size: 12px; }
+      th, td          { padding: 10px 10px; }
+      .modal-box      { padding: 20px 16px; margin: 12px; }
+      .pagination     { flex-wrap: wrap; justify-content: center; }
+    }
+
+    @media (max-width: 380px) {
+      .summary-grid  { grid-template-columns: 1fr 1fr; }
+      .summary-value { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Login ─────────────────────────────────────────── -->
+  <div class="admin-login" id="loginScreen">
+    <div class="login-card">
+      <div style="font-size: 36px; margin-bottom: 12px;">🔐</div>
+      <h2>Admin Dashboard</h2>
+      <p>AuraKeys Analytics — Private Access</p>
+      <input
+        type="password"
+        class="input-field"
+        id="backendUrl"
+        placeholder="Backend URL (e.g. https://aurakeys-api.vercel.app)"
+      />
+      <input
+        type="password"
+        class="input-field"
+        id="adminPassword"
+        placeholder="Admin password"
+      />
+      <p class="login-error" id="loginError">Incorrect password or unreachable backend.</p>
+      <button class="btn-primary" style="width:100%;justify-content:center;" onclick="login()">
+        Login
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Dashboard ─────────────────────────────────────── -->
+  <div class="dashboard" id="dashboard">
+
+    <nav class="admin-nav">
+      <div class="admin-nav-brand">
+        <span>⌨️</span>
+        <span>AuraKeys</span>
+        <span class="admin-badge">Admin</span>
+      </div>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </nav>
+
+    <div class="admin-content">
+
+      <!-- Summary -->
+      <div class="summary-grid" id="summaryGrid">
+        <div class="summary-card"><div class="summary-label">Total Installs</div><div class="summary-value" id="s-total">—</div></div>
+        <div class="summary-card"><div class="summary-label">Daily Active (24h)</div><div class="summary-value" id="s-dau">—</div></div>
+        <div class="summary-card"><div class="summary-label">Weekly Active (7d)</div><div class="summary-value" id="s-wau">—</div></div>
+        <div class="summary-card"><div class="summary-label">Monthly Active (30d)</div><div class="summary-value" id="s-mau">—</div></div>
+        <div class="summary-card"><div class="summary-label">Total Keyboard Opens</div><div class="summary-value" id="s-kb">—</div></div>
+        <div class="summary-card"><div class="summary-label">Total AI Uses</div><div class="summary-value" id="s-ai">—</div></div>
+        <div class="summary-card"><div class="summary-label">Total App Opens</div><div class="summary-value" id="s-app">—</div></div>
+        <div class="summary-card"><div class="summary-label">New Installs (7d)</div><div class="summary-value" id="s-new">—</div></div>
+      </div>
+
+      <!-- Users table -->
+      <div class="table-header">
+        <h3>All Devices</h3>
+        <div class="table-controls">
+          <input type="text" class="search-input" id="searchInput" placeholder="Search device name or ID…" oninput="debounceSearch()" />
+          <select class="filter-select" id="filterSelect" onchange="loadUsers(1)">
+            <option value="">All Users</option>
+            <option value="active7d">Active 7d</option>
+            <option value="active30d">Active 30d</option>
+            <option value="enabled">Keyboard Enabled</option>
+            <option value="selected">Keyboard Selected</option>
+          </select>
+          <select class="filter-select" id="sortSelect" onchange="loadUsers(1)">
+            <option value="last_use_date">Sort: Last Active</option>
+            <option value="install_date">Sort: Install Date</option>
+            <option value="total_ai_uses">Sort: AI Usage</option>
+            <option value="total_keyboard_opens">Sort: KB Opens</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Device</th>
+              <th>Android</th>
+              <th>Install Date</th>
+              <th>Last Active</th>
+              <th>App Opens</th>
+              <th>KB Opens</th>
+              <th>AI Uses</th>
+              <th>KB Enabled</th>
+              <th>Default</th>
+              <th>Theme</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody">
+            <tr class="loading-row"><td colspan="11">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination" id="paginationRow"></div>
+
+    </div><!-- /admin-content -->
+  </div><!-- /dashboard -->
+
+  <!-- ── Detail Modal ───────────────────────────────────── -->
+  <div class="modal-overlay" id="detailModal" onclick="closeModal(event)">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modalTitle">Device Detail</h3>
+        <span class="modal-close" onclick="closeDetailModal()">✕</span>
+      </div>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <script>
+    // ── State ───────────────────────────────────────────────
+    let API_BASE = '';
+    let AUTH_TOKEN = '';
+    let currentPage = 1;
+    let searchTimer = null;
+
+    // ── Login / logout ──────────────────────────────────────
+    async function login() {
+      const url  = document.getElementById('backendUrl').value.trim().replace(/\/$/, '');
+      const pass = document.getElementById('adminPassword').value.trim();
+      if (!url || !pass) return showLoginError();
+
+      try {
+        const res = await fetch(`${url}/api/admin/stats`, {
+          headers: { 'Authorization': `Bearer ${pass}` }
+        });
+        if (!res.ok) throw new Error('auth failed');
+
+        API_BASE   = url;
+        AUTH_TOKEN = pass;
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('dashboard').style.display   = 'block';
+        loadStats();
+        loadUsers(1);
+      } catch (e) {
+        showLoginError();
+      }
+    }
+
+    function logout() {
+      API_BASE   = '';
+      AUTH_TOKEN = '';
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('dashboard').style.display   = 'none';
+      document.getElementById('adminPassword').value = '';
+      document.getElementById('loginError').style.display  = 'none';
+    }
+
+    function showLoginError() {
+      document.getElementById('loginError').style.display = 'block';
+    }
+
+    // Enter key on password field
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('adminPassword').addEventListener('keydown', e => {
+        if (e.key === 'Enter') login();
+      });
+    });
+
+    // ── Load summary stats ──────────────────────────────────
+    async function loadStats() {
+      try {
+        const res  = await authFetch('/api/admin/stats');
+        const data = await res.json();
+        document.getElementById('s-total').textContent = fmt(data.total_users);
+        document.getElementById('s-dau').textContent   = fmt(data.dau);
+        document.getElementById('s-wau').textContent   = fmt(data.wau);
+        document.getElementById('s-mau').textContent   = fmt(data.mau);
+        document.getElementById('s-kb').textContent    = fmt(data.total_keyboard_opens);
+        document.getElementById('s-ai').textContent    = fmt(data.total_ai_uses);
+        document.getElementById('s-app').textContent   = fmt(data.total_app_opens);
+        document.getElementById('s-new').textContent   = fmt(data.new_installs_7d);
+      } catch (_) {}
+    }
+
+    // ── Load users table ────────────────────────────────────
+    async function loadUsers(page = 1) {
+      currentPage = page;
+      const search = document.getElementById('searchInput').value.trim();
+      const filter = document.getElementById('filterSelect').value;
+      const sort   = document.getElementById('sortSelect').value;
+
+      const params = new URLSearchParams({ page, limit: 50, sort, order: 'desc' });
+      if (search) params.set('search', search);
+      if (filter) params.set('filter', filter);
+
+      const tbody = document.getElementById('usersTableBody');
+      tbody.innerHTML = '<tr class="loading-row"><td colspan="11">Loading…</td></tr>';
+
+      try {
+        const res  = await authFetch(`/api/admin/users?${params}`);
+        const data = await res.json();
+        renderTable(data.devices || []);
+        renderPagination(data.pagination);
+      } catch (_) {
+        tbody.innerHTML = '<tr class="loading-row"><td colspan="11">Failed to load. Check connection.</td></tr>';
+      }
+    }
+
+    function renderTable(devices) {
+      const tbody = document.getElementById('usersTableBody');
+      if (!devices.length) {
+        tbody.innerHTML = '<tr class="loading-row"><td colspan="11">No devices found.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = devices.map(d => `
+        <tr>
+          <td title="${d.device_id}">${d.device_name || 'Unknown'}</td>
+          <td>${d.android_version || '—'}</td>
+          <td>${fmtDate(d.install_date)}</td>
+          <td>${fmtDate(d.last_use_date)}</td>
+          <td>${d.total_app_opens || 0}</td>
+          <td>${d.total_keyboard_opens || 0}</td>
+          <td>${d.total_ai_uses || 0}</td>
+          <td><span class="${d.keyboard_enabled ? 'tag-yes' : 'tag-no'}">${d.keyboard_enabled ? '✓ Yes' : 'No'}</span></td>
+          <td><span class="${d.keyboard_selected ? 'tag-yes' : 'tag-no'}">${d.keyboard_selected ? '✓ Yes' : 'No'}</span></td>
+          <td>${d.selected_theme || '—'}</td>
+          <td><button class="btn-detail" onclick="showDetail('${d.device_id}')">Detail</button></td>
+        </tr>
+      `).join('');
+    }
+
+    function renderPagination(p) {
+      if (!p) return;
+      const row = document.getElementById('paginationRow');
+      let html  = `<span class="page-info">Page ${p.page} of ${p.total_pages} (${p.total} total)</span>`;
+      html += `<button class="page-btn" onclick="loadUsers(${p.page - 1})" ${p.page <= 1 ? 'disabled' : ''}>← Prev</button>`;
+      html += `<button class="page-btn" onclick="loadUsers(${p.page + 1})" ${p.page >= p.total_pages ? 'disabled' : ''}>Next →</button>`;
+      row.innerHTML = html;
+    }
+
+    // ── Detail Modal ────────────────────────────────────────
+    async function showDetail(deviceId) {
+      document.getElementById('detailModal').classList.add('open');
+      document.getElementById('modalTitle').textContent = 'Loading…';
+      document.getElementById('modalBody').innerHTML = '<p style="color:var(--text2);text-align:center;padding:20px">Loading…</p>';
+
+      try {
+        const res  = await authFetch(`/api/admin/user?id=${encodeURIComponent(deviceId)}`);
+        const data = await res.json();
+        renderDetail(data);
+      } catch (_) {
+        document.getElementById('modalBody').innerHTML = '<p style="color:#FF5252;text-align:center;padding:20px">Failed to load details.</p>';
+      }
+    }
+
+    function renderDetail({ device, recent_events }) {
+      if (!device) return;
+      document.getElementById('modalTitle').textContent = device.device_name || 'Unknown Device';
+
+      const fields = [
+        ['Device ID',        device.device_id],
+        ['Device Name',      device.device_name || '—'],
+        ['Android Version',  device.android_version || '—'],
+        ['Install Date',     fmtDate(device.install_date)],
+        ['Last Active',      fmtDate(device.last_use_date)],
+        ['Keyboard Enabled', device.keyboard_enabled  ? '✓ Yes' : 'No'],
+        ['Set as Default',   device.keyboard_selected ? '✓ Yes' : 'No'],
+        ['Selected Theme',   device.selected_theme || '—'],
+        ['Total App Opens',  device.total_app_opens      || 0],
+        ['Total KB Opens',   device.total_keyboard_opens || 0],
+        ['Total AI Uses',    device.total_ai_uses        || 0],
+      ];
+
+      let html = fields.map(([k, v]) =>
+        `<div class="detail-row"><span class="detail-key">${k}</span><span class="detail-value">${v}</span></div>`
+      ).join('');
+
+      if (recent_events?.length) {
+        html += `<div class="events-title">Recent Activity (last ${recent_events.length})</div>`;
+        html += recent_events.map(e => `
+          <div class="event-item">
+            <span class="event-type">${e.event_type}</span>
+            ${e.metadata ? `<span class="event-meta">${e.metadata}</span>` : ''}
+            <span class="event-time">${fmtDate(e.timestamp)}</span>
+          </div>
+        `).join('');
+      } else {
+        html += '<p style="color:var(--dim);font-size:13px;margin-top:16px">No recent events.</p>';
+      }
+
+      document.getElementById('modalBody').innerHTML = html;
+    }
+
+    function closeDetailModal() {
+      document.getElementById('detailModal').classList.remove('open');
+    }
+
+    function closeModal(e) {
+      if (e.target === document.getElementById('detailModal')) closeDetailModal();
+    }
+
+    // ── Helpers ─────────────────────────────────────────────
+    function authFetch(path) {
+      return fetch(`${API_BASE}${path}`, {
+        headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
+      });
+    }
+
+    function fmt(n)         { if (n === undefined || n === null) return '—'; return n >= 1000 ? (n/1000).toFixed(1)+'k' : String(n); }
+    function fmtDate(iso)   { if (!iso) return '—'; return new Date(iso).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }); }
+    function debounceSearch() { clearTimeout(searchTimer); searchTimer = setTimeout(() => loadUsers(1), 400); }
+  </script>
+
+</body>
+</html>

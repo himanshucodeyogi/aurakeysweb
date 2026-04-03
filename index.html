@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AuraKeys — AI Keyboard for Hinglish & Better English</title>
+  <meta name="description" content="AuraKeys is an AI-powered Android keyboard that translates Hinglish to English, rewrites your text, and boosts your typing with LLaMA 3.3." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════ NAVBAR ═══════════════════════════════ -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo">
+        <span class="logo-emoji">⌨️</span>
+        <span class="logo-text">AuraKeys</span>
+      </div>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#install">Install</a>
+        <a href="#stats">Stats</a>
+        <a href="#about">About</a>
+      </div>
+      <a href="#download" class="btn-nav">Download APK</a>
+      <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile nav overlay -->
+  <div class="mobile-nav" id="mobileNav" role="navigation">
+    <a href="#features" class="mobile-nav-link">Features</a>
+    <a href="#install"  class="mobile-nav-link">How to Install</a>
+    <a href="#stats"    class="mobile-nav-link">Live Stats</a>
+    <a href="#about"    class="mobile-nav-link">About</a>
+    <a href="#feedback" class="mobile-nav-link">Feedback</a>
+    <a href="aurakeys.apk" class="mobile-download" download>⬇ Download APK</a>
+  </div>
+
+  <!-- ═══════════════════════════════ HERO ════════════════════════════════ -->
+  <section class="hero" id="home">
+    <div class="hero-glow hero-glow-1"></div>
+    <div class="hero-glow hero-glow-2"></div>
+    <div class="container">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        AI-Powered · Android Keyboard · Free
+      </div>
+      <h1 class="hero-title">
+        Type in <span class="gradient-text">Hinglish</span>,<br />
+        Sound like a <span class="gradient-text">Pro</span>
+      </h1>
+      <p class="hero-sub">
+        AuraKeys is a smart Android keyboard that translates Hinglish&nbsp;→&nbsp;English,
+        rewrites your messages, and helps you communicate better — powered by LLaMA&nbsp;3.3.
+      </p>
+      <div class="hero-cta" id="download">
+        <a href="aurakeys.apk" class="btn-primary" download>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download APK
+        </a>
+        <a href="#install" class="btn-secondary">How to Install ↓</a>
+      </div>
+      <div class="hero-note">Android 5.0+ · No login required · Free forever</div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════ WHAT IS ══════════════════════════════ -->
+  <section class="section" id="about-app">
+    <div class="container">
+      <div class="what-is-card">
+        <div class="what-left">
+          <div class="section-tag">What is AuraKeys?</div>
+          <h2>The keyboard that <span class="gradient-text">understands</span> how Indians type</h2>
+          <p>
+            Most Indians type in Hinglish — a mix of Hindi and English — but standard keyboards don't understand it.
+            AuraKeys bridges that gap with on-the-fly AI translation, smart rewrites, voice typing, and a fully
+            customizable keyboard experience.
+          </p>
+          <p>
+            Whether you're chatting on WhatsApp, writing emails, or posting on Instagram,
+            AuraKeys makes your words sound exactly the way you mean them.
+          </p>
+        </div>
+        <div class="what-right">
+          <div class="stat-pill">🇮🇳 Built for Indian users</div>
+          <div class="stat-pill">🤖 LLaMA 3.3 AI inside</div>
+          <div class="stat-pill">🔒 Privacy-first, no text stored</div>
+          <div class="stat-pill">⚡ Works in every app</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════ FEATURES ═════════════════════════════ -->
+  <section class="section" id="features">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Features</div>
+        <h2>Everything your keyboard <span class="gradient-text">should do</span></h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card feature-card--accent">
+          <div class="feature-icon">🔄</div>
+          <h3>Hinglish → English</h3>
+          <p>Type in Hinglish and get 3 polished English variants — conversational, casual, and formal.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">✍️</div>
+          <h3>AI Rewrite</h3>
+          <p>Fix grammar, change tone, shorten or expand your text with a single tap.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎙️</div>
+          <h3>Voice Typing</h3>
+          <p>Dictate your message hands-free. Works in Hindi, English, and Hinglish.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📋</div>
+          <h3>Clipboard Power</h3>
+          <p>Full clipboard history with AI-enhanced paste suggestions right in the keyboard.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">😄</div>
+          <h3>Emoji Panel</h3>
+          <p>Quickly find the right emoji without leaving your keyboard or losing your flow.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎨</div>
+          <h3>Themes</h3>
+          <p>Choose from Aura Dark, AMOLED Black, Neon Purple, Glass Blue, and Minimal White.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>Smart Toolbar</h3>
+          <p>One-tap access to translate, bubble overlay, clipboard, mic, and settings.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💬</div>
+          <h3>Floating Bubble</h3>
+          <p>Translate clipboard content via a floating overlay — works across all apps.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════ SCREENSHOTS ══════════════════════════ -->
+  <section class="section section--dark" id="screenshots">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Screenshots</div>
+        <h2>See it in <span class="gradient-text">action</span></h2>
+      </div>
+      <div class="screenshots-row">
+        <div class="screenshot-slot">
+          <div class="screenshot-placeholder">
+            <span>🏠</span>
+            <p>Home Screen</p>
+          </div>
+        </div>
+        <div class="screenshot-slot">
+          <div class="screenshot-placeholder">
+            <span>🤖</span>
+            <p>AI Tools</p>
+          </div>
+        </div>
+        <div class="screenshot-slot">
+          <div class="screenshot-placeholder">
+            <span>🎨</span>
+            <p>Themes</p>
+          </div>
+        </div>
+        <div class="screenshot-slot">
+          <div class="screenshot-placeholder">
+            <span>⌨️</span>
+            <p>Keyboard UI</p>
+          </div>
+        </div>
+      </div>
+      <p class="screenshot-note">Screenshots coming soon — download and see for yourself!</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════ INSTALL ══════════════════════════════ -->
+  <section class="section" id="install">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">How to Install</div>
+        <h2>Up and running in <span class="gradient-text">3 steps</span></h2>
+      </div>
+      <div class="install-steps">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h3>Download the APK</h3>
+            <p>Tap the Download button and allow APK installs from unknown sources when prompted.</p>
+            <a href="aurakeys.apk" class="btn-primary btn-sm" download>Download APK</a>
+          </div>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h3>Enable AuraKeys</h3>
+            <p>Go to <strong>Settings → System → Languages &amp; Input → On-screen keyboard</strong> and enable AuraKeys.</p>
+          </div>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h3>Set as Default</h3>
+            <p>Select AuraKeys as your default keyboard when you tap any text field, and enjoy!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hindi guide -->
+      <div class="hindi-guide" id="hindi-guide">
+        <div class="section-tag" style="margin-bottom: 12px;">हिंदी गाइड</div>
+        <h3 style="color: var(--accent); margin-bottom: 16px;">हिंदी में install कैसे करें?</h3>
+        <ol class="hindi-steps">
+          <li>ऊपर दिए <strong>Download APK</strong> button पर tap करें।</li>
+          <li>अगर phone पूछे तो <em>"Unknown sources से install allow करें"</em> पर हाँ करें।</li>
+          <li>App install होने के बाद खोलें। अंदर <strong>"Keyboard Enable"</strong> पर tap करें।</li>
+          <li>Phone के settings में जाकर AuraKeys को <strong>Default Keyboard</strong> बनाएं।</li>
+          <li>अब किसी भी text field पर type करें — AuraKeys खुल जायेगा! 🎉</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════ STATS ════════════════════════════════ -->
+  <section class="section section--dark" id="stats">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Live Stats</div>
+        <h2>Real usage, <span class="gradient-text">real numbers</span></h2>
+        <p class="section-desc">Stats update automatically as AuraKeys grows.</p>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card" id="stat-installs">
+          <div class="stat-icon">📲</div>
+          <div class="stat-value" data-endpoint="total_installs">—</div>
+          <div class="stat-label">Total Installs</div>
+        </div>
+        <div class="stat-card" id="stat-active">
+          <div class="stat-icon">🟢</div>
+          <div class="stat-value" data-endpoint="active_users">—</div>
+          <div class="stat-label">Active Users (30d)</div>
+        </div>
+        <div class="stat-card" id="stat-sessions">
+          <div class="stat-icon">⌨️</div>
+          <div class="stat-value" data-endpoint="keyboard_sessions">—</div>
+          <div class="stat-label">Keyboard Sessions</div>
+        </div>
+        <div class="stat-card" id="stat-ai">
+          <div class="stat-icon">🤖</div>
+          <div class="stat-value" data-endpoint="ai_actions">—</div>
+          <div class="stat-label">AI Actions Used</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════ FOUNDER ══════════════════════════════ -->
+  <section class="section" id="about">
+    <div class="container">
+      <div class="founder-card">
+        <div class="founder-avatar">HK</div>
+        <div class="founder-text">
+          <div class="section-tag">Builder Story</div>
+          <h2>Why I built <span class="gradient-text">AuraKeys</span></h2>
+          <p>
+            I'm <strong>Himanshu Kashyap</strong>, a developer who's been frustrated with keyboards that don't
+            understand how Indians actually type. We all mix Hindi and English constantly, but every keyboard
+            out there treats it like a problem instead of a superpower.
+          </p>
+          <p>
+            So I built AuraKeys — a keyboard that doesn't judge your Hinglish, but makes it shine.
+            With AI translation built right into the keyboard, you can type the way you think
+            and sound the way you want.
+          </p>
+          <p>
+            AuraKeys is in beta and improving every week. Your usage and feedback directly shapes
+            what gets built next.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════ FEEDBACK ═════════════════════════════ -->
+  <section class="section section--dark" id="feedback">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Feedback</div>
+        <h2>Help us <span class="gradient-text">improve</span></h2>
+        <p class="section-desc">AuraKeys is in active development. Your feedback directly shapes what gets built next.</p>
+      </div>
+      <div class="feedback-row">
+        <a href="mailto:himanshu@example.com?subject=AuraKeys Feedback" class="feedback-card">
+          <div class="feedback-icon">💬</div>
+          <h3>Give Feedback</h3>
+          <p>Tell us what you love, what you hate, or what you wish was different.</p>
+        </a>
+        <a href="mailto:himanshu@example.com?subject=AuraKeys Bug Report" class="feedback-card">
+          <div class="feedback-icon">🐛</div>
+          <h3>Report a Bug</h3>
+          <p>Found something broken? Let us know and we'll fix it ASAP.</p>
+        </a>
+        <a href="mailto:himanshu@example.com?subject=AuraKeys Feature Request" class="feedback-card">
+          <div class="feedback-icon">✨</div>
+          <h3>Request a Feature</h3>
+          <p>Have an idea for something new? We're listening.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <span class="logo-emoji">⌨️</span>
+          <span class="logo-text">AuraKeys</span>
+          <span class="footer-badge">Beta</span>
+        </div>
+        <div class="footer-links">
+          <a href="#features">Features</a>
+          <a href="#install">Install</a>
+          <a href="#stats">Stats</a>
+          <a href="#about">About</a>
+          <a href="#feedback">Feedback</a>
+        </div>
+      </div>
+      <div class="footer-divider"></div>
+      <div class="footer-bottom">
+        <p>Built by <strong>Himanshu Kashyap</strong> · Android only · Version 1.0.0 (Beta)</p>
+        <p class="footer-privacy">
+          🔒 AuraKeys does not store your typed text, passwords, OTPs, or personal messages.
+          Only anonymous usage stats are collected to improve the product.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
