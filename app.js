@@ -122,3 +122,37 @@ document.addEventListener('DOMContentLoaded', () => {
 const style = document.createElement('style');
 style.textContent = '.visible { opacity: 1 !important; transform: translateY(0) !important; }';
 document.head.appendChild(style);
+
+// ── Lightbox ─────────────────────────────────────────────────────
+const lightbox      = document.getElementById('lightbox');
+const lightboxImg   = document.getElementById('lightboxImg');
+const lightboxLabel = document.getElementById('lightboxLabel');
+const lightboxClose = document.getElementById('lightboxClose');
+
+document.querySelectorAll('.screenshot-slot img').forEach(img => {
+  img.addEventListener('click', () => {
+    lightboxImg.src = img.src;
+    lightboxImg.alt = img.alt;
+    lightboxLabel.textContent = img.closest('.screenshot-slot')
+      ?.querySelector('.screenshot-label')?.textContent || '';
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  });
+});
+
+function closeLightbox() {
+  lightbox.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+lightboxClose.addEventListener('click', closeLightbox);
+
+// Click outside image to close
+lightbox.addEventListener('click', e => {
+  if (e.target === lightbox) closeLightbox();
+});
+
+// ESC key to close
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeLightbox();
+});
