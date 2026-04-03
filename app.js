@@ -1,6 +1,4 @@
 // AuraKeys Website — app.js
-// Fetches live stats from the analytics backend when available.
-// Set ANALYTICS_BACKEND_URL in your backend and expose /api/public-stats.
 
 const BACKEND_URL = 'https://aurakeysbackend.vercel.app'; // trailing slash nahi — fetch me already /api/... hai
 
@@ -31,7 +29,7 @@ function setStatValue(cardId, key, data) {
   if (!el) return;
   const val = data[key];
   if (val !== undefined && val !== null) {
-    el.textContent = formatNumber(val);
+    el.classList.remove('loading');
     animateCount(el, val);
   }
 }
@@ -115,6 +113,8 @@ document.querySelectorAll(
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Add loading state to stat values
+  document.querySelectorAll('.stat-value').forEach(el => el.classList.add('loading'));
   loadStats();
 });
 
@@ -155,4 +155,62 @@ lightbox.addEventListener('click', e => {
 // ESC key to close
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeLightbox();
+});
+
+// ── Scroll progress bar ──────────────────────────────────────────
+const scrollProgress = document.getElementById('scrollProgress');
+window.addEventListener('scroll', () => {
+  const total = document.documentElement.scrollHeight - window.innerHeight;
+  scrollProgress.style.width = ((window.scrollY / total) * 100) + '%';
+}, { passive: true });
+
+// ── Back to top ──────────────────────────────────────────────────
+const backToTop = document.getElementById('backToTop');
+window.addEventListener('scroll', () => {
+  backToTop.classList.toggle('visible', window.scrollY > 400);
+}, { passive: true });
+backToTop?.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// ── Active nav link (highlight current section) ──────────────────
+const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+const navSections = document.querySelectorAll('section[id]');
+
+const navObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector(`.nav-links a[href="#${entry.target.id}"]`);
+      link?.classList.add('active');
+    }
+  });
+}, { rootMargin: '-30% 0px -60% 0px' });
+
+navSections.forEach(s => navObserver.observe(s));
+
+// ── Screenshot dots ──────────────────────────────────────────────
+const screenshotsRow = document.getElementById('screenshotsRow');
+const dots = document.querySelectorAll('#screenshotDots .dot');
+
+screenshotsRow?.addEventListener('scroll', () => {
+  const slots = screenshotsRow.querySelectorAll('.screenshot-slot');
+  if (!slots.length) return;
+  const slotWidth = slots[0].offsetWidth + 12; // 12 = gap
+  const activeIndex = Math.min(Math.round(screenshotsRow.scrollLeft / slotWidth), dots.length - 1);
+  dots.forEach((dot, i) => dot.classList.toggle('active', i === activeIndex));
+}, { passive: true });
+
+// ── Download toast ───────────────────────────────────────────────
+const downloadToast = document.getElementById('downloadToast');
+let toastTimer;
+
+function showDownloadToast() {
+  clearTimeout(toastTimer);
+  downloadToast.classList.add('visible');
+  toastTimer = setTimeout(() => downloadToast.classList.remove('visible'), 4000);
+}
+
+document.querySelectorAll('a[href="aurakeys.apk"]').forEach(a => {
+  a.addEventListener('click', showDownloadToast);
 });
