@@ -418,16 +418,22 @@
       if (!url || !pass) return showLoginError();
 
       try {
-        const res = await fetch(`${url}/api/admin/stats`, {
-          headers: { 'Authorization': `Bearer ${pass}` }
-        });
-        if (!res.ok) throw new Error('auth failed');
+        // Fetch stats to verify auth — reuse the response to populate dashboard
+        const [statsRes] = await Promise.all([
+          fetch(`${url}/api/admin/stats`, { headers: { 'Authorization': `Bearer ${pass}` } }),
+        ]);
+        if (!statsRes.ok) throw new Error('auth failed');
 
         API_BASE   = url;
         AUTH_TOKEN = pass;
         document.getElementById('loginScreen').style.display = 'none';
         document.getElementById('dashboard').style.display   = 'block';
-        loadStats();
+
+        // Populate stats from the response we already have — no second fetch
+        const statsData = await statsRes.json();
+        populateStats(statsData);
+
+        // Load users in parallel while stats are being rendered
         loadUsers(1);
       } catch (e) {
         showLoginError();
@@ -455,18 +461,22 @@
     });
 
     // ── Load summary stats ──────────────────────────────────
+    function populateStats(data) {
+      document.getElementById('s-total').textContent = fmt(data.total_users);
+      document.getElementById('s-dau').textContent   = fmt(data.dau);
+      document.getElementById('s-wau').textContent   = fmt(data.wau);
+      document.getElementById('s-mau').textContent   = fmt(data.mau);
+      document.getElementById('s-kb').textContent    = fmt(data.total_keyboard_opens);
+      document.getElementById('s-ai').textContent    = fmt(data.total_ai_uses);
+      document.getElementById('s-app').textContent   = fmt(data.total_app_opens);
+      document.getElementById('s-new').textContent   = fmt(data.new_installs_7d);
+    }
+
     async function loadStats() {
       try {
         const res  = await authFetch('/api/admin/stats');
         const data = await res.json();
-        document.getElementById('s-total').textContent = fmt(data.total_users);
-        document.getElementById('s-dau').textContent   = fmt(data.dau);
-        document.getElementById('s-wau').textContent   = fmt(data.wau);
-        document.getElementById('s-mau').textContent   = fmt(data.mau);
-        document.getElementById('s-kb').textContent    = fmt(data.total_keyboard_opens);
-        document.getElementById('s-ai').textContent    = fmt(data.total_ai_uses);
-        document.getElementById('s-app').textContent   = fmt(data.total_app_opens);
-        document.getElementById('s-new').textContent   = fmt(data.new_installs_7d);
+        populateStats(data);
       } catch (_) {}
     }
 
