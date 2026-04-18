@@ -199,6 +199,104 @@
     .page-btn:disabled { opacity: 0.35; cursor: default; }
     .page-info { color: var(--text2); font-size: 12px; }
 
+    /* ── Tabs ── */
+    .tabs-bar {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0;
+    }
+    .tab-btn {
+      padding: 9px 18px;
+      background: transparent;
+      border: none;
+      color: var(--text2);
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .tab-btn:hover  { color: var(--text); }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── API Health ── */
+    .api-health-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .api-health-header h3 { font-size: 16px; font-weight: 700; }
+
+    .btn-check {
+      padding: 8px 20px;
+      background: rgba(138,180,248,0.12);
+      border: 1px solid rgba(138,180,248,0.35);
+      color: var(--accent);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: background 0.2s;
+    }
+    .btn-check:hover    { background: rgba(138,180,248,0.22); }
+    .btn-check:disabled { opacity: 0.45; cursor: default; }
+
+    .api-summary-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .api-sum-chip {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: var(--card);
+    }
+    .chip-working  { color: var(--green);  border-color: rgba(129,201,149,0.3); background: rgba(129,201,149,0.07); }
+    .chip-failed   { color: #FF5252;       border-color: rgba(255,82,82,0.3);   background: rgba(255,82,82,0.07); }
+    .chip-unknown  { color: var(--text2);  }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .status-working { background: rgba(129,201,149,0.12); color: var(--green);  border: 1px solid rgba(129,201,149,0.3); }
+    .status-failed  { background: rgba(255,82,82,0.12);   color: #FF5252;       border: 1px solid rgba(255,82,82,0.3); }
+    .status-ratelimit { background: rgba(255,179,0,0.12); color: #FFB300;       border: 1px solid rgba(255,179,0,0.3); }
+    .status-checking  { background: rgba(138,180,248,0.1); color: var(--accent); border: 1px solid rgba(138,180,248,0.2); }
+    .status-unknown   { background: var(--bg); color: var(--dim); border: 1px solid var(--border); }
+
+    .key-masked {
+      font-family: monospace;
+      font-size: 12px;
+      color: var(--text2);
+      letter-spacing: 1px;
+    }
+
+    .latency-badge {
+      font-size: 11px;
+      color: var(--dim);
+    }
+
     /* ── Detail modal ── */
     .modal-overlay {
       display: none;
@@ -302,16 +400,10 @@
       <input
         type="password"
         class="input-field"
-        id="backendUrl"
-        placeholder="Backend URL (e.g. https://aurakeys-api.vercel.app)"
-      />
-      <input
-        type="password"
-        class="input-field"
         id="adminPassword"
         placeholder="Admin password"
       />
-      <p class="login-error" id="loginError">Incorrect password or unreachable backend.</p>
+      <p class="login-error" id="loginError">Incorrect password.</p>
       <button class="btn-primary" style="width:100%;justify-content:center;" onclick="login()">
         Login
       </button>
@@ -343,6 +435,15 @@
         <div class="summary-card"><div class="summary-label">Total App Opens</div><div class="summary-value" id="s-app">—</div></div>
         <div class="summary-card"><div class="summary-label">New Installs (7d)</div><div class="summary-value" id="s-new">—</div></div>
       </div>
+
+      <!-- Tabs -->
+      <div class="tabs-bar">
+        <button class="tab-btn active" onclick="switchTab('users')">Devices</button>
+        <button class="tab-btn" onclick="switchTab('apikeys')">API Key Health</button>
+      </div>
+
+      <!-- ═══ Tab: Users ═══ -->
+      <div class="tab-panel active" id="tab-users">
 
       <!-- Users table -->
       <div class="table-header">
@@ -390,6 +491,44 @@
 
       <div class="pagination" id="paginationRow"></div>
 
+      </div><!-- /tab-users -->
+
+      <!-- ═══ Tab: API Key Health ═══ -->
+      <div class="tab-panel" id="tab-apikeys">
+
+        <div class="api-health-header">
+          <h3>API Key Health</h3>
+          <button class="btn-check" id="checkAllBtn" onclick="checkAllKeys()">⚡ Run Health Check</button>
+        </div>
+
+        <div class="api-summary-bar" id="apiSummaryBar">
+          <span class="api-sum-chip chip-unknown" id="chip-total">— Total</span>
+          <span class="api-sum-chip chip-working" id="chip-working">— Working</span>
+          <span class="api-sum-chip chip-failed"  id="chip-failed">— Failed</span>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Key Name / Label</th>
+                <th>Masked Key</th>
+                <th>Status</th>
+                <th>Latency</th>
+                <th>Model</th>
+                <th>Last Checked</th>
+                <th>Error</th>
+              </tr>
+            </thead>
+            <tbody id="apiKeysTableBody">
+              <tr class="loading-row"><td colspan="8">Click "Run Health Check" to test all API keys.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div><!-- /tab-apikeys -->
+
     </div><!-- /admin-content -->
   </div><!-- /dashboard -->
 
@@ -413,9 +552,9 @@
 
     // ── Login / logout ──────────────────────────────────────
     async function login() {
-      const url  = document.getElementById('backendUrl').value.trim().replace(/\/$/, '');
+      const url  = 'https://aurakeysbackend.vercel.app';
       const pass = document.getElementById('adminPassword').value.trim();
-      if (!url || !pass) return showLoginError();
+      if (!pass) return showLoginError();
 
       try {
         // Fetch stats to verify auth — reuse the response to populate dashboard
@@ -606,7 +745,95 @@
 
     function fmt(n)         { if (n === undefined || n === null) return '—'; return n >= 1000 ? (n/1000).toFixed(1)+'k' : String(n); }
     function fmtDate(iso)   { if (!iso) return '—'; return new Date(iso).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }); }
+    function fmtTime(iso)   { if (!iso) return '—'; return new Date(iso).toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit', second:'2-digit' }); }
     function debounceSearch() { clearTimeout(searchTimer); searchTimer = setTimeout(() => loadUsers(1), 400); }
+
+    // ── Tab switching ────────────────────────────────────────
+    function switchTab(name) {
+      document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+        const tabs = ['users', 'apikeys'];
+        btn.classList.toggle('active', tabs[i] === name);
+      });
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById(`tab-${name}`).classList.add('active');
+    }
+
+    // ── API Key Health Check ─────────────────────────────────
+    // Backend server-side testing — Groq blocks browser CORS so we proxy through backend.
+
+    async function checkAllKeys() {
+      const btn   = document.getElementById('checkAllBtn');
+      const tbody = document.getElementById('apiKeysTableBody');
+
+      btn.disabled    = true;
+      btn.textContent = '⏳ Testing keys…';
+      tbody.innerHTML = '<tr class="loading-row"><td colspan="8">Running health check on server…</td></tr>';
+      updateApiSummary([], true);
+
+      try {
+        const res = await authFetch('/api/admin/check-keys');
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error || `Server returned ${res.status}`);
+        }
+        const data    = await res.json();
+        const results = data.results || [];
+
+        if (!results.length) {
+          tbody.innerHTML = '<tr class="loading-row"><td colspan="8">No API keys configured on backend. Add GROQ_API_KEY in Vercel env vars.</td></tr>';
+          updateApiSummary([], false);
+        } else {
+          renderApiTable(results);
+          updateApiSummary(results, false);
+        }
+      } catch (e) {
+        tbody.innerHTML = `<tr class="loading-row"><td colspan="8" style="color:#FF5252">Health check failed: ${escHtml(e.message)}</td></tr>`;
+        updateApiSummary([], false);
+      }
+
+      btn.disabled    = false;
+      btn.textContent = '⚡ Re-check All';
+    }
+
+    function renderApiTable(rows) {
+      const tbody = document.getElementById('apiKeysTableBody');
+      tbody.innerHTML = rows.map(r => {
+        let badge = '';
+        if      (r.status === 'working')   badge = '<span class="status-badge status-working">✓ Working</span>';
+        else if (r.status === 'failed')    badge = '<span class="status-badge status-failed">✗ Failed</span>';
+        else if (r.status === 'ratelimit') badge = '<span class="status-badge status-ratelimit">⚠ Rate Limited</span>';
+        else if (r.status === 'checking')  badge = '<span class="status-badge status-checking">… Checking</span>';
+        else                               badge = '<span class="status-badge status-unknown">— Unknown</span>';
+
+        const latency = r.latency != null ? `<span class="latency-badge">${r.latency} ms</span>` : '—';
+        const err     = r.error ? `<span style="color:#FF5252;font-size:11px">${escHtml(r.error)}</span>` : '—';
+
+        return `<tr>
+          <td>${r.index}</td>
+          <td>${escHtml(r.name)}</td>
+          <td><span class="key-masked">${escHtml(r.masked || '—')}</span></td>
+          <td>${badge}</td>
+          <td>${latency}</td>
+          <td style="color:var(--text2);font-size:11px">${escHtml(r.model || '—')}</td>
+          <td style="font-size:11px;color:var(--dim)">${fmtTime(r.checkedAt)}</td>
+          <td>${err}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    function updateApiSummary(rows, checking) {
+      const total   = rows.length;
+      const working = rows.filter(r => r.status === 'working' || r.status === 'ratelimit').length;
+      const failed  = rows.filter(r => r.status === 'failed').length;
+      document.getElementById('chip-total').textContent   = `${total} Total`;
+      document.getElementById('chip-working').textContent = `${working} Working`;
+      document.getElementById('chip-failed').textContent  = `${failed} Failed`;
+    }
+
+    function escHtml(s) {
+      if (!s) return '';
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
   </script>
 
 </body>
