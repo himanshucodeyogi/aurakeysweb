@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AuraKeys — Update Available</title>
+  <meta name="description" content="A new version of AuraKeys is available. Download the latest APK to get new features and improvements." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .update-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .update-glow-1 {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(187,134,252,0.12) 0%, transparent 70%);
+      top: -100px;
+      left: -100px;
+      pointer-events: none;
+    }
+
+    .update-glow-2 {
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(138,180,248,0.1) 0%, transparent 70%);
+      bottom: -80px;
+      right: -80px;
+      pointer-events: none;
+    }
+
+    .update-card {
+      position: relative;
+      z-index: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 40px 36px;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .update-icon {
+      font-size: 52px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .version-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(187,134,252,0.12);
+      border: 1px solid rgba(187,134,252,0.3);
+      color: var(--purple);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .update-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+
+    .update-subtitle {
+      color: var(--text2);
+      font-size: 14px;
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .highlights-list {
+      text-align: left;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 28px;
+      display: none;
+    }
+
+    .highlights-list.visible { display: block; }
+
+    .highlight-item {
+      font-size: 13px;
+      color: var(--text2);
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(42,42,58,0.6);
+      line-height: 1.5;
+    }
+
+    .highlight-item:last-child { border-bottom: none; }
+
+    .btn-update {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--purple), var(--accent));
+      color: #0F0F13;
+      font-weight: 800;
+      font-size: 16px;
+      border-radius: 14px;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.15s;
+      margin-bottom: 14px;
+    }
+
+    .btn-update:hover { opacity: 0.92; transform: translateY(-1px); }
+    .btn-update:active { transform: translateY(0); }
+
+    .install-note {
+      font-size: 12px;
+      color: var(--dim);
+      line-height: 1.6;
+    }
+
+    .install-note strong { color: var(--text2); }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 24px 0;
+    }
+
+    .back-link {
+      font-size: 13px;
+      color: var(--text2);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 20px;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: var(--accent); }
+
+    .skeleton {
+      background: linear-gradient(90deg, var(--border) 25%, rgba(60,60,80,0.5) 50%, var(--border) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 6px;
+      height: 14px;
+      margin-bottom: 8px;
+    }
+
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .skeleton-title  { height: 28px; width: 70%; margin: 0 auto 10px; }
+    .skeleton-sub    { height: 14px; width: 90%; margin: 0 auto 6px; }
+    .skeleton-sub-sm { height: 14px; width: 60%; margin: 0 auto 28px; }
+
+    @media (max-width: 480px) {
+      .update-card  { padding: 32px 22px; border-radius: 20px; }
+      .update-title { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="/" style="text-decoration:none;display:flex;align-items:center;gap:8px">
+        <span class="logo-emoji">⌨️</span>
+        <span class="logo-text">AuraKeys</span>
+      </a>
+      <a href="aurakeys.apk" class="btn-nav" download>⬆ Update Now</a>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="update-page">
+    <div class="update-glow-1"></div>
+    <div class="update-glow-2"></div>
+
+    <div class="update-card" id="updateCard">
+
+      <!-- Loading skeleton -->
+      <div id="skeleton">
+        <div style="font-size:52px;margin-bottom:16px">🚀</div>
+        <div class="skeleton skeleton-title"></div>
+        <div class="skeleton skeleton-sub"></div>
+        <div class="skeleton skeleton-sub-sm"></div>
+        <div class="skeleton" style="height:140px;margin-bottom:28px;border-radius:14px"></div>
+        <div class="skeleton" style="height:52px;border-radius:14px"></div>
+      </div>
+
+      <!-- Loaded content -->
+      <div id="content" style="display:none">
+        <span class="update-icon">🚀</span>
+        <div class="version-badge">
+          <span>⬆</span>
+          <span id="versionLabel">New Version</span>
+        </div>
+        <h1 class="update-title" id="updateTitle">Update Available</h1>
+        <p class="update-subtitle" id="updateSubtitle">
+          A new version of AuraKeys is available with improvements and new features.
+        </p>
+
+        <div class="highlights-list" id="highlightsList"></div>
+
+        <a href="aurakeys.apk" class="btn-update" download id="downloadBtn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Update Now
+        </a>
+
+        <p class="install-note">
+          After downloading, open the APK file and tap <strong>Install</strong>.<br />
+          Your data and settings will be preserved.
+        </p>
+
+        <hr class="divider" />
+
+        <p class="install-note" style="color:var(--dim)">
+          ⚠ If asked, allow <strong>Install from unknown sources</strong> in your phone settings.
+        </p>
+      </div>
+
+    </div>
+
+    <a href="/" class="back-link">← Back to AuraKeys home</a>
+  </main>
+
+  <script>
+    const BACKEND = 'https://aurakeysbackend.vercel.app';
+
+    async function loadUpdate() {
+      try {
+        const res  = await fetch(`${BACKEND}/api/updates`);
+        const data = await res.json();
+
+        document.getElementById('versionLabel').textContent  = `v${data.version || ''}`;
+        document.getElementById('updateTitle').textContent   = data.title || 'Update Available';
+        document.getElementById('updateSubtitle').textContent =
+          `AuraKeys ${data.version} is here! Install the latest APK to get all new features.`;
+
+        const highlights = Array.isArray(data.highlights) ? data.highlights : [];
+        if (highlights.length) {
+          const list = document.getElementById('highlightsList');
+          list.innerHTML = highlights
+            .map(h => `<div class="highlight-item">${h}</div>`)
+            .join('');
+          list.classList.add('visible');
+        }
+
+      } catch (_) {
+        document.getElementById('updateTitle').textContent    = 'Update Available';
+        document.getElementById('updateSubtitle').textContent = 'A new version of AuraKeys is ready to install.';
+      } finally {
+        document.getElementById('skeleton').style.display = 'none';
+        document.getElementById('content').style.display  = 'block';
+      }
+    }
+
+    loadUpdate();
+  </script>
+
+</body>
+</html>

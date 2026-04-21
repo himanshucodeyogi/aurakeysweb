@@ -440,6 +440,7 @@
       <div class="tabs-bar">
         <button class="tab-btn active" onclick="switchTab('users')">Devices</button>
         <button class="tab-btn" onclick="switchTab('apikeys')">API Key Health</button>
+        <button class="tab-btn" onclick="switchTab('update')">🚀 App Update</button>
       </div>
 
       <!-- ═══ Tab: Users ═══ -->
@@ -528,6 +529,51 @@
         </div>
 
       </div><!-- /tab-apikeys -->
+
+      <!-- ═══ Tab: App Update ═══ -->
+      <div class="tab-panel" id="tab-update">
+
+        <div style="max-width:560px">
+
+          <!-- Current live version card -->
+          <div class="summary-card" style="margin-bottom:22px" id="liveVersionCard">
+            <div class="summary-label">Current Live Version</div>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+              <div class="summary-value" id="liveVersion" style="font-size:22px">—</div>
+              <div style="color:var(--text2);font-size:13px" id="liveTitle"></div>
+            </div>
+            <div class="summary-sub" id="liveDate"></div>
+          </div>
+
+          <!-- Update form -->
+          <div class="table-wrap" style="padding:24px;border-radius:var(--radius)">
+            <h3 style="font-size:15px;font-weight:700;margin-bottom:18px">Publish New Update</h3>
+
+            <label style="display:block;font-size:12px;color:var(--text2);margin-bottom:6px">Version <span style="color:var(--accent)">*</span></label>
+            <input id="uv-version" class="input-field" placeholder="e.g. 1.2.0" style="width:100%;margin-bottom:14px" />
+
+            <label style="display:block;font-size:12px;color:var(--text2);margin-bottom:6px">Title <span style="color:var(--accent)">*</span></label>
+            <input id="uv-title" class="input-field" placeholder="e.g. Speed & Stability" style="width:100%;margin-bottom:14px" />
+
+            <label style="display:block;font-size:12px;color:var(--text2);margin-bottom:4px">Highlights <span style="color:var(--dim);font-weight:400">(one per line)</span></label>
+            <textarea
+              id="uv-highlights"
+              rows="5"
+              class="input-field"
+              placeholder="✨ New AI shortcut&#10;⚡ Faster keyboard&#10;🐛 Bug fixes"
+              style="width:100%;resize:vertical;font-family:var(--font);line-height:1.6;margin-bottom:18px"
+            ></textarea>
+
+            <div style="display:flex;align-items:center;gap:12px">
+              <button class="btn-primary" style="justify-content:center" onclick="publishUpdate()">
+                🚀 Publish Update
+              </button>
+              <span id="uv-status" style="font-size:13px"></span>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- /tab-update -->
 
     </div><!-- /admin-content -->
   </div><!-- /dashboard -->
@@ -750,12 +796,73 @@
 
     // ── Tab switching ────────────────────────────────────────
     function switchTab(name) {
+      const tabs = ['users', 'apikeys', 'update'];
       document.querySelectorAll('.tab-btn').forEach((btn, i) => {
-        const tabs = ['users', 'apikeys'];
         btn.classList.toggle('active', tabs[i] === name);
       });
       document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
       document.getElementById(`tab-${name}`).classList.add('active');
+      if (name === 'update') loadLiveVersion();
+    }
+
+    // ── App Update tab ───────────────────────────────────────
+    async function loadLiveVersion() {
+      document.getElementById('liveVersion').textContent = '…';
+      document.getElementById('liveTitle').textContent   = '';
+      document.getElementById('liveDate').textContent    = '';
+      try {
+        const res  = await fetch(`${API_BASE}/api/updates`);
+        const data = await res.json();
+        document.getElementById('liveVersion').textContent = `v${data.version || '—'}`;
+        document.getElementById('liveTitle').textContent   = data.title || '';
+        document.getElementById('liveDate').textContent    = data.date ? `Published: ${data.date}` : '';
+        if (data.version) {
+          const parts = data.version.split('.').map(Number);
+          parts[2] = (parts[2] || 0) + 1;
+          document.getElementById('uv-version').value = parts.join('.');
+        }
+      } catch (_) {
+        document.getElementById('liveVersion').textContent = 'Failed to load';
+      }
+    }
+
+    async function publishUpdate() {
+      const version    = document.getElementById('uv-version').value.trim();
+      const title      = document.getElementById('uv-title').value.trim();
+      const rawLines   = document.getElementById('uv-highlights').value;
+      const highlights = rawLines.split('\n').map(l => l.trim()).filter(Boolean);
+      const statusEl   = document.getElementById('uv-status');
+
+      if (!version || !title) {
+        statusEl.style.color = '#FF5252';
+        statusEl.textContent = 'Version and title are required.';
+        return;
+      }
+      if (!/^\d+\.\d+\.\d+$/.test(version)) {
+        statusEl.style.color = '#FF5252';
+        statusEl.textContent = 'Version must be like 1.2.0';
+        return;
+      }
+
+      statusEl.style.color = 'var(--text2)';
+      statusEl.textContent = 'Publishing…';
+
+      try {
+        const res = await fetch(`${API_BASE}/api/admin/set-version`, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AUTH_TOKEN}` },
+          body:    JSON.stringify({ version, title, highlights }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || `Error ${res.status}`);
+
+        statusEl.style.color = 'var(--green)';
+        statusEl.textContent = `✓ Published v${data.saved.version} successfully!`;
+        loadLiveVersion();
+      } catch (e) {
+        statusEl.style.color = '#FF5252';
+        statusEl.textContent = `Failed: ${e.message}`;
+      }
     }
 
     // ── API Key Health Check ─────────────────────────────────
