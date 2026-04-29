@@ -1,4 +1,4 @@
-// AuraKeys Website — app.js
+// TypeAura Website — app.js
 
 const BACKEND_URL = 'https://aurakeysbackend.vercel.app'; // trailing slash nahi — fetch me already /api/... hai
 
@@ -211,6 +211,6 @@ function showDownloadToast() {
   toastTimer = setTimeout(() => downloadToast.classList.remove('visible'), 4000);
 }
 
-document.querySelectorAll('a[href="aurakeys.apk"]').forEach(a => {
+document.querySelectorAll('a[href="typeaura.apk"]').forEach(a => {
   a.addEventListener('click', showDownloadToast);
 });

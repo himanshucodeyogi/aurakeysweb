@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AuraKeys — Update Available</title>
-  <meta name="description" content="A new version of AuraKeys is available. Download the latest APK to get new features and improvements." />
+  <title>TypeAura — Update Available</title>
+  <meta name="description" content="A new version of TypeAura is available. Download the latest APK to get new features and improvements." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
@@ -189,9 +189,9 @@
     <div class="nav-inner">
       <a class="nav-logo" href="/" style="text-decoration:none;display:flex;align-items:center;gap:8px">
         <span class="logo-emoji">⌨️</span>
-        <span class="logo-text">AuraKeys</span>
+        <span class="logo-text">TypeAura</span>
       </a>
-      <a href="aurakeys.apk" class="btn-nav" download>⬆ Update Now</a>
+      <a href="typeaura.apk" class="btn-nav" download>⬆ Update Now</a>
     </div>
   </nav>
 
@@ -221,12 +221,12 @@
         </div>
         <h1 class="update-title" id="updateTitle">Update Available</h1>
         <p class="update-subtitle" id="updateSubtitle">
-          A new version of AuraKeys is available with improvements and new features.
+          A new version of TypeAura is available with improvements and new features.
         </p>
 
         <div class="highlights-list" id="highlightsList"></div>
 
-        <a href="aurakeys.apk" class="btn-update" download id="downloadBtn">
+        <a href="typeaura.apk" class="btn-update" download id="downloadBtn">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
             <polyline points="7 10 12 15 17 10"/>
@@ -249,7 +249,7 @@
 
     </div>
 
-    <a href="/" class="back-link">← Back to AuraKeys home</a>
+    <a href="/" class="back-link">← Back to TypeAura home</a>
   </main>
 
   <script>
@@ -263,7 +263,7 @@
         document.getElementById('versionLabel').textContent  = `v${data.version || ''}`;
         document.getElementById('updateTitle').textContent   = data.title || 'Update Available';
         document.getElementById('updateSubtitle').textContent =
-          `AuraKeys ${data.version} is here! Install the latest APK to get all new features.`;
+          `TypeAura ${data.version} is here! Install the latest APK to get all new features.`;
 
         const highlights = Array.isArray(data.highlights) ? data.highlights : [];
         if (highlights.length) {
@@ -276,7 +276,7 @@
 
       } catch (_) {
         document.getElementById('updateTitle').textContent    = 'Update Available';
-        document.getElementById('updateSubtitle').textContent = 'A new version of AuraKeys is ready to install.';
+        document.getElementById('updateSubtitle').textContent = 'A new version of TypeAura is ready to install.';
       } finally {
         document.getElementById('skeleton').style.display = 'none';
         document.getElementById('content').style.display  = 'block';
