@@ -13,16 +13,16 @@ async function loadStats() {
     // Expected response shape:
     // { total_installs: 124, active_users: 31, keyboard_sessions: 842, ai_actions: 219 }
 
-    setStatValue('stat-installs', 'total_installs', data);
-    setStatValue('stat-active',   'active_users',   data);
+    setStatValue('stat-installs', 'total_installs',    data, '+', 30);
+    setStatValue('stat-active',   'active_users',      data, '+', 25);
     setStatValue('stat-sessions', 'keyboard_sessions', data);
-    setStatValue('stat-ai',       'ai_actions',     data);
+    setStatValue('stat-ai',       'ai_actions',        data);
   } catch (e) {
     // silent fail — placeholders remain
   }
 }
 
-function setStatValue(cardId, key, data) {
+function setStatValue(cardId, key, data, suffix = '', minVal = 0) {
   const card = document.getElementById(cardId);
   if (!card) return;
   const el = card.querySelector('.stat-value');
@@ -30,16 +30,16 @@ function setStatValue(cardId, key, data) {
   const val = data[key];
   if (val !== undefined && val !== null) {
     el.classList.remove('loading');
-    animateCount(el, val);
+    animateCount(el, Math.max(val, minVal), suffix);
   }
 }
 
-function formatNumber(n) {
-  if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
-  return String(n);
+function formatNumber(n, suffix = '') {
+  const str = n >= 1000 ? (n / 1000).toFixed(1) + 'k' : String(n);
+  return str + suffix;
 }
 
-function animateCount(el, target) {
+function animateCount(el, target, suffix = '') {
   let start = 0;
   const duration = 1200;
   const step = (timestamp) => {
@@ -47,9 +47,9 @@ function animateCount(el, target) {
     const progress = Math.min((timestamp - start) / duration, 1);
     const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
     const current = Math.floor(eased * target);
-    el.textContent = formatNumber(current);
+    el.textContent = formatNumber(current, suffix);
     if (progress < 1) requestAnimationFrame(step);
-    else el.textContent = formatNumber(target);
+    else el.textContent = formatNumber(target, suffix);
   };
   requestAnimationFrame(step);
 }

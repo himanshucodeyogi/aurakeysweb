@@ -268,7 +268,40 @@
     }
     .chip-working  { color: var(--green);  border-color: rgba(129,201,149,0.3); background: rgba(129,201,149,0.07); }
     .chip-failed   { color: #FF5252;       border-color: rgba(255,82,82,0.3);   background: rgba(255,82,82,0.07); }
+    .chip-blocked  { color: #FFB300;       border-color: rgba(255,179,0,0.3);   background: rgba(255,179,0,0.07); }
     .chip-unknown  { color: var(--text2);  }
+
+    /* ── Rate Limit Status section ── */
+    .limit-section {
+      margin-top: 28px;
+    }
+    .limit-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .limit-header h3 { font-size: 16px; font-weight: 700; }
+
+    .status-available { background: rgba(129,201,149,0.12); color: var(--green);  border: 1px solid rgba(129,201,149,0.3); }
+    .status-blocked   { background: rgba(255,179,0,0.12);   color: #FFB300;       border: 1px solid rgba(255,179,0,0.3); }
+
+    .btn-unblock {
+      padding: 3px 11px;
+      background: rgba(255,179,0,0.1);
+      border: 1px solid rgba(255,179,0,0.35);
+      color: #FFB300;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: background 0.2s;
+    }
+    .btn-unblock:hover    { background: rgba(255,179,0,0.22); }
+    .btn-unblock:disabled { opacity: 0.4; cursor: default; }
 
     .status-badge {
       display: inline-flex;
@@ -526,6 +559,37 @@
               <tr class="loading-row"><td colspan="8">Click "Run Health Check" to test all API keys.</td></tr>
             </tbody>
           </table>
+        </div>
+
+        <!-- ── Rate Limit Status ── -->
+        <div class="limit-section">
+          <div class="limit-header">
+            <h3>🚦 Rate Limit Status</h3>
+            <button class="btn-check" id="limitStatusBtn" onclick="loadLimitStatus()">📊 Check Limit Status</button>
+          </div>
+
+          <div class="api-summary-bar" id="limitSummaryBar" style="display:none">
+            <span class="api-sum-chip chip-working"  id="lchip-available">— Available</span>
+            <span class="api-sum-chip chip-blocked"  id="lchip-blocked">— Blocked</span>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Key Name</th>
+                  <th>Masked Key</th>
+                  <th>Limit Status</th>
+                  <th>Blocked Until</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="limitTableBody">
+                <tr class="loading-row"><td colspan="6">Click "Check Limit Status" to view.</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
       </div><!-- /tab-apikeys -->
@@ -940,6 +1004,91 @@
     function escHtml(s) {
       if (!s) return '';
       return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ── Rate Limit Status ────────────────────────────────────
+    async function loadLimitStatus() {
+      const btn   = document.getElementById('limitStatusBtn');
+      const tbody = document.getElementById('limitTableBody');
+      btn.disabled    = true;
+      btn.textContent = '⏳ Loading…';
+      tbody.innerHTML = '<tr class="loading-row"><td colspan="6">Fetching from server…</td></tr>';
+      document.getElementById('limitSummaryBar').style.display = 'none';
+
+      try {
+        const res = await authFetch('/api/admin/key-limits');
+        if (!res.ok) throw new Error(`Server returned ${res.status}`);
+        const { keys } = await res.json();
+
+        if (!keys || !keys.length) {
+          tbody.innerHTML = '<tr class="loading-row"><td colspan="6">No API keys configured.</td></tr>';
+        } else {
+          renderLimitTable(keys);
+          const available = keys.filter(k => k.status === 'available').length;
+          const blocked   = keys.filter(k => k.status === 'blocked').length;
+          document.getElementById('lchip-available').textContent = `${available} Available`;
+          document.getElementById('lchip-blocked').textContent   = `${blocked} Blocked`;
+          document.getElementById('limitSummaryBar').style.display = 'flex';
+        }
+      } catch (e) {
+        tbody.innerHTML = `<tr class="loading-row"><td colspan="6" style="color:#FF5252">Failed: ${escHtml(e.message)}</td></tr>`;
+      }
+
+      btn.disabled    = false;
+      btn.textContent = '📊 Refresh Status';
+    }
+
+    function renderLimitTable(keys) {
+      const tbody = document.getElementById('limitTableBody');
+      tbody.innerHTML = keys.map(k => {
+        const isBlocked = k.status === 'blocked';
+        const badge     = isBlocked
+          ? '<span class="status-badge status-blocked">🔒 Blocked</span>'
+          : '<span class="status-badge status-available">✓ Available</span>';
+
+        const until = isBlocked && k.blocked_until
+          ? `<span style="font-size:12px;color:#FFB300">${fmtDatetime(k.blocked_until)}</span>`
+          : '<span style="color:var(--dim)">—</span>';
+
+        const action = isBlocked
+          ? `<button class="btn-unblock" onclick="unblockKey('${escHtml(k.key_hash)}', this)">Unblock</button>`
+          : '—';
+
+        return `<tr>
+          <td>${k.index}</td>
+          <td>${escHtml(k.name)}</td>
+          <td><span class="key-masked">${escHtml(k.masked)}</span></td>
+          <td>${badge}</td>
+          <td>${until}</td>
+          <td>${action}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    async function unblockKey(keyHash, btn) {
+      btn.disabled    = true;
+      btn.textContent = '…';
+      try {
+        const res = await fetch(`${API_BASE}/api/admin/key-limits`, {
+          method:  'DELETE',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AUTH_TOKEN}` },
+          body:    JSON.stringify({ key_hash: keyHash }),
+        });
+        if (!res.ok) throw new Error('Failed');
+        // Reload the table
+        await loadLimitStatus();
+      } catch (e) {
+        btn.disabled    = false;
+        btn.textContent = 'Retry';
+      }
+    }
+
+    function fmtDatetime(iso) {
+      if (!iso) return '—';
+      return new Date(iso).toLocaleString('en-IN', {
+        day: '2-digit', month: 'short', year: 'numeric',
+        hour: '2-digit', minute: '2-digit',
+      });
     }
   </script>
 
