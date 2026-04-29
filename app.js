@@ -1,6 +1,6 @@
 // TypeAura Website — app.js
 
-const BACKEND_URL = 'https://aurakeysbackend.vercel.app'; // trailing slash nahi — fetch me already /api/... hai
+const BACKEND_URL = 'https://typeaurabackend.vercel.app';
 
 async function loadStats() {
   if (!BACKEND_URL) return; // no backend yet — keep "—" placeholders
