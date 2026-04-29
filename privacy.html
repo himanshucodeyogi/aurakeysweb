@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — TypeAura</title>
+  <meta name="description" content="Privacy Policy for TypeAura AI Keyboard app." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .privacy-hero {
+      padding: 80px 0 40px;
+      text-align: center;
+    }
+    .privacy-hero h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+    .privacy-hero .updated {
+      color: var(--text2);
+      font-size: 0.9rem;
+    }
+    .privacy-body {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+    }
+    .privacy-body h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 40px 0 12px;
+    }
+    .privacy-body p, .privacy-body li {
+      color: #C8CACC;
+      line-height: 1.8;
+      margin-bottom: 10px;
+    }
+    .privacy-body ul {
+      padding-left: 20px;
+    }
+    .privacy-body ul li {
+      margin-bottom: 6px;
+    }
+    .privacy-body a {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+    .privacy-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-top: 16px;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text2);
+      font-size: 0.9rem;
+      margin-bottom: 40px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+  <div class="scroll-progress" id="scrollBar"></div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo">
+        <span class="logo-emoji">⌨️</span>
+        <span class="logo-text">TypeAura</span>
+      </div>
+      <div class="nav-links">
+        <a href="index.html#features">Features</a>
+        <a href="index.html#install">Install</a>
+        <a href="index.html#about">About</a>
+      </div>
+      <a href="typeaura.apk" class="btn-nav">Download APK</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="privacy-hero container">
+    <h1>Privacy Policy</h1>
+    <p class="updated">Last updated: April 29, 2026</p>
+  </section>
+
+  <!-- BODY -->
+  <div class="privacy-body">
+
+    <a href="index.html" class="back-link">← Back to home</a>
+
+    <p>TypeAura ("we", "our", or "us") is an AI-powered Android keyboard developed by Himanshu Kashyap. This Privacy Policy explains what data the app collects, how it is used, and your rights. By installing and using TypeAura, you agree to this policy.</p>
+
+    <h2>1. Data We Collect</h2>
+    <div class="privacy-card">
+      <ul>
+        <li><strong>Anonymous Device ID</strong> — a randomly generated UUID created on first install. It is not linked to your name, phone number, or Google account.</li>
+        <li><strong>Usage Events</strong> — events such as "keyboard opened", "AI translation used", "theme changed". No actual text you type is ever sent.</li>
+        <li><strong>Device Info</strong> — device manufacturer, model name, and Android version. Used only for understanding which devices TypeAura runs on.</li>
+        <li><strong>Install & Last-use Date</strong> — timestamps to calculate usage streaks shown to you inside the app.</li>
+      </ul>
+    </div>
+
+    <h2>2. How AI Translation Works</h2>
+    <p>When you press the Translate button, the text currently in the input field (what you have typed) is sent to our secure backend server to generate AI suggestions. This text is processed in real-time and <strong>is never stored on our servers</strong>. It is forwarded to a third-party AI provider (Groq) and the response is returned immediately.</p>
+    <p>Similarly, when you use the Clipboard Translate feature, the clipboard contents you choose to translate are sent for processing and are not stored.</p>
+
+    <h2>3. Microphone / Speech-to-Text</h2>
+    <p>TypeAura uses Android's built-in Speech Recognition to convert your voice to text. <strong>Audio is processed entirely by Android's on-device or Google speech service — we never receive, record, or store your audio.</strong> Microphone access is only active while you hold the mic button.</p>
+
+    <h2>4. Clipboard Access</h2>
+    <p>TypeAura reads your clipboard to display recent clips in the Clipboard panel and to offer translation of copied text. Clipboard contents are stored locally on your device only (in app memory) and are never automatically uploaded. They are only sent to our backend if you explicitly tap the Translate Clipboard button.</p>
+
+    <h2>5. Data Storage & Retention</h2>
+    <ul>
+      <li>All analytics data (device ID, events) is stored in your device's local storage (SharedPreferences).</li>
+      <li>A small batch of pending events is periodically synced to our analytics backend to help us understand app usage.</li>
+      <li>We retain analytics data for a maximum of 12 months, after which it is deleted.</li>
+      <li>You can request deletion of your data at any time by contacting us.</li>
+    </ul>
+
+    <h2>6. Third-Party Services</h2>
+    <div class="privacy-card">
+      <ul>
+        <li><strong>Groq (AI Provider)</strong> — processes translation requests. Text is sent over HTTPS. Groq's privacy policy applies to their processing.</li>
+        <li><strong>Vercel (Backend Hosting)</strong> — our API backend is hosted on Vercel. Vercel may log standard server access logs (IP address, timestamp) per their policy.</li>
+        <li><strong>Google Speech Recognition</strong> — used for voice input. Google's privacy policy applies.</li>
+      </ul>
+    </div>
+    <p>We do not sell, trade, or share your data with any third party for advertising or marketing purposes.</p>
+
+    <h2>7. Permissions Explained</h2>
+    <ul>
+      <li><strong>INTERNET</strong> — required to call the AI translation backend.</li>
+      <li><strong>RECORD_AUDIO</strong> — required for the voice/speech-to-text feature. Only active when you press the mic button.</li>
+      <li><strong>VIBRATE</strong> — used for key-press haptic feedback.</li>
+      <li><strong>READ_MEDIA_IMAGES / READ_EXTERNAL_STORAGE</strong> — used to detect when you take a screenshot so the app can offer to add it to clipboard history.</li>
+    </ul>
+
+    <h2>8. Children's Privacy</h2>
+    <p>TypeAura is not directed at children under the age of 13. We do not knowingly collect personal information from children. If you believe a child has provided us with information, please contact us and we will delete it.</p>
+
+    <h2>9. Changes to This Policy</h2>
+    <p>We may update this Privacy Policy occasionally. Any changes will be posted on this page with an updated date. Continued use of the app after changes constitutes acceptance of the revised policy.</p>
+
+    <h2>10. Contact Us</h2>
+    <p>If you have any questions or requests regarding this Privacy Policy, please contact:</p>
+    <div class="privacy-card">
+      <p><strong>Himanshu Kashyap</strong><br />
+      Email: <a href="mailto:himanshu.codeyogi@gmail.com">himanshu.codeyogi@gmail.com</a><br />
+      App: TypeAura — AI Keyboard</p>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer style="text-align:center; padding: 24px 20px; border-top: 1px solid var(--border); color: var(--text2); font-size: 0.85rem;">
+    © 2026 TypeAura by Himanshu Kashyap &nbsp;·&nbsp;
+    <a href="privacy.html" style="color: var(--accent);">Privacy Policy</a>
+  </footer>
+
+  <script>
+    const bar = document.getElementById('scrollBar');
+    window.addEventListener('scroll', () => {
+      const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+      bar.style.width = pct + '%';
+    });
+  </script>
+
+</body>
+</html>
