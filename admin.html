@@ -453,7 +453,10 @@
         <span>TypeAura</span>
         <span class="admin-badge">Admin</span>
       </div>
-      <button class="logout-btn" onclick="logout()">Logout</button>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="btn-check" id="refreshAllBtn" onclick="refreshAll()" style="padding:6px 16px;font-size:12px">🔄 Refresh</button>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </div>
     </nav>
 
     <div class="admin-content">
@@ -859,6 +862,27 @@
     function fmtDate(iso)   { if (!iso) return '—'; return new Date(iso).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }); }
     function fmtTime(iso)   { if (!iso) return '—'; return new Date(iso).toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit', second:'2-digit' }); }
     function debounceSearch() { clearTimeout(searchTimer); searchTimer = setTimeout(() => loadUsers(1), 400); }
+
+    // ── Refresh all data ─────────────────────────────────────
+    async function refreshAll() {
+      const btn = document.getElementById('refreshAllBtn');
+      btn.disabled    = true;
+      btn.textContent = '⏳ Refreshing…';
+
+      const activeTab = document.querySelector('.tab-panel.active')?.id;
+
+      const tasks = [loadStats(), loadUsers(currentPage)];
+      if (activeTab === 'tab-apikeys') {
+        tasks.push(checkAllKeys(), loadLimitStatus());
+      } else if (activeTab === 'tab-update') {
+        tasks.push(loadLiveVersion());
+      }
+
+      await Promise.allSettled(tasks);
+
+      btn.disabled    = false;
+      btn.textContent = '🔄 Refresh';
+    }
 
     // ── Tab switching ────────────────────────────────────────
     function switchTab(name) {
