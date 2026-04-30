@@ -287,6 +287,7 @@
 
     .status-available { background: rgba(129,201,149,0.12); color: var(--green);  border: 1px solid rgba(129,201,149,0.3); }
     .status-blocked   { background: rgba(255,179,0,0.12);   color: #FFB300;       border: 1px solid rgba(255,179,0,0.3); }
+    .status-invalid   { background: rgba(255,82,82,0.12);   color: #FF5252;       border: 1px solid rgba(255,82,82,0.3); }
 
     .btn-unblock {
       padding: 3px 11px;
@@ -571,6 +572,7 @@
           <div class="api-summary-bar" id="limitSummaryBar" style="display:none">
             <span class="api-sum-chip chip-working"  id="lchip-available">— Available</span>
             <span class="api-sum-chip chip-blocked"  id="lchip-blocked">— Blocked</span>
+            <span class="api-sum-chip chip-failed"   id="lchip-invalid" style="display:none">— Invalid</span>
           </div>
 
           <div class="table-wrap">
@@ -1026,8 +1028,12 @@
           renderLimitTable(keys);
           const available = keys.filter(k => k.status === 'available').length;
           const blocked   = keys.filter(k => k.status === 'blocked').length;
+          const invalid   = keys.filter(k => k.status === 'invalid').length;
           document.getElementById('lchip-available').textContent = `${available} Available`;
           document.getElementById('lchip-blocked').textContent   = `${blocked} Blocked`;
+          const invalidChip = document.getElementById('lchip-invalid');
+          invalidChip.textContent    = `${invalid} Invalid`;
+          invalidChip.style.display  = invalid > 0 ? '' : 'none';
           document.getElementById('limitSummaryBar').style.display = 'flex';
         }
       } catch (e) {
@@ -1042,9 +1048,11 @@
       const tbody = document.getElementById('limitTableBody');
       tbody.innerHTML = keys.map(k => {
         const isBlocked = k.status === 'blocked';
-        const badge     = isBlocked
-          ? '<span class="status-badge status-blocked">🔒 Blocked</span>'
-          : '<span class="status-badge status-available">✓ Available</span>';
+        const isInvalid = k.status === 'invalid';
+        let badge;
+        if (isBlocked)      badge = '<span class="status-badge status-blocked">🔒 Blocked</span>';
+        else if (isInvalid) badge = '<span class="status-badge status-invalid">✗ Invalid Key</span>';
+        else                badge = '<span class="status-badge status-available">✓ Available</span>';
 
         const until = isBlocked && k.blocked_until
           ? `<span style="font-size:12px;color:#FFB300">${fmtDatetime(k.blocked_until)}</span>`
