@@ -432,6 +432,17 @@ section[id] {
 
 .screenshot-slot:hover img { transform: scale(1.02); }
 
+.video-slot {
+  cursor: default;
+}
+.video-slot video {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius);
+}
+.video-slot:hover { animation-play-state: running; }
+
 .screenshot-placeholder {
   width: 100%;
   height: 100%;
@@ -1028,6 +1039,11 @@ section[id] {
     max-width: 240px;
     scroll-snap-align: start;
     align-self: flex-start;
+  }
+  .video-slot {
+    flex: 0 0 56vw;
+    min-width: 180px;
+    max-width: 240px;
   }
 
   /* Install */
