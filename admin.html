@@ -548,6 +548,7 @@
         <div class="summary-card"><div class="summary-label">Monthly Active (30d)</div><div class="summary-value" id="s-mau">—</div></div>
         <div class="summary-card"><div class="summary-label">Total Keyboard Opens</div><div class="summary-value" id="s-kb">—</div></div>
         <div class="summary-card"><div class="summary-label">Total AI Uses</div><div class="summary-value" id="s-ai">—</div></div>
+        <div class="summary-card"><div class="summary-label">Voice AI Uses</div><div class="summary-value" id="s-voice-ai">—</div></div>
         <div class="summary-card"><div class="summary-label">Total App Opens</div><div class="summary-value" id="s-app">—</div></div>
         <div class="summary-card"><div class="summary-label">New Installs (7d)</div><div class="summary-value" id="s-new">—</div></div>
       </div>
@@ -579,6 +580,7 @@
             <option value="last_use_date">Sort: Last Active</option>
             <option value="install_date">Sort: Install Date</option>
             <option value="total_ai_uses">Sort: AI Usage</option>
+            <option value="total_voice_ai_uses">Sort: Voice AI Usage</option>
             <option value="total_keyboard_opens">Sort: KB Opens</option>
           </select>
         </div>
@@ -595,6 +597,7 @@
               <th>App Opens</th>
               <th>KB Opens</th>
               <th>AI Uses</th>
+              <th>Voice AI</th>
               <th>KB Enabled</th>
               <th>Default</th>
               <th>Theme</th>
@@ -602,7 +605,7 @@
             </tr>
           </thead>
           <tbody id="usersTableBody">
-            <tr class="loading-row"><td colspan="11">Loading…</td></tr>
+            <tr class="loading-row"><td colspan="12">Loading…</td></tr>
           </tbody>
         </table>
       </div>
@@ -841,8 +844,9 @@
       document.getElementById('s-wau').textContent   = fmt(data.wau);
       document.getElementById('s-mau').textContent   = fmt(data.mau);
       document.getElementById('s-kb').textContent    = fmt(data.total_keyboard_opens);
-      document.getElementById('s-ai').textContent    = fmt(data.total_ai_uses);
-      document.getElementById('s-app').textContent   = fmt(data.total_app_opens);
+      document.getElementById('s-ai').textContent       = fmt(data.total_ai_uses);
+      document.getElementById('s-voice-ai').textContent = fmt(data.total_voice_ai_uses);
+      document.getElementById('s-app').textContent      = fmt(data.total_app_opens);
       document.getElementById('s-new').textContent   = fmt(data.new_installs_7d);
     }
 
@@ -893,6 +897,7 @@
           <td>${d.total_app_opens || 0}</td>
           <td>${d.total_keyboard_opens || 0}</td>
           <td>${d.total_ai_uses || 0}</td>
+          <td>${d.total_voice_ai_uses || 0}</td>
           <td><span class="${d.keyboard_enabled ? 'tag-yes' : 'tag-no'}">${d.keyboard_enabled ? '✓ Yes' : 'No'}</span></td>
           <td><span class="${d.keyboard_selected ? 'tag-yes' : 'tag-no'}">${d.keyboard_selected ? '✓ Yes' : 'No'}</span></td>
           <td>${d.selected_theme || '—'}</td>
@@ -941,6 +946,7 @@
         ['Total App Opens',  device.total_app_opens      || 0],
         ['Total KB Opens',   device.total_keyboard_opens || 0],
         ['Total AI Uses',    device.total_ai_uses        || 0],
+        ['Voice AI Uses',    device.total_voice_ai_uses  || 0],
       ];
 
       let html = fields.map(([k, v]) =>
