@@ -386,6 +386,82 @@ section[id] {
   line-height: 1.5;
 }
 
+/* ─── AI Tools showcase ──────────────────────────────────────── */
+.ai-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 8px;
+}
+
+.ai-tool-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 28px 24px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.ai-tool-card:hover {
+  border-color: rgba(138, 180, 248, 0.35);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(138, 180, 248, 0.08);
+}
+
+.ai-tool-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  margin-bottom: 16px;
+}
+
+.ai-tool-card h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+  letter-spacing: -0.3px;
+}
+
+.ai-tool-sub {
+  font-size: 13px;
+  color: var(--accent);
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.ai-tool-card > p {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.ai-tool-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ai-tool-list li {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.4;
+}
+
+@media (max-width: 900px) {
+  .ai-tools-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ─── Screenshots ────────────────────────────────────────────── */
 .screenshots-row {
   display: grid;
