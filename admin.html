@@ -549,6 +549,8 @@
         <div class="summary-card"><div class="summary-label">Total Keyboard Opens</div><div class="summary-value" id="s-kb">—</div></div>
         <div class="summary-card"><div class="summary-label">Total AI Uses</div><div class="summary-value" id="s-ai">—</div></div>
         <div class="summary-card"><div class="summary-label">Voice AI Uses</div><div class="summary-value" id="s-voice-ai">—</div></div>
+        <div class="summary-card"><div class="summary-label">Lens Translate</div><div class="summary-value" id="s-lens-tr">—</div></div>
+        <div class="summary-card"><div class="summary-label">Lens Reply</div><div class="summary-value" id="s-lens-re">—</div></div>
         <div class="summary-card"><div class="summary-label">Total App Opens</div><div class="summary-value" id="s-app">—</div></div>
         <div class="summary-card"><div class="summary-label">New Installs (7d)</div><div class="summary-value" id="s-new">—</div></div>
       </div>
@@ -556,6 +558,7 @@
       <!-- Tabs -->
       <div class="tabs-bar">
         <button class="tab-btn active" onclick="switchTab('users')">Devices</button>
+        <button class="tab-btn" onclick="switchTab('aitools')">🤖 AI Tools</button>
         <button class="tab-btn" onclick="switchTab('apikeys')">API Key Health</button>
         <button class="tab-btn" onclick="switchTab('crashes')">🐛 Crashes</button>
         <button class="tab-btn" onclick="switchTab('update')">🚀 App Update</button>
@@ -581,6 +584,8 @@
             <option value="install_date">Sort: Install Date</option>
             <option value="total_ai_uses">Sort: AI Usage</option>
             <option value="total_voice_ai_uses">Sort: Voice AI Usage</option>
+            <option value="total_lens_translate">Sort: Lens Translate</option>
+            <option value="total_lens_reply">Sort: Lens Reply</option>
             <option value="total_keyboard_opens">Sort: KB Opens</option>
           </select>
         </div>
@@ -598,6 +603,8 @@
               <th>KB Opens</th>
               <th>AI Uses</th>
               <th>Voice AI</th>
+              <th>Lens Tr.</th>
+              <th>Lens Re.</th>
               <th>KB Enabled</th>
               <th>Default</th>
               <th>Theme</th>
@@ -613,6 +620,39 @@
       <div class="pagination" id="paginationRow"></div>
 
       </div><!-- /tab-users -->
+
+      <!-- ═══ Tab: AI Tools Breakdown ═══ -->
+      <div class="tab-panel" id="tab-aitools">
+        <div class="table-header">
+          <h3>🤖 AI Tool Usage per User</h3>
+          <div class="table-controls">
+            <input class="search-input" id="aitoolsSearch" placeholder="Search device…" oninput="debounceAiTools()" />
+            <select class="filter-select" id="aitoolsSortSelect" onchange="loadAiTools(1)">
+              <option value="total_ai_uses">Sort: Keyboard AI</option>
+              <option value="total_voice_ai_uses">Sort: Voice AI</option>
+              <option value="total_lens_translate">Sort: Lens Translate</option>
+              <option value="total_lens_reply">Sort: Lens Reply</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>Device</th>
+              <th>⌨️ Keyboard AI</th>
+              <th>🎤 Voice AI</th>
+              <th>🔍 Lens Translate</th>
+              <th>💬 Lens Reply</th>
+              <th>Top Tool</th>
+              <th>Total AI</th>
+            </tr></thead>
+            <tbody id="aitoolsTableBody">
+              <tr class="loading-row"><td colspan="7">Click "AI Tools" tab to load…</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination" id="aitoolsPaginationRow"></div>
+      </div><!-- /tab-aitools -->
 
       <!-- ═══ Tab: API Key Health ═══ -->
       <div class="tab-panel" id="tab-apikeys">
@@ -846,8 +886,10 @@
       document.getElementById('s-kb').textContent    = fmt(data.total_keyboard_opens);
       document.getElementById('s-ai').textContent       = fmt(data.total_ai_uses);
       document.getElementById('s-voice-ai').textContent = fmt(data.total_voice_ai_uses);
+      document.getElementById('s-lens-tr').textContent  = fmt(data.total_lens_translate);
+      document.getElementById('s-lens-re').textContent  = fmt(data.total_lens_reply);
       document.getElementById('s-app').textContent      = fmt(data.total_app_opens);
-      document.getElementById('s-new').textContent   = fmt(data.new_installs_7d);
+      document.getElementById('s-new').textContent      = fmt(data.new_installs_7d);
     }
 
     async function loadStats() {
@@ -870,7 +912,7 @@
       if (filter) params.set('filter', filter);
 
       const tbody = document.getElementById('usersTableBody');
-      tbody.innerHTML = '<tr class="loading-row"><td colspan="11">Loading…</td></tr>';
+      tbody.innerHTML = '<tr class="loading-row"><td colspan="13">Loading…</td></tr>';
 
       try {
         const res  = await authFetch(`/api/admin/users?${params}`);
@@ -878,14 +920,14 @@
         renderTable(data.devices || []);
         renderPagination(data.pagination);
       } catch (_) {
-        tbody.innerHTML = '<tr class="loading-row"><td colspan="11">Failed to load. Check connection.</td></tr>';
+        tbody.innerHTML = '<tr class="loading-row"><td colspan="13">Failed to load. Check connection.</td></tr>';
       }
     }
 
     function renderTable(devices) {
       const tbody = document.getElementById('usersTableBody');
       if (!devices.length) {
-        tbody.innerHTML = '<tr class="loading-row"><td colspan="11">No devices found.</td></tr>';
+        tbody.innerHTML = '<tr class="loading-row"><td colspan="13">No devices found.</td></tr>';
         return;
       }
       tbody.innerHTML = devices.map(d => `
@@ -898,6 +940,8 @@
           <td>${d.total_keyboard_opens || 0}</td>
           <td>${d.total_ai_uses || 0}</td>
           <td>${d.total_voice_ai_uses || 0}</td>
+          <td>${d.total_lens_translate || 0}</td>
+          <td>${d.total_lens_reply || 0}</td>
           <td><span class="${d.keyboard_enabled ? 'tag-yes' : 'tag-no'}">${d.keyboard_enabled ? '✓ Yes' : 'No'}</span></td>
           <td><span class="${d.keyboard_selected ? 'tag-yes' : 'tag-no'}">${d.keyboard_selected ? '✓ Yes' : 'No'}</span></td>
           <td>${d.selected_theme || '—'}</td>
@@ -947,6 +991,8 @@
         ['Total KB Opens',   device.total_keyboard_opens || 0],
         ['Total AI Uses',    device.total_ai_uses        || 0],
         ['Voice AI Uses',    device.total_voice_ai_uses  || 0],
+        ['Lens Translate',   device.total_lens_translate || 0],
+        ['Lens Reply',       device.total_lens_reply     || 0],
       ];
 
       let html = fields.map(([k, v]) =>
@@ -1016,7 +1062,7 @@
 
     // ── Tab switching ────────────────────────────────────────
     function switchTab(name) {
-      const tabs = ['users', 'apikeys', 'crashes', 'update'];
+      const tabs = ['users', 'aitools', 'apikeys', 'crashes', 'update'];
       document.querySelectorAll('.tab-btn').forEach((btn, i) => {
         btn.classList.toggle('active', tabs[i] === name);
       });
@@ -1024,6 +1070,89 @@
       document.getElementById(`tab-${name}`).classList.add('active');
       if (name === 'update')  loadLiveVersion();
       if (name === 'crashes') loadCrashes(1);
+      if (name === 'aitools') loadAiTools(1);
+    }
+
+    // ── AI Tools tab ─────────────────────────────────────────
+    let aitoolsCurrentPage = 1;
+    let aitoolsDebounceTimer = null;
+    function debounceAiTools() {
+      clearTimeout(aitoolsDebounceTimer);
+      aitoolsDebounceTimer = setTimeout(() => loadAiTools(1), 350);
+    }
+
+    const TOOL_LABELS = {
+      total_ai_uses:        '⌨️ Keyboard AI',
+      total_voice_ai_uses:  '🎤 Voice AI',
+      total_lens_translate: '🔍 Lens Translate',
+      total_lens_reply:     '💬 Lens Reply',
+    };
+
+    function topTool(d) {
+      const tools = [
+        ['total_ai_uses', d.total_ai_uses || 0],
+        ['total_voice_ai_uses', d.total_voice_ai_uses || 0],
+        ['total_lens_translate', d.total_lens_translate || 0],
+        ['total_lens_reply', d.total_lens_reply || 0],
+      ];
+      const max = tools.reduce((a, b) => b[1] > a[1] ? b : a, ['', 0]);
+      return max[1] === 0 ? '—' : TOOL_LABELS[max[0]];
+    }
+
+    function barCell(val, max) {
+      const pct = max > 0 ? Math.round((val / max) * 100) : 0;
+      return `<td><span style="display:inline-flex;align-items:center;gap:6px;">
+        <span style="display:inline-block;width:${pct}px;max-width:80px;height:6px;background:var(--accent);border-radius:3px;opacity:0.7;"></span>
+        <span>${val}</span>
+      </span></td>`;
+    }
+
+    async function loadAiTools(page = 1) {
+      aitoolsCurrentPage = page;
+      const search = document.getElementById('aitoolsSearch').value.trim();
+      const sort   = document.getElementById('aitoolsSortSelect').value;
+      const params = new URLSearchParams({ page, limit: 50, sort, order: 'desc' });
+      if (search) params.set('search', search);
+
+      const tbody = document.getElementById('aitoolsTableBody');
+      tbody.innerHTML = '<tr class="loading-row"><td colspan="7">Loading…</td></tr>';
+
+      try {
+        const res  = await authFetch(`/api/admin/users?${params}`);
+        const data = await res.json();
+        const devices = data.devices || [];
+
+        if (!devices.length) {
+          tbody.innerHTML = '<tr class="loading-row"><td colspan="7">No devices found.</td></tr>';
+          return;
+        }
+
+        const maxKb    = Math.max(...devices.map(d => d.total_ai_uses        || 0), 1);
+        const maxVoice = Math.max(...devices.map(d => d.total_voice_ai_uses  || 0), 1);
+        const maxLensTr = Math.max(...devices.map(d => d.total_lens_translate || 0), 1);
+        const maxLensRe = Math.max(...devices.map(d => d.total_lens_reply     || 0), 1);
+
+        tbody.innerHTML = devices.map(d => `
+          <tr>
+            <td title="${d.device_id}">${d.device_name || 'Unknown'}</td>
+            ${barCell(d.total_ai_uses        || 0, maxKb)}
+            ${barCell(d.total_voice_ai_uses  || 0, maxVoice)}
+            ${barCell(d.total_lens_translate || 0, maxLensTr)}
+            ${barCell(d.total_lens_reply     || 0, maxLensRe)}
+            <td><span style="color:var(--accent);font-size:11px;font-weight:600;">${topTool(d)}</span></td>
+            <td style="font-weight:600;">${(d.total_ai_uses||0)+(d.total_voice_ai_uses||0)+(d.total_lens_translate||0)+(d.total_lens_reply||0)}</td>
+          </tr>
+        `).join('');
+
+        const p = data.pagination;
+        const row = document.getElementById('aitoolsPaginationRow');
+        let html = `<span class="page-info">Page ${p.page} of ${p.total_pages} (${p.total} total)</span>`;
+        html += `<button class="page-btn" onclick="loadAiTools(${p.page-1})" ${p.page<=1?'disabled':''}>← Prev</button>`;
+        html += `<button class="page-btn" onclick="loadAiTools(${p.page+1})" ${p.page>=p.total_pages?'disabled':''}>Next →</button>`;
+        row.innerHTML = html;
+      } catch (_) {
+        tbody.innerHTML = '<tr class="loading-row"><td colspan="7">Failed to load.</td></tr>';
+      }
     }
 
     // ── App Update tab ───────────────────────────────────────
