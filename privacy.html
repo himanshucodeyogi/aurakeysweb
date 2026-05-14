@@ -94,7 +94,7 @@
   <!-- HERO -->
   <section class="privacy-hero container">
     <h1>Privacy Policy</h1>
-    <p class="updated">Last updated: May 14, 2026</p>
+    <p class="updated">Last updated: May 15, 2026</p>
   </section>
 
   <!-- BODY -->
@@ -119,6 +119,7 @@
     <p>When you tap the Translate button, the text in the keyboard input field is sent over HTTPS to our backend server (<code>typeaurabackend.vercel.app</code>), which forwards it to Groq (our AI provider) for processing. The result is returned immediately. <strong>This text is never stored on our servers.</strong></p>
     <p>When you use the Clipboard Translate feature, only the text you explicitly choose to translate is sent — it is processed and discarded, not stored.</p>
     <p>When the Floating Lens feature is active and you tap to translate selected on-screen text, that text (up to 600 characters) is sent to the same backend endpoint and is not stored.</p>
+    <p>If you tap the <strong>Reply</strong> button in the Floating Lens translation popup, the original on-screen text is also sent to our backend to generate 3 short AI reply suggestions. This text is processed in real-time and <strong>is never stored</strong>. The reply suggestions are returned immediately and displayed in the popup for you to choose from.</p>
 
     <h2>3. Crash Reporting</h2>
     <p>TypeAura includes an automatic crash reporter that captures unhandled errors so we can identify and fix bugs. When a crash or error occurs, the following is collected and sent to our backend (<code>typeaurabackend.vercel.app/api/crash</code>):</p>
@@ -137,8 +138,12 @@
     <p>Crash reports are queued locally and sent when internet is available. Up to 50 reports are kept locally at a time. No user text, keystrokes, clipboard contents, or personal information is ever included in crash reports.</p>
 
     <h2>4. Accessibility Service (Floating Lens)</h2>
-    <p>TypeAura includes an optional <strong>Floating Lens</strong> feature — a draggable overlay that lets you translate on-screen text in any app. When you enable this feature, the app registers an Android Accessibility Service (<code>BIND_ACCESSIBILITY_SERVICE</code>) to read text from the screen so you can select it for translation.</p>
-    <p><strong>Important:</strong> The Accessibility Service reads text <em>only</em> when you actively use the Floating Lens. The selected text is sent to our backend over HTTPS for translation and is <strong>never stored</strong>. No background monitoring, no password reading, no recording of other apps' content occurs.</p>
+    <p>TypeAura includes an optional <strong>Floating Lens</strong> feature — a draggable overlay that lets you translate on-screen text in any app. When you enable this feature, the app registers an Android Accessibility Service (<code>BIND_ACCESSIBILITY_SERVICE</code>) for two purposes:</p>
+    <ul>
+      <li><strong>Reading text:</strong> When you tap the lens over text, the Accessibility Service reads the on-screen text at that position and sends it for translation. This text is never stored.</li>
+      <li><strong>Inserting text:</strong> When you select a reply suggestion from the Floating Lens popup, the Accessibility Service inserts the chosen reply directly into the currently focused input field of the active app (e.g. WhatsApp, Gmail). If no input field is focused, the reply is copied to your clipboard instead. The reply text is not sent to our servers during insertion.</li>
+    </ul>
+    <p><strong>Important:</strong> The Accessibility Service is active <em>only</em> when you are actively using the Floating Lens. No background monitoring, no password reading, and no recording of other apps' content occurs at any time.</p>
     <p>This feature is entirely optional. If you do not enable the Floating Lens, the Accessibility Service is never activated.</p>
 
     <h2>5. Microphone / Voice AI</h2>
@@ -181,7 +186,7 @@
       <li><strong>VIBRATE</strong> — for key-press haptic feedback.</li>
       <li><strong>READ_MEDIA_IMAGES / READ_EXTERNAL_STORAGE</strong> — to detect when you take a screenshot and offer to add it to clipboard history.</li>
       <li><strong>SYSTEM_ALERT_WINDOW</strong> — to display the Floating Lens translation bubble above other apps.</li>
-      <li><strong>BIND_ACCESSIBILITY_SERVICE</strong> — to read on-screen text that you select for Floating Lens translation. Used for no other purpose.</li>
+      <li><strong>BIND_ACCESSIBILITY_SERVICE</strong> — used by the Floating Lens feature to (1) read on-screen text you select for translation, and (2) insert a chosen reply suggestion directly into the focused input field of the active app.</li>
       <li><strong>FOREGROUND_SERVICE / FOREGROUND_SERVICE_SPECIAL_USE</strong> — to keep the Floating Lens active in the background.</li>
       <li><strong>POST_NOTIFICATIONS</strong> — to show the Floating Lens persistent notification (required by Android 13+ for foreground services).</li>
     </ul>
