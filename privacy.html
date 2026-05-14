@@ -141,8 +141,13 @@
     <p><strong>Important:</strong> The Accessibility Service reads text <em>only</em> when you actively use the Floating Lens. The selected text is sent to our backend over HTTPS for translation and is <strong>never stored</strong>. No background monitoring, no password reading, no recording of other apps' content occurs.</p>
     <p>This feature is entirely optional. If you do not enable the Floating Lens, the Accessibility Service is never activated.</p>
 
-    <h2>5. Microphone / Speech-to-Text</h2>
-    <p>TypeAura uses Android's built-in <code>SpeechRecognizer</code> API (configured for Hinglish/English input) to convert your voice to text. <strong>Audio is processed entirely by Android's on-device or Google speech service — we never receive, record, or store your audio.</strong> The microphone is only active while you hold the mic button on the keyboard.</p>
+    <h2>5. Microphone / Voice AI</h2>
+    <p>Voice input works in two steps:</p>
+    <ol style="color:#C8CACC; line-height:1.8; padding-left:20px; margin-bottom:10px;">
+      <li><strong>Audio → Text (on device):</strong> While you hold the mic button, Android's built-in <code>SpeechRecognizer</code> API listens and converts your speech into multiple text alternatives ranked by confidence. <strong>We never receive, record, or store your audio.</strong></li>
+      <li><strong>Text → Translation (via Groq AI):</strong> The transcribed text alternatives are sent over HTTPS to our backend (<code>typeaurabackend.vercel.app/api/ai</code>), which forwards them to Groq. The AI picks the best alternative, fixes errors (homophones, filler words), and translates the result into the language you selected (Hinglish, English, Hindi, or Mixed). The translated text is returned and inserted into the text field. <strong>This transcribed text is never stored on our servers.</strong></li>
+    </ol>
+    <p>The microphone is only active while you physically hold the mic button. No background audio recording occurs.</p>
 
     <h2>6. Clipboard Access</h2>
     <p>TypeAura reads your clipboard to display recent clips in the Clipboard panel and to offer translation of copied text. Clipboard contents are stored locally on your device only (in app storage via SharedPreferences and in-memory) and are <strong>never automatically uploaded</strong>. They are only sent to our backend if you explicitly tap the Translate Clipboard button.</p>
