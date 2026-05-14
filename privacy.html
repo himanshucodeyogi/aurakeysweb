@@ -94,7 +94,7 @@
   <!-- HERO -->
   <section class="privacy-hero container">
     <h1>Privacy Policy</h1>
-    <p class="updated">Last updated: April 29, 2026</p>
+    <p class="updated">Last updated: May 14, 2026</p>
   </section>
 
   <!-- BODY -->
@@ -102,62 +102,93 @@
 
     <a href="index.html" class="back-link">← Back to home</a>
 
-    <p>TypeAura ("we", "our", or "us") is an AI-powered Android keyboard developed by Himanshu Kashyap. This Privacy Policy explains what data the app collects, how it is used, and your rights. By installing and using TypeAura, you agree to this policy.</p>
+    <p>TypeAura ("we", "our", or "us") is an AI-powered Android keyboard developed by Himanshu Kashyap. This Privacy Policy explains exactly what data the app collects, how it is used, and your rights. By installing and using TypeAura, you agree to this policy.</p>
 
     <h2>1. Data We Collect</h2>
     <div class="privacy-card">
       <ul>
-        <li><strong>Anonymous Device ID</strong> — a randomly generated UUID created on first install. It is not linked to your name, phone number, or Google account.</li>
-        <li><strong>Usage Events</strong> — events such as "keyboard opened", "AI translation used", "theme changed". No actual text you type is ever sent.</li>
-        <li><strong>Device Info</strong> — device manufacturer, model name, and Android version. Used only for understanding which devices TypeAura runs on.</li>
-        <li><strong>Install & Last-use Date</strong> — timestamps to calculate usage streaks shown to you inside the app.</li>
+        <li><strong>Anonymous Device ID</strong> — a randomly generated UUID (version 4) created on first install. It is not linked to your name, phone number, email, or Google account.</li>
+        <li><strong>Usage Events</strong> — events such as "keyboard_opened", "ai_used", "voice_ai", "theme_changed". No text you type is ever included in these events.</li>
+        <li><strong>Device Info</strong> — device manufacturer, model name, and Android version. Used only to understand which devices TypeAura runs on.</li>
+        <li><strong>Install & Last-use Timestamps</strong> — used to calculate usage streaks shown inside the app.</li>
+        <li><strong>Crash Reports</strong> — if the app crashes or encounters an error, we collect: the anonymous device ID, app version, error type, first line of the error message, a truncated stack trace (max 8 KB), and whether the error was fatal. This is sent automatically to help us fix bugs. <strong>No personally identifiable text is included.</strong></li>
       </ul>
     </div>
 
     <h2>2. How AI Translation Works</h2>
-    <p>When you press the Translate button, the text currently in the input field (what you have typed) is sent to our secure backend server to generate AI suggestions. This text is processed in real-time and <strong>is never stored on our servers</strong>. It is forwarded to a third-party AI provider (Groq) and the response is returned immediately.</p>
-    <p>Similarly, when you use the Clipboard Translate feature, the clipboard contents you choose to translate are sent for processing and are not stored.</p>
+    <p>When you tap the Translate button, the text in the keyboard input field is sent over HTTPS to our backend server (<code>typeaurabackend.vercel.app</code>), which forwards it to Groq (our AI provider) for processing. The result is returned immediately. <strong>This text is never stored on our servers.</strong></p>
+    <p>When you use the Clipboard Translate feature, only the text you explicitly choose to translate is sent — it is processed and discarded, not stored.</p>
+    <p>When the Floating Lens feature is active and you tap to translate selected on-screen text, that text (up to 600 characters) is sent to the same backend endpoint and is not stored.</p>
 
-    <h2>3. Microphone / Speech-to-Text</h2>
-    <p>TypeAura uses Android's built-in Speech Recognition to convert your voice to text. <strong>Audio is processed entirely by Android's on-device or Google speech service — we never receive, record, or store your audio.</strong> Microphone access is only active while you hold the mic button.</p>
-
-    <h2>4. Clipboard Access</h2>
-    <p>TypeAura reads your clipboard to display recent clips in the Clipboard panel and to offer translation of copied text. Clipboard contents are stored locally on your device only (in app memory) and are never automatically uploaded. They are only sent to our backend if you explicitly tap the Translate Clipboard button.</p>
-
-    <h2>5. Data Storage & Retention</h2>
-    <ul>
-      <li>All analytics data (device ID, events) is stored in your device's local storage (SharedPreferences).</li>
-      <li>A small batch of pending events is periodically synced to our analytics backend to help us understand app usage.</li>
-      <li>We retain analytics data for a maximum of 12 months, after which it is deleted.</li>
-      <li>You can request deletion of your data at any time by contacting us.</li>
-    </ul>
-
-    <h2>6. Third-Party Services</h2>
+    <h2>3. Crash Reporting</h2>
+    <p>TypeAura includes an automatic crash reporter that captures unhandled errors so we can identify and fix bugs. When a crash or error occurs, the following is collected and sent to our backend (<code>typeaurabackend.vercel.app/api/crash</code>):</p>
     <div class="privacy-card">
       <ul>
-        <li><strong>Groq (AI Provider)</strong> — processes translation requests. Text is sent over HTTPS. Groq's privacy policy applies to their processing.</li>
-        <li><strong>Vercel (Backend Hosting)</strong> — our API backend is hosted on Vercel. Vercel may log standard server access logs (IP address, timestamp) per their policy.</li>
-        <li><strong>Google Speech Recognition</strong> — used for voice input. Google's privacy policy applies.</li>
+        <li><strong>Anonymous device ID</strong> — same UUID used for analytics</li>
+        <li><strong>App version</strong> — version number and build number (e.g. 2.0.4+5)</li>
+        <li><strong>App mode</strong> — whether the error occurred in the keyboard or the main app</li>
+        <li><strong>Error type</strong> — category: flutter_error, platform_error, or zone_error</li>
+        <li><strong>Error message</strong> — first line of the exception only</li>
+        <li><strong>Stack trace</strong> — truncated to 8 KB; contains code file paths and line numbers, not user data</li>
+        <li><strong>Timestamp</strong> — UTC time of the crash</li>
+        <li><strong>Fatal flag</strong> — whether the error caused the app to stop</li>
+      </ul>
+    </div>
+    <p>Crash reports are queued locally and sent when internet is available. Up to 50 reports are kept locally at a time. No user text, keystrokes, clipboard contents, or personal information is ever included in crash reports.</p>
+
+    <h2>4. Accessibility Service (Floating Lens)</h2>
+    <p>TypeAura includes an optional <strong>Floating Lens</strong> feature — a draggable overlay that lets you translate on-screen text in any app. When you enable this feature, the app registers an Android Accessibility Service (<code>BIND_ACCESSIBILITY_SERVICE</code>) to read text from the screen so you can select it for translation.</p>
+    <p><strong>Important:</strong> The Accessibility Service reads text <em>only</em> when you actively use the Floating Lens. The selected text is sent to our backend over HTTPS for translation and is <strong>never stored</strong>. No background monitoring, no password reading, no recording of other apps' content occurs.</p>
+    <p>This feature is entirely optional. If you do not enable the Floating Lens, the Accessibility Service is never activated.</p>
+
+    <h2>5. Microphone / Speech-to-Text</h2>
+    <p>TypeAura uses Android's built-in <code>SpeechRecognizer</code> API (configured for Hinglish/English input) to convert your voice to text. <strong>Audio is processed entirely by Android's on-device or Google speech service — we never receive, record, or store your audio.</strong> The microphone is only active while you hold the mic button on the keyboard.</p>
+
+    <h2>6. Clipboard Access</h2>
+    <p>TypeAura reads your clipboard to display recent clips in the Clipboard panel and to offer translation of copied text. Clipboard contents are stored locally on your device only (in app storage via SharedPreferences and in-memory) and are <strong>never automatically uploaded</strong>. They are only sent to our backend if you explicitly tap the Translate Clipboard button.</p>
+
+    <h2>7. Data Storage & Retention</h2>
+    <ul>
+      <li>Analytics data (device ID, events, daily counters) is stored locally in your device's app storage (SharedPreferences).</li>
+      <li>Pending analytics events are periodically synced to our backend. We retain analytics data for a maximum of <strong>12 months</strong>, after which it is deleted.</li>
+      <li>Crash reports are queued locally (max 50) and sent to our backend. They are retained for a limited period for debugging purposes only.</li>
+      <li><strong>You can clear all pending analytics data at any time from within the app:</strong> Settings → Privacy &amp; Security → Clear Analytics Data.</li>
+      <li>To request full deletion of all data associated with your anonymous device ID, email us at the address below.</li>
+    </ul>
+
+    <h2>8. Third-Party Services</h2>
+    <div class="privacy-card">
+      <ul>
+        <li><strong>Groq (AI Provider)</strong> — receives translation text over HTTPS and returns a result. Text is not stored by Groq. <a href="https://groq.com/privacy-policy/" target="_blank">Groq's Privacy Policy →</a></li>
+        <li><strong>Vercel (Backend Hosting)</strong> — our API backend is hosted on Vercel. Vercel may log standard server-access data (IP address, timestamp) per their policy. All communication is HTTPS.</li>
+        <li><strong>Google Speech Recognition</strong> — handles voice input on-device. Google's privacy policy applies to this processing.</li>
       </ul>
     </div>
     <p>We do not sell, trade, or share your data with any third party for advertising or marketing purposes.</p>
 
-    <h2>7. Permissions Explained</h2>
+    <h2>9. Security</h2>
+    <p>All data transmitted between the app and our servers is encrypted using <strong>HTTPS (TLS)</strong>. No personal data is transmitted in plain text. Our backend is hosted on Vercel, which enforces HTTPS on all endpoints by default.</p>
+
+    <h2>10. Permissions Explained</h2>
     <ul>
-      <li><strong>INTERNET</strong> — required to call the AI translation backend.</li>
-      <li><strong>RECORD_AUDIO</strong> — required for the voice/speech-to-text feature. Only active when you press the mic button.</li>
-      <li><strong>VIBRATE</strong> — used for key-press haptic feedback.</li>
-      <li><strong>READ_MEDIA_IMAGES / READ_EXTERNAL_STORAGE</strong> — used to detect when you take a screenshot so the app can offer to add it to clipboard history.</li>
+      <li><strong>INTERNET</strong> — to call the AI translation and crash reporting backend.</li>
+      <li><strong>RECORD_AUDIO</strong> — for the voice/speech-to-text feature. Active only while you hold the mic button.</li>
+      <li><strong>VIBRATE</strong> — for key-press haptic feedback.</li>
+      <li><strong>READ_MEDIA_IMAGES / READ_EXTERNAL_STORAGE</strong> — to detect when you take a screenshot and offer to add it to clipboard history.</li>
+      <li><strong>SYSTEM_ALERT_WINDOW</strong> — to display the Floating Lens translation bubble above other apps.</li>
+      <li><strong>BIND_ACCESSIBILITY_SERVICE</strong> — to read on-screen text that you select for Floating Lens translation. Used for no other purpose.</li>
+      <li><strong>FOREGROUND_SERVICE / FOREGROUND_SERVICE_SPECIAL_USE</strong> — to keep the Floating Lens active in the background.</li>
+      <li><strong>POST_NOTIFICATIONS</strong> — to show the Floating Lens persistent notification (required by Android 13+ for foreground services).</li>
     </ul>
 
-    <h2>8. Children's Privacy</h2>
-    <p>TypeAura is not directed at children under the age of 13. We do not knowingly collect personal information from children. If you believe a child has provided us with information, please contact us and we will delete it.</p>
+    <h2>11. Children's Privacy</h2>
+    <p>TypeAura is not directed at children under the age of 13. We do not knowingly collect personal information from children. If you believe a child has provided us with information, please contact us and we will delete it promptly.</p>
 
-    <h2>9. Changes to This Policy</h2>
-    <p>We may update this Privacy Policy occasionally. Any changes will be posted on this page with an updated date. Continued use of the app after changes constitutes acceptance of the revised policy.</p>
+    <h2>12. Changes to This Policy</h2>
+    <p>We may update this Privacy Policy from time to time. Any changes will be posted on this page with an updated date. Continued use of the app after changes constitutes acceptance of the revised policy.</p>
 
-    <h2>10. Contact Us</h2>
-    <p>If you have any questions or requests regarding this Privacy Policy, please contact:</p>
+    <h2>13. Contact Us</h2>
+    <p>If you have any questions, requests, or data deletion inquiries regarding this Privacy Policy, please contact:</p>
     <div class="privacy-card">
       <p><strong>Himanshu Kashyap</strong><br />
       Email: <a href="mailto:himanshuapps.dev@gmail.com">himanshuapps.dev@gmail.com</a><br />
