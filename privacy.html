@@ -143,9 +143,21 @@
       <li><strong>Reading text:</strong> When you tap the lens over text, the Accessibility Service reads the on-screen text at that position and sends it for translation. This text is never stored.</li>
       <li><strong>Inserting text:</strong> When you select a reply suggestion from the Floating Lens popup, the Accessibility Service inserts the chosen reply directly into the currently focused input field of the active app (e.g. WhatsApp, Gmail). If no input field is focused, the reply is copied to your clipboard instead. The reply text is not sent to our servers during insertion.</li>
     </ul>
-    <p><strong>Important:</strong> The Accessibility Service is active <em>only</em> when you are actively using the Floating Lens. No background monitoring, no password reading, and no recording of other apps' content occurs at any time.</p>
+
+    <p><strong>Strict privacy safeguards built into the code:</strong></p>
+    <div class="privacy-card">
+      <ul>
+        <li><strong>Password fields are explicitly skipped.</strong> Our text-extraction code checks <code>node.isPassword</code> on every UI element and immediately returns <code>null</code> for any password input. Passwords are <strong>never</strong> read, even if the lens overlaps them.</li>
+        <li><strong>Editable input fields (EditText) are explicitly skipped.</strong> The lens never reads text you are actively typing into — including banking fields, search bars, OTP boxes, or chat composers. Only displayed/static message text is eligible for translation.</li>
+        <li><strong>No event-driven monitoring.</strong> Although the service technically receives Android accessibility events (required by the OS to maintain window-content access), our <code>onAccessibilityEvent()</code> implementation is intentionally empty — every event is discarded immediately. We never listen to typing, focus changes, scrolls, or notifications in the background.</li>
+        <li><strong>On-demand only.</strong> Window content is queried <em>only</em> when you explicitly tap the Floating Lens — never automatically, never on a timer, never in response to any system event.</li>
+        <li><strong>No keystroke logging.</strong> The service does not, and cannot, capture what you type — including in our own keyboard.</li>
+        <li><strong>No data collection without your action.</strong> Disabling the lens stops the service entirely. No background process, no scheduled tasks.</li>
+      </ul>
+    </div>
+
     <p>This feature is entirely optional. If you do not enable the Floating Lens, the Accessibility Service is never activated.</p>
-    <p><strong>Compliance:</strong> This use of the Android Accessibility API is disclosed prominently to users during onboarding and requires explicit opt-in. It is used solely to deliver the on-demand text translation and reply features described above, in accordance with Google Play's Accessibility API policy for non-disability use cases. The service performs no background monitoring, does not record keystrokes, and does not read content from any app unless you explicitly tap the Floating Lens overlay.</p>
+    <p><strong>Compliance:</strong> This use of the Android Accessibility API is disclosed prominently to users during onboarding and requires explicit opt-in via Android Settings. It is used solely to deliver the on-demand text translation and reply features described above, in accordance with Google Play's Accessibility API policy. You can disable the service anytime from Android Settings → Accessibility → TypeAura.</p>
 
     <h2>5. Microphone / Voice AI</h2>
     <p>Voice input works in two steps:</p>
@@ -179,6 +191,7 @@
 
     <h2>9. Security</h2>
     <p>All data transmitted between the app and our servers is encrypted using <strong>HTTPS (TLS)</strong>. No personal data is transmitted in plain text. Our backend is hosted on Vercel, which enforces HTTPS on all endpoints by default.</p>
+    <p><strong>No API keys are bundled inside the app.</strong> All AI provider credentials (Groq) are stored exclusively as server-side environment variables on our backend. Even if the TypeAura APK were reverse-engineered, no third-party service credentials, database URIs, or admin tokens could be extracted — they simply do not exist in the client code.</p>
 
     <h2>10. Permissions Explained</h2>
     <ul>
