@@ -475,6 +475,48 @@
 
     .loading-row td { color: var(--dim); text-align: center; padding: 32px; }
 
+    /* ── Plan badges ── */
+    .plan-badge {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .plan-badge-free    { color: var(--accent); background: rgba(138,180,248,0.12); border-color: rgba(138,180,248,0.3); }
+    .plan-badge-byok    { color: var(--green);  background: rgba(129,201,149,0.12); border-color: rgba(129,201,149,0.3); }
+    .plan-badge-premium { color: var(--purple); background: rgba(187,134,252,0.15); border-color: rgba(187,134,252,0.35); }
+    .plan-override-dot {
+      display: inline-block;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #FFB300;
+      margin-left: 5px;
+      vertical-align: middle;
+    }
+    .plan-actions {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;
+    }
+    .plan-btn {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      font-family: var(--font);
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+    .plan-btn:hover                { border-color: var(--accent); color: var(--accent); }
+    .plan-btn.plan-btn-active      { background: rgba(138,180,248,0.18); color: var(--accent); border-color: rgba(138,180,248,0.45); }
+    .plan-btn.plan-btn-clear:hover { border-color: #FFB300; color: #FFB300; }
+    .plan-btn:disabled             { opacity: 0.45; cursor: default; }
+
     @media (max-width: 900px) {
       .summary-grid   { grid-template-columns: repeat(2, 1fr); }
       .table-controls { flex-wrap: wrap; }
@@ -578,6 +620,10 @@
             <option value="active30d">Active 30d</option>
             <option value="enabled">Keyboard Enabled</option>
             <option value="selected">Keyboard Selected</option>
+            <option value="plan_free">Plan: Free</option>
+            <option value="plan_byok">Plan: BYOK</option>
+            <option value="plan_premium">Plan: Premium</option>
+            <option value="override_set">Has Admin Override</option>
           </select>
           <select class="filter-select" id="sortSelect" onchange="loadUsers(1)">
             <option value="last_use_date">Sort: Last Active</option>
@@ -596,6 +642,7 @@
           <thead>
             <tr>
               <th>Device</th>
+              <th>Plan</th>
               <th>Android</th>
               <th>Install Date</th>
               <th>Last Active</th>
@@ -612,7 +659,7 @@
             </tr>
           </thead>
           <tbody id="usersTableBody">
-            <tr class="loading-row"><td colspan="12">Loading…</td></tr>
+            <tr class="loading-row"><td colspan="15">Loading…</td></tr>
           </tbody>
         </table>
       </div>
@@ -912,7 +959,7 @@
       if (filter) params.set('filter', filter);
 
       const tbody = document.getElementById('usersTableBody');
-      tbody.innerHTML = '<tr class="loading-row"><td colspan="13">Loading…</td></tr>';
+      tbody.innerHTML = '<tr class="loading-row"><td colspan="15">Loading…</td></tr>';
 
       try {
         const res  = await authFetch(`/api/admin/users?${params}`);
@@ -920,19 +967,29 @@
         renderTable(data.devices || []);
         renderPagination(data.pagination);
       } catch (_) {
-        tbody.innerHTML = '<tr class="loading-row"><td colspan="13">Failed to load. Check connection.</td></tr>';
+        tbody.innerHTML = '<tr class="loading-row"><td colspan="15">Failed to load. Check connection.</td></tr>';
       }
+    }
+
+    function planBadge(d) {
+      const tier = d.plan_tier || 'free';
+      const label = tier === 'byok' ? 'BYOK' : tier.charAt(0).toUpperCase() + tier.slice(1);
+      const override = d.admin_plan_override
+        ? `<span class="plan-override-dot" title="Admin override active"></span>`
+        : '';
+      return `<span class="plan-badge plan-badge-${tier}">${label}</span>${override}`;
     }
 
     function renderTable(devices) {
       const tbody = document.getElementById('usersTableBody');
       if (!devices.length) {
-        tbody.innerHTML = '<tr class="loading-row"><td colspan="13">No devices found.</td></tr>';
+        tbody.innerHTML = '<tr class="loading-row"><td colspan="15">No devices found.</td></tr>';
         return;
       }
       tbody.innerHTML = devices.map(d => `
         <tr>
           <td title="${d.device_id}">${d.device_name || 'Unknown'}</td>
+          <td>${planBadge(d)}</td>
           <td>${d.android_version || '—'}</td>
           <td>${fmtDate(d.install_date)}</td>
           <td>${fmtDate(d.last_use_date)}</td>
@@ -960,7 +1017,10 @@
     }
 
     // ── Detail Modal ────────────────────────────────────────
+    let currentDetailDeviceId = null;
+
     async function showDetail(deviceId) {
+      currentDetailDeviceId = deviceId;
       document.getElementById('detailModal').classList.add('open');
       document.getElementById('modalTitle').textContent = 'Loading…';
       document.getElementById('modalBody').innerHTML = '<p style="color:var(--text2);text-align:center;padding:20px">Loading…</p>';
@@ -978,12 +1038,22 @@
       if (!device) return;
       document.getElementById('modalTitle').textContent = device.device_name || 'Unknown Device';
 
+      const tier = device.plan_tier || 'free';
+      const overrideAt = device.admin_plan_override_at
+        ? fmtDatetime(device.admin_plan_override_at)
+        : null;
+
       const fields = [
         ['Device ID',        device.device_id],
         ['Device Name',      device.device_name || '—'],
         ['Android Version',  device.android_version || '—'],
         ['Install Date',     fmtDate(device.install_date)],
         ['Last Active',      fmtDate(device.last_use_date)],
+        ['Plan',             planBadge(device)],
+        ['BYOK Key Saved',   device.plan_byok_active ? '✓ Yes' : 'No'],
+        ['Admin Override',   device.admin_plan_override
+          ? `${device.admin_plan_override}${overrideAt ? ` <span style="color:var(--dim);font-size:11px">· set ${overrideAt}</span>` : ''}`
+          : '—'],
         ['Keyboard Enabled', device.keyboard_enabled  ? '✓ Yes' : 'No'],
         ['Set as Default',   device.keyboard_selected ? '✓ Yes' : 'No'],
         ['Selected Theme',   device.selected_theme || '—'],
@@ -999,6 +1069,25 @@
         `<div class="detail-row"><span class="detail-key">${k}</span><span class="detail-value">${v}</span></div>`
       ).join('');
 
+      // ── Plan management ─────────────────────────────────────
+      html += `
+        <div class="events-title">Change Plan</div>
+        <p style="color:var(--text2);font-size:12px;margin-bottom:4px">
+          Sets an admin override. Applies on the user's next analytics ping (usually within minutes).
+        </p>
+        <p style="color:var(--dim);font-size:11px;margin-bottom:8px">
+          BYOK is user-controlled (requires Groq key on device) — admin can only set Free or Premium.
+        </p>
+        <div class="plan-actions" id="planActions">
+          <button class="plan-btn ${tier === 'free' ? 'plan-btn-active' : ''}" onclick="setPlan('free')">Free (51/day)</button>
+          <button class="plan-btn ${tier === 'premium' ? 'plan-btn-active' : ''}" onclick="setPlan('premium')">Premium (100/day)</button>
+          ${device.admin_plan_override
+            ? `<button class="plan-btn plan-btn-clear" onclick="clearPlanOverride()">Clear Override</button>`
+            : ''}
+          <span id="planActionStatus" style="font-size:12px;color:var(--text2);align-self:center"></span>
+        </div>
+      `;
+
       if (recent_events?.length) {
         html += `<div class="events-title">Recent Activity (last ${recent_events.length})</div>`;
         html += recent_events.map(e => `
@@ -1013,6 +1102,55 @@
       }
 
       document.getElementById('modalBody').innerHTML = html;
+    }
+
+    // ── Plan management actions ────────────────────────────────
+    async function setPlan(tier) {
+      if (!currentDetailDeviceId) return;
+      const status = document.getElementById('planActionStatus');
+      _disablePlanButtons(true);
+      if (status) { status.style.color = 'var(--text2)'; status.textContent = 'Saving…'; }
+      try {
+        const res = await fetch(`${API_BASE}/api/admin/set-plan`, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AUTH_TOKEN}` },
+          body:    JSON.stringify({ device_id: currentDetailDeviceId, plan_tier: tier }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || `Error ${res.status}`);
+        if (status) { status.style.color = 'var(--green)'; status.textContent = `✓ Set to ${tier}`; }
+        await showDetail(currentDetailDeviceId);
+        loadUsers(currentPage);
+      } catch (e) {
+        if (status) { status.style.color = '#FF5252'; status.textContent = `Failed: ${e.message}`; }
+        _disablePlanButtons(false);
+      }
+    }
+
+    async function clearPlanOverride() {
+      if (!currentDetailDeviceId) return;
+      const status = document.getElementById('planActionStatus');
+      _disablePlanButtons(true);
+      if (status) { status.style.color = 'var(--text2)'; status.textContent = 'Clearing…'; }
+      try {
+        const res = await fetch(`${API_BASE}/api/admin/set-plan`, {
+          method:  'DELETE',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AUTH_TOKEN}` },
+          body:    JSON.stringify({ device_id: currentDetailDeviceId }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || `Error ${res.status}`);
+        if (status) { status.style.color = 'var(--green)'; status.textContent = '✓ Override cleared'; }
+        await showDetail(currentDetailDeviceId);
+        loadUsers(currentPage);
+      } catch (e) {
+        if (status) { status.style.color = '#FF5252'; status.textContent = `Failed: ${e.message}`; }
+        _disablePlanButtons(false);
+      }
+    }
+
+    function _disablePlanButtons(disabled) {
+      document.querySelectorAll('#planActions .plan-btn').forEach(b => b.disabled = disabled);
     }
 
     function closeDetailModal() {
