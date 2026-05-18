@@ -69,6 +69,35 @@
       transition: color 0.2s;
     }
     .back-link:hover { color: var(--accent); }
+
+    /* Mobile fine-tuning */
+    @media (max-width: 900px) {
+      /* Keep the Download button visible on tablet/mobile */
+      .navbar .btn-nav { display: inline-flex !important; padding: 8px 14px; font-size: 12px; }
+      .nav-inner       { justify-content: space-between; gap: 12px; }
+    }
+
+    @media (max-width: 600px) {
+      .privacy-hero        { padding: 56px 0 24px; }
+      .privacy-hero h1     { font-size: 1.9rem; }
+      .privacy-hero .updated { font-size: 0.82rem; }
+      .privacy-body        { padding: 0 16px 56px; }
+      .privacy-body h2     { font-size: 1.05rem; margin: 32px 0 10px; }
+      .privacy-body p,
+      .privacy-body li     { font-size: 14.5px; line-height: 1.7; }
+      .privacy-card        { padding: 18px 18px; border-radius: 12px; }
+      .privacy-body ul     { padding-left: 18px; }
+      .back-link           { margin-bottom: 28px; }
+      .navbar .btn-nav     { padding: 7px 12px; font-size: 11.5px; }
+    }
+
+    @media (max-width: 380px) {
+      .privacy-hero h1     { font-size: 1.65rem; }
+      .privacy-body h2     { font-size: 1rem; }
+      .privacy-body p,
+      .privacy-body li     { font-size: 14px; }
+      .privacy-card        { padding: 16px 14px; }
+    }
   </style>
 </head>
 <body>
@@ -78,10 +107,10 @@
   <!-- NAVBAR -->
   <nav class="navbar">
     <div class="nav-inner">
-      <div class="nav-logo">
+      <a class="nav-logo" href="index.html" style="text-decoration:none;display:flex;align-items:center;gap:8px">
         <span class="logo-emoji">⌨️</span>
         <span class="logo-text">TypeAura</span>
-      </div>
+      </a>
       <div class="nav-links">
         <a href="index.html#features">Features</a>
         <a href="index.html#install">Install</a>
@@ -221,7 +250,7 @@
   </div>
 
   <!-- FOOTER -->
-  <footer style="text-align:center; padding: 24px 20px; border-top: 1px solid var(--border); color: var(--text2); font-size: 0.85rem;">
+  <footer style="text-align:center; padding: 24px 16px; border-top: 1px solid var(--border); color: var(--text2); font-size: 0.85rem; line-height: 1.6;">
     © 2026 TypeAura by Himanshu Kashyap &nbsp;·&nbsp;
     <a href="privacy.html" style="color: var(--accent);">Privacy Policy</a>
   </footer>
