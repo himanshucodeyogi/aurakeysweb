@@ -123,7 +123,7 @@
   <!-- HERO -->
   <section class="privacy-hero container">
     <h1>Privacy Policy</h1>
-    <p class="updated">Last updated: May 15, 2026</p>
+    <p class="updated">Last updated: May 20, 2026</p>
   </section>
 
   <!-- BODY -->
@@ -231,15 +231,37 @@
       <li><strong>BIND_ACCESSIBILITY_SERVICE</strong> — used by the Floating Lens feature to (1) read on-screen text you select for translation, and (2) insert a chosen reply suggestion directly into the focused input field of the active app.</li>
       <li><strong>FOREGROUND_SERVICE / FOREGROUND_SERVICE_SPECIAL_USE</strong> — to keep the Floating Lens active in the background.</li>
       <li><strong>POST_NOTIFICATIONS</strong> — to show the Floating Lens persistent notification (required by Android 13+ for foreground services).</li>
+      <li><strong>REQUEST_IGNORE_BATTERY_OPTIMIZATIONS</strong> — used <em>only</em> to ask Android to keep TypeAura out of restricted battery standby buckets, so the Floating Lens can reliably start when you tap it days after opening the app. See section 11 below for full details. This permission does <strong>not</strong> grant any additional data access and is requested only if you enable the Floating Lens.</li>
     </ul>
 
-    <h2>11. Children's Privacy</h2>
+    <h2>11. Battery Optimization Exemption (Floating Lens Reliability)</h2>
+    <p>When you enable the Floating Lens, TypeAura asks Android to add it to the "ignore battery optimizations" list. This is a one-time system dialog you must explicitly approve — we cannot grant it ourselves.</p>
+
+    <div class="privacy-card">
+      <p><strong>Why this is needed:</strong> Starting on Android 12, Android places apps into rotating "standby buckets" (active → working set → frequent → rare → restricted) based on how often you <em>open the app itself</em>. Using TypeAura only as your keyboard does not count as opening the app. After roughly 24–48 hours of light use, Android demotes TypeAura into a restricted bucket and begins blocking the IME from starting the Floating Lens foreground service. The result, without this exemption, is that the lens silently stops working after a day or two and the user has no way to know why.</p>
+      <p>The exemption keeps TypeAura in the "exempt" bucket so the Floating Lens can be launched reliably from the keyboard toolbar whenever you tap it.</p>
+    </div>
+
+    <p><strong>What this permission does NOT do:</strong></p>
+    <div class="privacy-card">
+      <ul>
+        <li><strong>No background data access.</strong> The exemption only relaxes battery/standby restrictions for the Floating Lens foreground service. It does not give TypeAura any new permission to read text, screen content, location, network state, or any other data.</li>
+        <li><strong>No background tracking, polling, or networking.</strong> TypeAura runs zero background jobs, alarms, or sync tasks. The Floating Lens only does work when <em>you</em> tap it. There is no scheduled "phone home", no periodic analytics upload from the lens, and no idle network usage.</li>
+        <li><strong>No measurable battery impact when idle.</strong> The exemption only affects what Android <em>allows</em> us to do — not what we actually do. Because TypeAura performs no background work, the only battery cost is the on-demand AI translation calls you trigger yourself.</li>
+        <li><strong>No persistence beyond your control.</strong> You can revoke this exemption at any time: Android Settings → Apps → TypeAura → Battery → "Optimized". The Floating Lens will then degrade gracefully (it may stop working after a day or two), but the rest of the keyboard is unaffected.</li>
+        <li><strong>Strictly optional.</strong> The exemption is only requested if you choose to enable the Floating Lens. If you skip the lens (or never grant overlay/accessibility), TypeAura will never ask for this permission.</li>
+      </ul>
+    </div>
+
+    <p>This usage is consistent with Google Play's "Use of high-impact permissions" policy: the exemption is requested only for a core, user-facing feature (the Floating Lens overlay) whose primary function genuinely depends on it being able to start on demand, and the user is given a clear, on-screen explanation of what the permission is for before being routed to the system dialog.</p>
+
+    <h2>12. Children's Privacy</h2>
     <p>TypeAura is not directed at children under the age of 13. We do not knowingly collect personal information from children. If you believe a child has provided us with information, please contact us and we will delete it promptly.</p>
 
-    <h2>12. Changes to This Policy</h2>
+    <h2>13. Changes to This Policy</h2>
     <p>We may update this Privacy Policy from time to time. Any changes will be posted on this page with an updated date. Continued use of the app after changes constitutes acceptance of the revised policy.</p>
 
-    <h2>13. Contact Us</h2>
+    <h2>14. Contact Us</h2>
     <p>If you have any questions, requests, or data deletion inquiries regarding this Privacy Policy, please contact:</p>
     <div class="privacy-card">
       <p><strong>Himanshu Kashyap</strong><br />
