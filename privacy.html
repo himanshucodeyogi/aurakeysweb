@@ -123,7 +123,7 @@
   <!-- HERO -->
   <section class="privacy-hero container">
     <h1>Privacy Policy</h1>
-    <p class="updated">Last updated: May 20, 2026</p>
+    <p class="updated">Last updated: May 22, 2026</p>
   </section>
 
   <!-- BODY -->
@@ -213,7 +213,7 @@
       <ul>
         <li><strong>Groq (AI Provider)</strong> — receives translation text over HTTPS and returns a result. Text is not stored by Groq. <a href="https://groq.com/privacy-policy/" target="_blank">Groq's Privacy Policy →</a></li>
         <li><strong>Vercel (Backend Hosting)</strong> — our API backend is hosted on Vercel. Vercel may log standard server-access data (IP address, timestamp) per their policy. All communication is HTTPS.</li>
-        <li><strong>Google Speech Recognition</strong> — handles voice input on-device. Google's privacy policy applies to this processing.</li>
+        <li><strong>Google Speech Recognition</strong> — handles voice input via Android's built-in <code>SpeechRecognizer</code> API. On most devices this is processed by Google's cloud speech service (audio is transmitted to Google for transcription) unless the user has installed an offline language pack on their device. TypeAura itself never receives, records, or stores your audio — the transcribed text is returned to us by Android's API. <a href="https://policies.google.com/privacy" target="_blank">Google's Privacy Policy →</a></li>
       </ul>
     </div>
     <p>We do not sell, trade, or share your data with any third party for advertising or marketing purposes.</p>
