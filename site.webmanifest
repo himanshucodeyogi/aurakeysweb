@@ -1,0 +1,17 @@
+{
+  "name": "TypeAura — AI Keyboard",
+  "short_name": "TypeAura",
+  "description": "A free AI-powered Android keyboard for Hinglish, Hindi and better English.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0b0f",
+  "theme_color": "#0a84ff",
+  "icons": [
+    {
+      "src": "img/icon.png",
+      "sizes": "500x500",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
