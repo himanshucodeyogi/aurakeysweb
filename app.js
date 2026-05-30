@@ -103,14 +103,39 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.1 });
 
+// Mark that JS is active so CSS can safely hide-then-reveal feature cards.
+document.documentElement.classList.add('js');
+
 document.querySelectorAll(
-  '.feature-card, .stat-card, .step-card, .feedback-card, .what-is-card, .founder-card'
+  '.stat-card, .step-card, .feedback-card, .what-is-card, .founder-card'
 ).forEach(el => {
   el.style.opacity = '0';
   el.style.transform = 'translateY(20px)';
   el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
   observer.observe(el);
 });
+
+// ── Feature cards: staggered rise-in (kept separate from the generic
+// observer so its !important transform doesn't block the hover lift). ──
+const featureObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const card = entry.target;
+    const col = [...card.parentElement.children].indexOf(card) % 4; // wave per row
+    card.style.animationDelay = `${col * 90}ms`;
+    card.classList.add('in');
+    // Once the entrance finishes, drop to a plain stable state so the
+    // animation's held transform stops overriding :hover.
+    card.addEventListener('animationend', () => {
+      card.classList.remove('in');
+      card.classList.add('done');
+      card.style.animationDelay = '';
+    }, { once: true });
+    featureObserver.unobserve(card);
+  });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.features-grid .feature-card').forEach(c => featureObserver.observe(c));
 
 document.addEventListener('DOMContentLoaded', () => {
   // Add loading state to stat values
