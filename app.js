@@ -121,7 +121,7 @@ const featureObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (!entry.isIntersecting) return;
     const card = entry.target;
-    const col = [...card.parentElement.children].indexOf(card) % 4; // wave per row
+    const col = [...card.parentElement.children].indexOf(card) % 5; // wave per row (5-col grid)
     card.style.animationDelay = `${col * 90}ms`;
     card.classList.add('in');
     // Once the entrance finishes, drop to a plain stable state so the

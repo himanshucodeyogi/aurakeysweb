@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <meta charset="UTF-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- ═══════════════════════ PRIMARY SEO ═══════════════════════ -->
   <title>TypeAura — AI Keyboard for Hinglish, Hindi & Better English</title>
-  <meta name="description" content="TypeAura is a free AI-powered Android keyboard with Hinglish ↔ English translation, a Floating Lens that translates any text on your screen, Live Translate, Smart Reply, Email Composer, Tone Changer & AI Chat — 6 AI tools built in. 10 languages (Hindi, Tamil, Telugu, Marathi, Bengali, Gujarati, Punjabi, Urdu). Free 10k tokens/day or unlimited with your own key. Powered by LLaMA 3.3. Download the APK free." />
+  <meta name="description" content="TypeAura is a free AI-powered Android keyboard with Hinglish ↔ English translation, a Floating Lens that translates any on-screen text via the Accessibility API, speech-to-text input, an emoji panel, clipboard history, and a suite of in-app AI tools (Smart Reply, Email Composer, Tone Changer, Live Translate). 10 languages (Hindi, Tamil, Telugu, Marathi, Bengali, Gujarati, Punjabi, Urdu). Free 10k tokens/day or unlimited with your own key. Powered by LLaMA 3.3. Download the APK free." />
   <meta name="keywords" content="TypeAura, type aura, TypeAura keyboard, TypeAura app, TypeAura APK, AI keyboard, Hinglish keyboard, Hindi English keyboard, Hinglish to English translation, floating lens, screen translator, translate text on screen, on-screen translator, screen translation app, overlay translator, translate any app, AI keyboard for Android, Indian keyboard app, smart keyboard, voice typing keyboard, live translate keyboard, AI writing keyboard, smart reply keyboard, email composer keyboard, tone changer, LLaMA keyboard, free AI keyboard, best AI keyboard India, Hinglish translator, English correction keyboard, multilingual keyboard, BYOK keyboard, Tamil keyboard, Telugu keyboard, Marathi keyboard, Bengali keyboard, Gujarati keyboard, Punjabi keyboard, Urdu keyboard" />
   <meta name="author" content="Himanshu Kashyap" />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
   <meta name="googlebot" content="index, follow" />
   <meta name="language" content="English" />
-  <meta name="theme-color" content="#0a84ff" />
+  <meta name="theme-color" content="#7C6CF8" />
   <link rel="canonical" href="https://typeaura.indevs.in/" />
 
   <!-- ═══════════════════════ FAVICONS ═══════════════════════ -->
@@ -21,7 +21,7 @@
   <link rel="apple-touch-icon" href="img/icon.png" />
   <link rel="manifest" href="site.webmanifest" />
 
-  <!-- ═══════════════════════ OPEN GRAPH (Facebook / WhatsApp / LinkedIn) ═══════════════════════ -->
+  <!-- ═══════════════════════ OPEN GRAPH ═══════════════════════ -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="TypeAura" />
   <meta property="og:title" content="TypeAura — AI Keyboard for Hinglish, Hindi & Better English" />
@@ -41,10 +41,10 @@
   <meta name="twitter:image:alt" content="TypeAura AI Keyboard logo" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 
-  <!-- ═══════════════════════ STRUCTURED DATA (JSON-LD) ═══════════════════════ -->
+  <!-- ═══════════════════════ STRUCTURED DATA ═══════════════════════ -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -81,11 +81,7 @@
         "image": "https://typeaura.indevs.in/img/og-image.png",
         "description": "TypeAura is a free AI-powered Android keyboard with Hinglish ↔ English translation, a Floating Lens that translates any on-screen text, Live Translate, Smart Reply, Email Composer, Tone Changer and AI Chat across 10 languages. Powered by LLaMA 3.3.",
         "author": { "@type": "Person", "name": "Himanshu Kashyap" },
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "INR"
-        }
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" }
       }
     ]
   }
@@ -97,7 +93,7 @@
   <nav class="navbar">
     <div class="nav-inner">
       <div class="nav-logo">
-        <span class="logo-emoji">⌨️</span>
+        <div class="logo-emoji">⌨️</div>
         <span class="logo-text">TypeAura</span>
       </div>
       <div class="nav-links">
@@ -108,7 +104,7 @@
         <a href="#install">Install</a>
         <a href="#about">About</a>
       </div>
-      <a href="typeaura.apk" class="btn-nav">Download APK</a>
+      <a href="typeaura.apk" class="btn-nav" download>Download APK</a>
       <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
@@ -117,14 +113,14 @@
 
   <!-- Mobile nav overlay -->
   <div class="mobile-nav" id="mobileNav" role="navigation">
-    <a href="#features"  class="mobile-nav-link">Features</a>
-    <a href="#ai-tools"  class="mobile-nav-link">AI Tools</a>
-    <a href="#lens"      class="mobile-nav-link">Floating Lens</a>
-    <a href="#pricing"   class="mobile-nav-link">Pricing</a>
-    <a href="#install"   class="mobile-nav-link">How to Install</a>
-    <a href="#stats"    class="mobile-nav-link">Live Stats</a>
-    <a href="#about"    class="mobile-nav-link">About</a>
-    <a href="#feedback" class="mobile-nav-link">Feedback</a>
+    <a href="#features"    class="mobile-nav-link">Features</a>
+    <a href="#ai-tools"    class="mobile-nav-link">AI Tools</a>
+    <a href="#lens"        class="mobile-nav-link">Floating Lens</a>
+    <a href="#pricing"     class="mobile-nav-link">Pricing</a>
+    <a href="#install"     class="mobile-nav-link">How to Install</a>
+    <a href="#stats"       class="mobile-nav-link">Live Stats</a>
+    <a href="#about"       class="mobile-nav-link">About</a>
+    <a href="#feedback"    class="mobile-nav-link">Feedback</a>
     <a href="typeaura.apk" class="mobile-download" download>⬇ Download APK</a>
   </div>
 
@@ -132,30 +128,66 @@
   <section class="hero" id="home">
     <div class="hero-glow hero-glow-1"></div>
     <div class="hero-glow hero-glow-2"></div>
+    <div class="hero-glow hero-glow-3"></div>
     <div class="container">
       <div class="hero-badge">
         <span class="badge-dot"></span>
-        AI-Powered · Android Keyboard · Free
+        AI-Powered &nbsp;·&nbsp; Android Keyboard &nbsp;·&nbsp; Free Forever
       </div>
       <h1 class="hero-title">
         One Keyboard.<br />
         <span class="gradient-text">Unlimited AI Superpowers.</span>
       </h1>
       <p class="hero-sub">
-        TypeAura is a smart Android keyboard with AI support for <strong>10 languages</strong>. Live Translate, AI Chat, Text Tools, Smart Reply, Email Composer, Tone Changer — <strong>6 AI tools</strong> built right in — plus a <strong>Floating Lens</strong> that translates any text on your screen, in any app. Powered by LLaMA&nbsp;3.3.
+        TypeAura is a smart Android keyboard with AI support for <strong>10 languages</strong>.
+        Live Translate, AI Chat, Smart Reply, Email Composer, Tone Changer — <strong>6 AI tools</strong>
+        built right in — plus a <strong>Floating Lens</strong> that translates any text on your screen.
+        Powered by LLaMA&nbsp;3.3.
       </p>
       <div class="hero-cta" id="download">
         <a href="typeaura.apk" class="btn-primary" download>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
           Download APK
         </a>
         <a href="#install" class="btn-secondary">How to Install ↓</a>
       </div>
-      <div class="hero-note">Android 5.0+ · No login required · Free forever</div>
+      <div class="hero-note">Android 5.0+ &nbsp;·&nbsp; No login required &nbsp;·&nbsp; Free forever</div>
+
+      <!-- Trust strip -->
+      <div class="hero-trust">
+        <div class="trust-item">
+          <span class="trust-num">10</span>
+          <span class="trust-label">Languages</span>
+        </div>
+        <div class="trust-divider"></div>
+        <div class="trust-item">
+          <span class="trust-num">6</span>
+          <span class="trust-label">AI Tools</span>
+        </div>
+        <div class="trust-divider"></div>
+        <div class="trust-item">
+          <span class="trust-num">10k</span>
+          <span class="trust-label">Free Tokens / Day</span>
+        </div>
+        <div class="trust-divider"></div>
+        <div class="trust-item">
+          <span class="trust-num">v2.0.5</span>
+          <span class="trust-label">Latest Version</span>
+        </div>
+        <div class="trust-divider"></div>
+        <div class="trust-item">
+          <span class="trust-num">0/61</span>
+          <span class="trust-label">VirusTotal Clean</span>
+        </div>
+      </div>
     </div>
   </section>
 
-   <!-- ═══════════════════════════════ SCREENSHOTS ══════════════════════════ -->
+  <!-- ═══════════════════════════════ SCREENSHOTS ══════════════════════════ -->
   <section class="section section--dark" id="screenshots">
     <div class="container">
       <div class="section-header">
@@ -190,7 +222,7 @@
           <p class="screenshot-label">Keyboard</p>
         </div>
         <div class="screenshot-slot">
-          <img src="img/screen6.jpeg" alt="TypeAura Keyboard Message Converter" loading="lazy" />
+          <img src="img/screen6.jpeg" alt="TypeAura Message Converter" loading="lazy" />
           <p class="screenshot-label">Message Converter</p>
         </div>
       </div>
@@ -250,7 +282,7 @@
       <div class="ai-tools-grid">
 
         <div class="ai-tool-card">
-          <div class="ai-tool-icon" style="background: linear-gradient(135deg,#0a84ff,#5e5ce6);">🗣️</div>
+          <div class="ai-tool-icon" style="background: linear-gradient(135deg,#6366F1,#818CF8);">🗣️</div>
           <div class="ai-tool-header"><h3>Live Translate</h3></div>
           <p class="ai-tool-sub">Face-to-face real-time conversation</p>
           <p>Place your phone between two people — speak in your language, the other person sees the translation on their side of the screen, spoken aloud automatically. Supports 10 languages.</p>
@@ -263,7 +295,7 @@
         </div>
 
         <div class="ai-tool-card">
-          <div class="ai-tool-icon" style="background: linear-gradient(135deg,#5e5ce6,#bf5af2);">✍️</div>
+          <div class="ai-tool-icon" style="background: linear-gradient(135deg,#8B5CF6,#A78BFA);">✍️</div>
           <div class="ai-tool-header"><h3>Text Tools</h3></div>
           <p class="ai-tool-sub">Write, fix, translate &amp; transform</p>
           <p>Paste any text and run it through 16+ AI tools — organized into three tabs so you always find what you need instantly.</p>
@@ -276,7 +308,7 @@
         </div>
 
         <div class="ai-tool-card">
-          <div class="ai-tool-icon" style="background: linear-gradient(135deg,#bf5af2,#ff375f);">🤖</div>
+          <div class="ai-tool-icon" style="background: linear-gradient(135deg,#EC4899,#F472B6);">🤖</div>
           <div class="ai-tool-header"><h3>AI Chat</h3></div>
           <p class="ai-tool-sub">Smart multi-turn assistant</p>
           <p>Ask anything — in English, Hindi, or Hinglish. AI Chat remembers the full conversation and adapts its behaviour based on the mode you pick.</p>
@@ -289,7 +321,7 @@
         </div>
 
         <div class="ai-tool-card">
-          <div class="ai-tool-icon" style="background: linear-gradient(135deg,#30d158,#0a84ff);">↩️</div>
+          <div class="ai-tool-icon" style="background: linear-gradient(135deg,#10B981,#34D399);">↩️</div>
           <div class="ai-tool-header"><h3>Smart Reply</h3><span class="tool-new-badge">New</span></div>
           <p class="ai-tool-sub">3 instant replies from any message</p>
           <p>Paste any message you received — WhatsApp, email, or anywhere else — and get three ready-to-send replies in seconds. Casual, friendly, or professional — pick the one that fits.</p>
@@ -302,7 +334,7 @@
         </div>
 
         <div class="ai-tool-card">
-          <div class="ai-tool-icon" style="background: linear-gradient(135deg,#ff9f0a,#ff375f);">✉️</div>
+          <div class="ai-tool-icon" style="background: linear-gradient(135deg,#F59E0B,#FCD34D);">✉️</div>
           <div class="ai-tool-header"><h3>Email Composer</h3><span class="tool-new-badge">New</span></div>
           <p class="ai-tool-sub">Bullet points in, polished email out</p>
           <p>Jot down rough notes or key points, select who you're writing to, and get a complete professional email — Subject line included — in seconds.</p>
@@ -315,7 +347,7 @@
         </div>
 
         <div class="ai-tool-card">
-          <div class="ai-tool-icon" style="background: linear-gradient(135deg,#40cbe0,#5e5ce6);">🎚️</div>
+          <div class="ai-tool-icon" style="background: linear-gradient(135deg,#06B6D4,#67E8F9);">🎚️</div>
           <div class="ai-tool-header"><h3>Tone Changer</h3><span class="tool-new-badge">New</span></div>
           <p class="ai-tool-sub">Switch tone with one tap</p>
           <p>Type your message in any tone — then instantly transform it to sound exactly how you want. Six tones available, with the action button changing colour to match your pick.</p>
@@ -366,7 +398,7 @@
   </section>
 
   <!-- ═══════════════════════════════ FEATURES ═════════════════════════════ -->
-  <section class="section" id="features">
+  <section class="section section--dark" id="features">
     <div class="container">
       <div class="section-header">
         <div class="section-tag">Features</div>
@@ -376,7 +408,7 @@
         <div class="feature-card feature-card--accent">
           <div class="feature-icon">🌐</div>
           <h3>10 Languages</h3>
-          <p>Hinglish, Hindi, Tamil, Telugu, Marathi, Bengali, Gujarati, Punjabi, Urdu &amp; English — translate between them all. One keyboard, every language.</p>
+          <p>Hinglish, Hindi, Tamil, Telugu, Marathi, Bengali, Gujarati, Punjabi, Urdu &amp; English — translate between them all.</p>
         </div>
         <div class="feature-card feature-card--accent">
           <div class="feature-icon">🔍</div>
@@ -452,8 +484,6 @@
     </div>
   </section>
 
- 
-
   <!-- ═══════════════════════════════ INSTALL ══════════════════════════════ -->
   <section class="section" id="install">
     <div class="container">
@@ -491,7 +521,7 @@
       <!-- Hindi guide -->
       <div class="hindi-guide" id="hindi-guide">
         <div class="section-tag" style="margin-bottom: 12px;">हिंदी गाइड</div>
-        <h3 style="color: var(--accent); margin-bottom: 16px;">हिंदी में install कैसे करें?</h3>
+        <h3 style="color: var(--accent-light); margin-bottom: 16px;">हिंदी में install कैसे करें?</h3>
         <ol class="hindi-steps">
           <li>ऊपर दिए <strong>Download APK</strong> button पर tap करें।</li>
           <li>अगर phone पूछे तो <em>"Unknown sources से install allow करें"</em> पर हाँ करें।</li>
@@ -514,7 +544,7 @@
       <div class="ai-tools-grid">
 
         <div class="ai-tool-card">
-          <div class="ai-tool-icon" style="background: linear-gradient(135deg,#0a84ff,#5e5ce6);">🆓</div>
+          <div class="ai-tool-icon" style="background: linear-gradient(135deg,#6366F1,#818CF8);">🆓</div>
           <div class="ai-tool-header"><h3>Free</h3></div>
           <p class="ai-tool-sub"><strong>₹0</strong> / forever</p>
           <p>Everything you need to get started — all AI tools, the Floating Lens, Live Translate and voice, on a generous daily budget.</p>
@@ -527,7 +557,7 @@
         </div>
 
         <div class="ai-tool-card">
-          <div class="ai-tool-icon" style="background: linear-gradient(135deg,#30d158,#0a84ff);">🔑</div>
+          <div class="ai-tool-icon" style="background: linear-gradient(135deg,#10B981,#34D399);">🔑</div>
           <div class="ai-tool-header"><h3>Bring Your Own Key</h3></div>
           <p class="ai-tool-sub"><strong>Free</strong> with your Groq key</p>
           <p>Add your own free Groq API key and unlock unlimited AI usage — limited only by Groq's own quota. Your key stays on your device.</p>
@@ -540,7 +570,7 @@
         </div>
 
         <div class="ai-tool-card">
-          <div class="ai-tool-icon" style="background: linear-gradient(135deg,#bf5af2,#ff375f);">⭐</div>
+          <div class="ai-tool-icon" style="background: linear-gradient(135deg,#8B5CF6,#A78BFA);">⭐</div>
           <div class="ai-tool-header"><h3>Premium</h3><span class="tool-new-badge">Coming Soon</span></div>
           <p class="ai-tool-sub"><strong>₹150</strong> / month</p>
           <p>For power users — 10× the daily budget with no setup. Just upgrade and keep going. Launching soon.</p>
@@ -590,7 +620,7 @@
   </section>
 
   <!-- ═══════════════════════════════ FOUNDER ══════════════════════════════ -->
-  <section class="section" id="about">
+  <section class="section section--dark" id="about">
     <div class="container">
       <div class="founder-card">
         <div class="founder-avatar">HK</div>
@@ -617,7 +647,7 @@
   </section>
 
   <!-- ═══════════════════════════════ FEEDBACK ═════════════════════════════ -->
-  <section class="section section--dark" id="feedback">
+  <section class="section" id="feedback">
     <div class="container">
       <div class="section-header">
         <div class="section-tag">Feedback</div>
@@ -649,8 +679,8 @@
     <div class="container">
       <div class="footer-top">
         <div class="footer-brand">
-          <span class="logo-emoji">⌨️</span>
-          <span class="logo-text">TypeAura</span>
+          <div class="logo-emoji">⌨️</div>
+          <span class="logo-text" style="font-weight:800; font-size:16px;">TypeAura</span>
           <span class="footer-badge">Beta</span>
         </div>
         <div class="footer-links">
@@ -666,7 +696,7 @@
       </div>
       <div class="footer-divider"></div>
       <div class="footer-bottom">
-        <p>Built by <strong>Himanshu Kashyap</strong> · Android only · Version 2.0.5</p>
+        <p>Built by <strong>Himanshu Kashyap</strong> &nbsp;·&nbsp; Android only &nbsp;·&nbsp; Version 2.0.5</p>
         <p class="footer-privacy">
           🔒 TypeAura does not store your typed text, passwords, OTPs, or personal messages.
           Only anonymous usage stats are collected to improve the product.
