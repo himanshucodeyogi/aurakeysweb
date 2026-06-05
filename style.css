@@ -720,6 +720,130 @@ section[id] { scroll-margin-top: 70px; }
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   PRICING CARDS
+═══════════════════════════════════════════════════════════════ */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.pricing-card {
+  background: var(--card);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px;
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column;
+  transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+}
+
+/* Colored top stripe per plan */
+.pricing-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+}
+.pricing-card--free::before    { background: linear-gradient(90deg, #6366F1, #818CF8); }
+.pricing-card--byok::before    { background: linear-gradient(90deg, #10B981, #34D399); }
+.pricing-card--premium::before { background: linear-gradient(90deg, #8B5CF6, #F472B6); }
+
+.pricing-card--free:hover    { transform: translateY(-4px); border-color: rgba(99,102,241,0.3);  box-shadow: 0 14px 40px rgba(99,102,241,0.13);  }
+.pricing-card--byok:hover    { transform: translateY(-4px); border-color: rgba(16,185,129,0.3);  box-shadow: 0 14px 40px rgba(16,185,129,0.13);  }
+.pricing-card--premium:hover { transform: translateY(-4px); border-color: rgba(139,92,246,0.3);  box-shadow: 0 14px 40px rgba(139,92,246,0.13);  }
+
+/* ─── Card header: icon + plan name ─── */
+.pricing-header {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 18px;
+}
+
+.pricing-icon {
+  width: 48px; height: 48px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0;
+}
+
+.pricing-name { flex: 1; min-width: 0; }
+
+.pricing-name h3 {
+  font-size: 17px; font-weight: 800; color: var(--text);
+  letter-spacing: -0.3px; line-height: 1.2;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+
+.pricing-badge {
+  padding: 2px 9px;
+  background: rgba(167, 139, 250, 0.12);
+  border: 1px solid rgba(167, 139, 250, 0.28);
+  color: var(--purple); border-radius: 999px;
+  font-size: 9px; font-weight: 800;
+  letter-spacing: 0.5px; text-transform: uppercase;
+}
+
+/* ─── Price display ─── */
+.pricing-price {
+  display: flex; align-items: baseline; gap: 6px;
+  margin-bottom: 16px;
+}
+
+.pricing-amount {
+  font-size: 34px; font-weight: 900; letter-spacing: -1.5px; line-height: 1;
+  background: linear-gradient(90deg, var(--text) 50%, var(--text2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.pricing-period {
+  font-size: 13px; color: var(--text2); font-weight: 500;
+}
+
+/* ─── Divider ─── */
+.pricing-divider {
+  height: 1px; background: var(--border); margin-bottom: 16px;
+}
+
+/* ─── Short description ─── */
+.pricing-desc {
+  font-size: 13px; color: var(--text2); line-height: 1.65;
+  margin-bottom: 20px;
+}
+
+/* ─── Feature checklist ─── */
+.pricing-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 10px;
+}
+
+.pricing-list li {
+  display: flex; align-items: flex-start; gap: 9px;
+  font-size: 13px; color: var(--text2); line-height: 1.45;
+}
+
+.pricing-list li::before {
+  content: '✓';
+  font-weight: 800; font-size: 13px; flex-shrink: 0;
+  margin-top: 1px;
+}
+.pricing-card--free    .pricing-list li::before { color: #818CF8; }
+.pricing-card--byok    .pricing-list li::before { color: var(--green); }
+.pricing-card--premium .pricing-list li::before { color: var(--purple); }
+
+.pricing-list strong { color: var(--text); font-weight: 700; }
+
+@media (max-width: 900px) {
+  .pricing-grid {
+    grid-template-columns: 1fr;
+    max-width: 420px; margin: 0 auto;
+  }
+}
+@media (max-width: 600px) {
+  .pricing-card    { padding: 22px 18px; }
+  .pricing-amount  { font-size: 28px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
    INSTALL STEPS
 ═══════════════════════════════════════════════════════════════ */
 .install-steps {
