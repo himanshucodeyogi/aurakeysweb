@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Try TypeAura Live — Interactive AI Keyboard Demo</title>
+  <meta name="description" content="Try the TypeAura AI keyboard right in your browser — no install needed. A guided live demo of the Floating Lens, Hinglish ↔ English translation, Email Composer and Live Translate, powered by real LLaMA 3.3." />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#171717" />
+  <link rel="canonical" href="https://typeaura.indevs.in/demo" />
+
+  <link rel="icon" type="image/png" href="img/icon.png" />
+  <link rel="apple-touch-icon" href="img/icon.png" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="TypeAura" />
+  <meta property="og:title" content="Try TypeAura Live — Interactive AI Keyboard Demo" />
+  <meta property="og:description" content="Try the TypeAura AI keyboard right in your browser — no install needed. Guided live demo powered by real LLaMA 3.3." />
+  <meta property="og:url" content="https://typeaura.indevs.in/demo" />
+  <meta property="og:image" content="https://typeaura.indevs.in/img/og-image.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="demo.css" />
+</head>
+<body class="demo-body">
+
+  <!-- ═══════════════════════ NAVBAR ═══════════════════════ -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo" style="text-decoration:none">
+        <div class="logo-emoji">⌨️</div>
+        <span class="logo-text">TypeAura</span>
+      </a>
+      <div class="nav-links">
+        <a href="/">← Back to site</a>
+      </div>
+      <a href="typeaura.apk" class="btn-nav" download>Download APK</a>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════ DEMO ═══════════════════════ -->
+  <main class="demo-main">
+    <header class="demo-head">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Live · No install · Real LLaMA&nbsp;3.3
+      </div>
+      <h1 class="demo-title">Try TypeAura <span class="gradient-text">right here</span></h1>
+      <p class="demo-sub">
+        A real, working TypeAura keyboard inside a sample chat. Follow the guide to try the
+        Floating Lens, Hinglish ↔ English translation, Email Composer and Live Translate —
+        every result is generated live by AI.
+      </p>
+
+      <!-- progress chips -->
+      <ol class="demo-steps" id="demoSteps">
+        <li class="demo-step-chip" data-chip="0"><span class="chip-num">1</span> Floating Lens</li>
+        <li class="demo-step-chip" data-chip="1"><span class="chip-num">2</span> Translate</li>
+        <li class="demo-step-chip" data-chip="2"><span class="chip-num">3</span> Quick Tools</li>
+        <li class="demo-step-chip" data-chip="3"><span class="chip-num">4</span> Voice Typing</li>
+      </ol>
+    </header>
+
+    <!-- ───────────── stage: phone mockup ───────────── -->
+    <div class="demo-stage" id="demoStage">
+      <div class="phone-mockup">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+
+          <!-- WhatsApp-style chat -->
+          <div class="chat-app">
+            <div class="chat-header">
+              <button class="chat-back" aria-hidden="true">‹</button>
+              <div class="chat-avatar">R</div>
+              <div class="chat-peer">
+                <div class="chat-peer-name">Riya</div>
+                <div class="chat-peer-status"><span class="online-dot"></span> online</div>
+              </div>
+              <div class="chat-actions" aria-hidden="true">⋮</div>
+            </div>
+
+            <div class="chat-body" id="chatBody"><!-- bubbles injected by JS --></div>
+
+            <div class="chat-inputbar">
+              <div class="chat-input" id="chatInput">
+                <span class="chat-input-text" id="chatInputText"></span>
+                <span class="chat-input-placeholder" id="chatInputPlaceholder">Message</span>
+                <span class="chat-caret"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ───────────── TypeAura keyboard replica ───────────── -->
+          <div class="kb" id="keyboard">
+            <!-- toolbar -->
+            <div class="kb-toolbar">
+              <button type="button" class="icon-btn" data-action="quick"     data-icon="grid"      title="AI Quick Tools"></button>
+              <button type="button" class="icon-btn" data-action="translate" data-icon="translate" title="Hinglish ↔ English"></button>
+              <button type="button" class="icon-btn" data-action="lens"      data-icon="lens"      title="Floating Lens"></button>
+              <button type="button" class="icon-btn" data-action="fonts"     data-icon="text"      title="Fonts"></button>
+              <button type="button" class="icon-btn" data-action="settings"  data-icon="settings"  title="Open app"></button>
+              <button type="button" class="icon-btn" data-action="clipboard" data-icon="clipboard" title="Clipboard"></button>
+              <span class="kb-toolbar-spacer"></span>
+              <span class="kb-spinner" id="kbSpinner" hidden></span>
+              <button type="button" class="icon-btn" data-action="mic"       data-icon="mic"       title="Voice / Live Translate"></button>
+            </div>
+
+            <!-- suggestions strip -->
+            <div class="kb-suggestions" id="suggestStrip">
+              <span class="kb-brand">TypeAura By Himanshu Kashyap</span>
+            </div>
+
+            <!-- keys (letter rows + bottom row) -->
+            <div id="kbKeys">
+              <div class="kb-rows" id="kbRows">
+                <div class="kb-row" data-row="0"></div>
+                <div class="kb-row" data-row="1"></div>
+                <div class="kb-row kb-row-3" data-row="2"></div>
+              </div>
+              <div class="kb-row kb-bottom">
+                <button type="button" class="key key--special key--sym" data-key="?123">?123</button>
+                <button type="button" class="key key--special key--comma" data-key=",">,</button>
+                <button type="button" class="key key--special key--emoji" data-key="emoji" data-icon="emoji"></button>
+                <button type="button" class="key key--space" data-key=" "></button>
+                <button type="button" class="key key--special key--period" data-key=".">.</button>
+                <button type="button" class="key key--special key--enter" data-key="enter" data-icon="return"></button>
+              </div>
+            </div>
+
+            <!-- AI Quick Actions panel (replaces the keys when open) -->
+            <div class="kb-panel" id="kbPanel" hidden></div>
+          </div><!-- /.kb -->
+
+          <!-- floating-lens popup + tool sheets mount here (inside the phone) -->
+          <div class="phone-overlay" id="phoneOverlay"></div>
+          <div class="phone-toast" id="phoneToast" hidden></div>
+        </div><!-- /.phone-screen -->
+      </div><!-- /.phone-mockup -->
+
+      <!-- coachmark layer (spotlight + tooltip) -->
+      <div class="coach-layer" id="coachLayer" hidden>
+        <div class="coach-tooltip" id="coachTooltip">
+          <div class="coach-title" id="coachTitle"></div>
+          <div class="coach-body" id="coachBody"></div>
+          <div class="coach-actions">
+            <button type="button" class="coach-skip" id="coachSkip">Skip tour</button>
+            <button type="button" class="coach-next" id="coachNext">Next →</button>
+          </div>
+        </div>
+      </div>
+    </div><!-- /.demo-stage -->
+
+    <div class="demo-controls">
+      <button type="button" class="btn-secondary" id="restartBtn">↻ Restart demo</button>
+      <a href="typeaura.apk" class="btn-primary" download>⬇ Get the real app</a>
+    </div>
+    <p class="demo-foot-note">
+      This is a faithful web replica. The installed app also adds Smart Reply, Tone Changer,
+      voice typing, emoji &amp; clipboard, and a system-wide Floating Lens that works in <em>any</em> app.
+    </p>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p class="footer-note">TypeAura · Built by Himanshu Kashyap · <a href="/privacy">Privacy</a></p>
+    </div>
+  </footer>
+
+  <script src="demo.js"></script>
+</body>
+</html>
