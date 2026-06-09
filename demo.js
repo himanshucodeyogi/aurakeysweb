@@ -79,6 +79,28 @@
     toastTimer = setTimeout(() => { toastEl.hidden = true; }, 3200);
   }
 
+  /* Scripted demo data — used DURING the auto-playing tour so the animation is
+     instant, reliable and free of API cost. Real AI runs only when the user
+     drives the keyboard themselves (i.e. the tour is not active). */
+  const SCRIPT = {
+    lensHindi:   'अरे! कल कॉफ़ी के लिए फ्री हो? ☕',
+    lensReplies: ["Yes, I'm totally free! ☕", 'Sure — what time works?', "Aw, I'm a bit busy tomorrow 😅"],
+    translateEn: "Let's meet tomorrow morning.",
+    quickFormal: 'Is our plan for tomorrow confirmed?',
+  };
+
+  // Returns the scripted result while the tour is playing; otherwise hits the
+  // real backend. `scripted` must match the shape callDemo returns for that mode.
+  async function callDemoOrScript(mode, text, params, scripted) {
+    if (tour && tour.active && scripted !== undefined) {
+      spinner(true);
+      await wait(750);          // brief pause so the spinner reads as "thinking"
+      spinner(false);
+      return scripted;
+    }
+    return callDemo(mode, text, params);
+  }
+
   /* ───────────────────────── chat engine ───────────────────────── */
   const chatBody = document.getElementById('chatBody');
   const chat = {
@@ -90,9 +112,38 @@
       chatBody.scrollTop = chatBody.scrollHeight;
       return b;
     },
-    sendOutgoing(text) { return this.addBubble({ side: 'outgoing', text }); },
-    reset() { chatBody.innerHTML = ''; },
+    sendOutgoing(text) { const b = this.addBubble({ side: 'outgoing', text }); scheduleRiyaReply(); return b; },
+    addTyping() {
+      const b = document.createElement('div');
+      b.className = 'bubble incoming typing';
+      b.innerHTML = '<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
+      chatBody.appendChild(b);
+      chatBody.scrollTop = chatBody.scrollHeight;
+      return b;
+    },
+    reset() { clearTimeout(riyaTimer); chatBody.innerHTML = ''; },
   };
+
+  // Riya replies back so the chat feels two-way: a typing indicator, then a line.
+  const RIYA_REPLIES = [
+    'Perfect, see you then! 😊',
+    'Sounds good 👍',
+    "Yay, can't wait ☕",
+    'Haha okay 😄',
+    'Cool, let me know 🙌',
+    'Great! 🎉',
+  ];
+  let riyaIdx = 0, riyaTimer = null;
+  function scheduleRiyaReply() {
+    clearTimeout(riyaTimer);
+    riyaTimer = setTimeout(() => {
+      const typing = chat.addTyping();
+      riyaTimer = setTimeout(() => {
+        typing.remove();
+        chat.addBubble({ side: 'incoming', text: RIYA_REPLIES[riyaIdx++ % RIYA_REPLIES.length] });
+      }, 1300);
+    }, 650);
+  }
 
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -275,7 +326,7 @@
     const text = keyboard.buffer.trim();
     if (!text) { toast('Type a message first, then pick a Quick Tool ⚡'); return; }
     try {
-      const { result } = await callDemo('quick_action', text, { action: label });
+      const { result } = await callDemoOrScript('quick_action', text, { action: label }, { result: SCRIPT.quickFormal });
       closeQuickActions();
       setSuggestions([{
         label: '✨', text: result,
@@ -303,7 +354,7 @@
     positionNear(pop, anchorEl);
     pop.querySelector('.lens-popup-close').addEventListener('click', () => { overlay.innerHTML = ''; });
 
-    callDemo('lens_translate', orig, { targetLang: 'Hindi' })
+    callDemoOrScript('lens_translate', orig, { targetLang: 'Hindi' }, { result: SCRIPT.lensHindi })
       .then(({ result }) => {
         pop.querySelector('.lens-popup-result').textContent = result || '(no translation)';
         const actions = document.createElement('div');
@@ -318,7 +369,7 @@
 
   function loadLensReplies(pop, orig, actions) {
     actions.innerHTML = '<span class="lens-popup-loading"><span class="kb-spinner" style="margin:0"></span> Generating replies…</span>';
-    callDemo('lens_reply', orig, { replyLang: 'English' })
+    callDemoOrScript('lens_reply', orig, { replyLang: 'English' }, { replies: SCRIPT.lensReplies })
       .then(({ replies }) => {
         actions.innerHTML = '';
         (replies || []).forEach(r => {
@@ -421,12 +472,6 @@
       }
     });
 
-    // guide the user to the next sub-action during the tour
-    if (tour.active && tour.i === 0) {
-      coachBody.textContent = 'Ab lens ball ko Riya ke message par drag karke chhodo 👆 — wo use Hindi me translate karegi.';
-      const old = coachLayer.querySelector('.coach-spotlight');
-      if (old) old.remove();
-    }
   }
 
   /* ── feature 2: Hinglish ↔ English translate (single variant) ── */
@@ -434,7 +479,7 @@
     if (!keyboard.buffer.trim()) { toast('Type something first, then tap Translate ⇄'); return; }
     setActiveTool('translate');
     try {
-      const { result } = await callDemo('translate', keyboard.buffer.trim(), { targetLang: 'English' });
+      const { result } = await callDemoOrScript('translate', keyboard.buffer.trim(), { targetLang: 'English' }, { result: SCRIPT.translateEn });
       setSuggestions([{
         label: '⇄', text: result,
         onClick: (c) => { keyboard.setBuffer(c.text); clearSuggestions(); keyboard.shift = false; keyboard._refreshLetters(); },
@@ -452,6 +497,22 @@
      auto-restarting until the user taps the mic again (manualStop). */
   let recognition = null, listening = false, manualStop = false;
   let voiceBase = '', voiceCommitted = '', sessionText = '';
+  let silenceTimer = null, gotAnyResult = false;
+  const SILENCE_MS = 3000;   // auto-off after 3s of no speech
+
+  // (Re)start the 3-second silence countdown. Reset on every speech result;
+  // when it fires, the mic auto-stops (and translates whatever was said).
+  function armSilence() {
+    clearTimeout(silenceTimer);
+    silenceTimer = setTimeout(() => {
+      if (!listening) return;
+      manualStop = true;
+      listening = false;
+      if (!gotAnyResult) toast('3 sec tak kuch suna nahi — mic band. Dobara tap karke boliye 🎙');
+      if (recognition) { try { recognition.stop(); } catch (_) { finishVoice(); } }
+      else finishVoice();
+    }, SILENCE_MS);
+  }
 
   function showListening(partial) {
     suggestStrip.innerHTML = '';
@@ -478,6 +539,8 @@
     // Rebuild the whole transcript of THIS recognition session every event
     // (don't rely on resultIndex — it's flaky across browsers).
     recognition.onresult = (e) => {
+      gotAnyResult = true;
+      armSilence();              // speech heard → reset the 3s countdown
       let txt = '';
       for (let i = 0; i < e.results.length; i++) {
         if (e.results[i] && e.results[i][0]) txt += e.results[i][0].transcript;
@@ -487,10 +550,16 @@
       showListening((voiceCommitted + sessionText).trim());
     };
     recognition.onerror = (e) => {
-      // 'no-speech' / 'aborted' / 'network' are transient — let onend auto-restart.
+      // 'no-speech' / 'aborted' are transient — let onend auto-restart.
       if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
         manualStop = true;
-        toast('Allow mic permission to use voice typing.');
+        toast('Mic blocked. Tap the 🔒 lock icon in the address bar → allow Microphone, then retry.');
+      } else if (e.error === 'audio-capture') {
+        manualStop = true;
+        toast('No microphone found on this device.');
+      } else if (e.error === 'network') {
+        manualStop = true;
+        toast('Voice service isn\'t available in this browser. Open the demo in Google Chrome 🎙');
       }
     };
     recognition.onend = () => {
@@ -508,14 +577,75 @@
     catch (_) { finishVoice(); }
   }
 
-  function finishVoice() {
+  function showConverting() {
+    suggestStrip.innerHTML = '<span class="kb-listening"><span class="kb-listening-text">Converting to English…</span></span>';
+  }
+
+  // Clean + translate the spoken text to English. Prefer the app-faithful
+  // `voice_filter` mode; if the backend doesn't have it yet, fall back to the
+  // always-available `translate` mode; if both fail, keep the raw transcript.
+  async function translateVoice(raw) {
+    try {
+      const { result } = await callDemo('voice_filter', raw, { targetLang: 'English' });
+      if (result && result.trim()) return result.trim();
+    } catch (_) { /* try the fallback below */ }
+    try {
+      const { result } = await callDemo('translate', raw, { targetLang: 'English' });
+      if (result && result.trim()) return result.trim();
+    } catch (_) { /* keep raw */ }
+    return raw;
+  }
+
+  // On stop: clean + translate the spoken text to English (like the keyboard's
+  // _filterVoiceText), then drop the result into the message box.
+  async function finishVoice() {
     listening = false;
     recognition = null;
+    clearTimeout(silenceTimer);
     setActiveTool(null);
     keyboard.shift = false; keyboard._refreshLetters();
-    const said = (voiceCommitted + sessionText).trim().length > 0;
+    const raw = (voiceCommitted + sessionText).trim();
+    if (!raw) { clearSuggestions(); return; }
+    showConverting();
+    const out = await translateVoice(raw);
+    keyboard.setBuffer(out);                  // clear input → show only the translated text
     clearSuggestions();
-    if (said) tour.notify('voice-done');
+    tour.notify('voice-done');
+  }
+
+  /* Fallback for browsers without the Web Speech API (Firefox, some mobile/
+     in-app browsers): show a believable "voice typing" demo so the feature
+     is still visible. Types a sample line character-by-character. */
+  function simulateVoice(quiet) {
+    const heard = 'kal subah das baje milte hain';        // what the user "says"
+    const english = "Let's meet at 10 tomorrow morning.";  // cleaned + translated
+    listening = true;
+    manualStop = false;
+    setActiveTool('mic');
+    showListening('');
+    voiceBase = keyboard.buffer && !keyboard.buffer.endsWith(' ') ? keyboard.buffer + ' ' : keyboard.buffer;
+    let i = 0;
+    if (!quiet) toast('Voice typing needs Chrome/Edge — showing a quick sample. In the app it works on any Android phone 🎙');
+    const tick = () => {
+      if (!listening) return;                 // user tapped to cancel
+      i++;
+      const partial = heard.slice(0, i);
+      keyboard.setBuffer(voiceBase + partial);
+      showListening(partial);
+      if (i < heard.length) {
+        setTimeout(tick, 90 + Math.random() * 60);
+      } else {
+        showConverting();
+        setTimeout(() => {
+          listening = false; setActiveTool(null);
+          keyboard.setBuffer(english);          // clear input → show only the translated text
+          clearSuggestions();
+          keyboard.shift = false; keyboard._refreshLetters();
+          tour.notify('voice-done');
+        }, 900);
+      }
+    };
+    setTimeout(tick, 700);
   }
 
   function toggleVoiceInput() {
@@ -526,18 +656,17 @@
       return;
     }
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) {
-      toast('Voice typing needs Chrome or Edge. In the installed app it works on any Android phone 🎙');
-      return;
-    }
+    if (!SR) { simulateVoice(); return; }
     manualStop = false;
     listening = true;
+    gotAnyResult = false;
     voiceBase = keyboard.buffer && !keyboard.buffer.endsWith(' ') ? keyboard.buffer + ' ' : keyboard.buffer;
     voiceCommitted = '';
     sessionText = '';
     setActiveTool('mic');
     showListening('');
     startRecog();
+    armSilence();                // start the 3s no-speech countdown
   }
 
   /* ───────────────────────── tutorial engine ───────────────────────── */
@@ -545,101 +674,276 @@
   const coachTooltip = document.getElementById('coachTooltip');
   const coachTitle  = document.getElementById('coachTitle');
   const coachBody   = document.getElementById('coachBody');
+  const coachNextBtn = document.getElementById('coachNext');
+  const coachSkipBtn = document.getElementById('coachSkip');
   const steps       = $$('.demo-step-chip');
 
-  const STEPS = [
+  // Tour language (chosen at start). All coachmark text is localized below.
+  let lang = 'en';
+  const UI_TEXT = {
+    en: {
+      next: 'Next →', start: 'Start ▶', finishBtn: 'Finish ✓', skip: 'Skip tour',
+      finish: '🎉 That\'s TypeAura! Loved it? Download the app free 👇',
+    },
+    hi: {
+      next: 'आगे →', start: 'शुरू करें ▶', finishBtn: 'पूरा करें ✓', skip: 'टूर छोड़ें',
+      finish: '🎉 यही है TypeAura! पसंद आया? ऐप फ्री डाउनलोड करें 👇',
+    },
+  };
+
+  /* ── auto-demo helpers (the tour plays the feature for the user) ── */
+  function autoType(text) {
+    keyboard.setBuffer('');
+    keyboard.shift = false; keyboard._refreshLetters();
+    let i = 0;
+    const tick = () => {
+      if (!tour.active) return;
+      i++;
+      keyboard.setBuffer(text.slice(0, i));
+      if (i < text.length) setTimeout(tick, 55 + Math.random() * 45);
+    };
+    setTimeout(tick, 250);
+  }
+
+  function autoLensAppear() {
+    if (!(lensBall && lensBall.isConnected)) { lensBall = null; setActiveTool('lens'); spawnLensBall(); }
+    else setActiveTool('lens');
+  }
+
+  function autoLensTranslate() {
+    const screen = $('.phone-screen');
+    const bubble = $('.bubble.incoming');
+    if (!(lensBall && lensBall.isConnected)) { setActiveTool('lens'); spawnLensBall(); }
+    if (!bubble || !lensBall) return;
+    lensBall.style.transition = 'left .85s ease, top .85s ease';
+    const sr = screen.getBoundingClientRect();
+    const br = bubble.getBoundingClientRect();
+    requestAnimationFrame(() => {
+      lensBall.style.left = (br.left - sr.left + br.width / 2 - 24) + 'px';
+      lensBall.style.top  = (br.top  - sr.top  + br.height / 2 - 24) + 'px';
+      bubble.classList.add('lens-hover');
+    });
+    setTimeout(() => {
+      if (!tour.active) return;
+      bubble.classList.remove('lens-hover');
+      removeLensBall();
+      setActiveTool(null);
+      showLensPopup(bubble);          // translates to Hindi
+    }, 1050);
+  }
+
+  function autoLensReplies() {
+    pollClick(() => overlay.querySelector('[data-reply]'), 3000);
+  }
+  function autoLensPickReply() {
+    pollClick(() => overlay.querySelector('.lens-reply-chip'), 5000);
+  }
+  function autoApplySuggestion() {
+    pollClick(() => suggestStrip.querySelector('.kb-chip'), 5000);
+  }
+  function autoQuickAction() {
+    pollClick(() => (kbPanel && !kbPanel.hidden ? kbPanel.querySelector('[data-qa="Make Formal"]') : null), 4000);
+  }
+
+  // Poll for an element to appear, then click it (used to drive async UI).
+  function pollClick(getter, timeoutMs) {
+    const start = Date.now();
+    const iv = setInterval(() => {
+      if (!tour.active || Date.now() - start > timeoutMs) { clearInterval(iv); return; }
+      const el = getter();
+      if (el) { clearInterval(iv); el.click(); }
+    }, 140);
+  }
+
+  /* ── chapters: each feature is a guided, auto-playing mini-walkthrough ── */
+  const CHAPTERS = [
     {
-      chip: 0, title: '1. Floating Lens',
-      body: "Riya ne Hinglish me message bheja. Toolbar me ◎ Lens button tap karo — ek lens ball screen pe aa jayegi. Phir use message par drag karke chhodo: wo Hindi me translate karegi aur English me reply bhi suggest karegi.",
-      target: () => $('.icon-btn[data-action="lens"]'),
-      arm() { this._await = 'lens-done'; },
+      chip: 0,
+      title: { en: 'Chapter 1 · Floating Lens', hi: 'अध्याय 1 · फ़्लोटिंग लेंस' },
+      intro: {
+        en: "The Floating Lens reads & translates text in ANY app — and even writes replies for you. Watch it on Riya's message 👇",
+        hi: 'फ़्लोटिंग लेंस किसी भी ऐप में टेक्स्ट पढ़कर अनुवाद करता है — और आपके लिए रिप्लाई भी लिखता है। रिया के मैसेज पर देखिए 👇',
+      },
+      steps: [
+        { target: () => $('.icon-btn[data-action="lens"]'), run: autoLensAppear,
+          tip: { en: 'Tap the ◎ Lens — a floating orb pops out and stays on top of any app.', hi: '◎ लेंस दबाएँ — एक फ़्लोटिंग ऑर्ब निकलता है जो किसी भी ऐप के ऊपर रहता है।' } },
+        { target: null, run: autoLensTranslate,
+          tip: { en: 'Drag it onto the message — it instantly translates to Hindi. 🌐', hi: 'इसे मैसेज पर खींचें — यह तुरंत हिंदी में अनुवाद कर देता है। 🌐' } },
+        { target: null, run: autoLensReplies,
+          tip: { en: 'No typing needed — tap “Suggest replies” for 3 instant AI replies.', hi: 'टाइप करने की ज़रूरत नहीं — “Suggest replies” दबाएँ, 3 इंस्टैंट AI रिप्लाई मिलेंगे।' } },
+        { target: null, run: autoLensPickReply,
+          tip: { en: 'Pick one — sent! 🎉 The Lens works in WhatsApp, Instagram, games… everywhere.', hi: 'कोई एक चुनें — भेज दिया! 🎉 लेंस WhatsApp, Instagram, गेम्स… हर जगह काम करता है।' } },
+      ],
     },
     {
-      chip: 1, title: '2. Hinglish ↔ English',
-      body: "Now type a Hinglish line on the keyboard, then tap the ⇄ Translate button. You'll get a clean English version as a suggestion — tap it to drop it into the message box.",
-      target: () => $('.icon-btn[data-action="translate"]'),
-      arm() { keyboard.setBuffer('kal subah milte hain'); this._await = 'translate-done'; },
+      chip: 1,
+      title: { en: 'Chapter 2 · Hinglish ↔ English', hi: 'अध्याय 2 · हिंग्लिश ↔ इंग्लिश' },
+      intro: {
+        en: 'Type the way you talk — in Hinglish — and turn it into clean English in one tap.',
+        hi: 'जैसे आप बोलते हैं वैसे टाइप करें — हिंग्लिश में — और एक टैप में साफ़ अंग्रेज़ी बनाएँ।',
+      },
+      steps: [
+        { target: null, run: () => autoType('kal subah milte hain'),
+          tip: { en: 'Watch — we type a Hinglish line for you…', hi: 'देखिए — हम आपके लिए एक हिंग्लिश लाइन टाइप कर रहे हैं…' } },
+        { target: () => $('.icon-btn[data-action="translate"]'), run: () => runTranslate(),
+          tip: { en: 'Tap ⇄ Translate — AI rewrites it in natural English.', hi: '⇄ ट्रांसलेट दबाएँ — AI इसे नैचुरल अंग्रेज़ी में बदल देता है।' } },
+        { target: null, run: autoApplySuggestion,
+          tip: { en: 'Tap the suggestion and it drops straight into your message. Done!', hi: 'सुझाव पर टैप करें और वह सीधे आपके मैसेज में आ जाता है। हो गया!' } },
+      ],
     },
     {
-      chip: 2, title: '3. AI Quick Tools',
-      body: "Type a line, then tap the ▦ Quick Tools button. Pick any one-tap action — Fix Grammar, Make Formal, Funny, etc. — aur AI turant aapke text ko rewrite karke suggestion me dega.",
-      target: () => $('.icon-btn[data-action="quick"]'),
-      arm() { keyboard.setBuffer('bro kal ka plan pakka hai na'); this._await = 'quick-done'; },
+      chip: 2,
+      title: { en: 'Chapter 3 · AI Quick Tools', hi: 'अध्याय 3 · एआई क्विक टूल्स' },
+      intro: {
+        en: '14 one-tap AI tools — Fix Grammar, Make Formal, Funny, Polite & more — right on the keyboard.',
+        hi: '14 वन-टैप AI टूल्स — Fix Grammar, Make Formal, Funny, Polite और भी — सीधे कीबोर्ड पर।',
+      },
+      steps: [
+        { target: null, run: () => autoType('bro kal ka plan pakka hai na'),
+          tip: { en: 'Say you typed a rough message…', hi: 'मान लीजिए आपने एक रफ़ मैसेज टाइप किया…' } },
+        { target: () => $('.icon-btn[data-action="quick"]'), run: () => { if (kbPanel.hidden) toggleQuickActions(); },
+          tip: { en: 'Open ▦ Quick Tools to see all 14 one-tap actions.', hi: 'सभी 14 वन-टैप एक्शन देखने के लिए ▦ क्विक टूल्स खोलें।' } },
+        { target: null, run: autoQuickAction,
+          tip: { en: 'Tap one — like “Make Formal” — and AI rewrites it instantly.', hi: 'कोई एक दबाएँ — जैसे “Make Formal” — और AI तुरंत उसे फिर से लिख देता है।' } },
+      ],
     },
     {
-      chip: 3, title: '4. Voice Typing',
-      body: "Aakhri me — 🎙 mic tap karo aur bolna shuru karo. TypeAura aapki awaaz ko seedhe message box me text bana dega. (Browser me Chrome/Edge par; app me kisi bhi Android phone par.) Ho gaya tour!",
-      target: () => $('.icon-btn[data-action="mic"]'),
-      arm() { this._await = 'voice-done'; },
+      chip: 3,
+      title: { en: 'Chapter 4 · Voice Typing', hi: 'अध्याय 4 · वॉइस टाइपिंग' },
+      intro: {
+        en: 'Just speak — even in Hindi or Hinglish — and TypeAura types it out in clean English.',
+        hi: 'बस बोलिए — हिंदी या हिंग्लिश में भी — और TypeAura उसे साफ़ अंग्रेज़ी में टाइप कर देता है।',
+      },
+      steps: [
+        { target: () => $('.icon-btn[data-action="mic"]'), run: () => simulateVoice(true),
+          tip: { en: 'Tap 🎙 and speak naturally. (Here we play a sample.)', hi: '🎙 दबाएँ और सहज होकर बोलें। (यहाँ हम एक सैंपल दिखा रहे हैं।)' } },
+        { target: null, run: null,
+          tip: { en: 'See? Your speech becomes clean English automatically. That’s the full TypeAura! 🎉', hi: 'देखा? आपकी आवाज़ अपने-आप साफ़ अंग्रेज़ी बन जाती है। यही है पूरा TypeAura! 🎉' } },
+      ],
     },
   ];
 
   const tour = {
-    i: -1,
-    active: false,
-    _await: null,
+    ci: 0, si: 0, active: false, phase: 'intro', _curTarget: null,
+
+    notify() {},   // no-op (kept so feature fns can call it harmlessly)
 
     start() {
       this.active = true;
-      this.i = -1;
-      this.next();
+      coachSkipBtn.textContent = UI_TEXT[lang].skip;
+      this.ci = 0;
+      this._enterChapter();
     },
 
-    notify(event) {
-      if (this.active && this._await === event) {
-        this._await = null;
-        setTimeout(() => this.next(), 900);
+    _markChips() {
+      const ch = CHAPTERS[this.ci];
+      steps.forEach((c, idx) => {
+        c.classList.toggle('active', idx === ch.chip);
+        c.classList.toggle('done', idx < ch.chip);
+      });
+    },
+
+    _resetStage() {
+      overlay.innerHTML = '';
+      lensBall = null;
+      setActiveTool(null);
+      keyboard.setBuffer('');
+      clearSuggestions();
+      clearTimeout(riyaTimer);
+      const t = chatBody.querySelector('.bubble.typing'); if (t) t.remove();
+      if (kbPanel && !kbPanel.hidden) { kbPanel.hidden = true; kbPanel.innerHTML = ''; kbKeys.hidden = false; }
+    },
+
+    _enterChapter() {
+      this._resetStage();
+      this.phase = 'intro';
+      this.si = 0;
+      this._curTarget = null;
+      this._markChips();
+      const ch = CHAPTERS[this.ci];
+      coachNextBtn.textContent = UI_TEXT[lang].start;
+      this._show(ch.title[lang], ch.intro[lang], null);
+    },
+
+    _runStep() {
+      const ch = CHAPTERS[this.ci];
+      const step = ch.steps[this.si];
+      const lastOfTour = (this.ci === CHAPTERS.length - 1) && (this.si === ch.steps.length - 1);
+      coachNextBtn.textContent = lastOfTour ? UI_TEXT[lang].finishBtn : UI_TEXT[lang].next;
+      this._curTarget = step.target || null;
+      this._show(ch.title[lang], step.tip[lang], this._curTarget ? this._curTarget() : null);
+      if (step.run) { try { step.run(); } catch (_) {} }
+    },
+
+    advance() {
+      if (!this.active) return;
+      if (this.phase === 'intro') {
+        this.phase = 'step';
+        this.si = 0;
+        this._runStep();
+        return;
       }
-    },
-
-    next() {
-      // mark previous chip done & clear any popup/sheet left from the last step
-      if (this.i >= 0) {
-        steps[STEPS[this.i].chip].classList.remove('active');
-        steps[STEPS[this.i].chip].classList.add('done');
-        overlay.innerHTML = '';
-        setActiveTool(null);
+      const ch = CHAPTERS[this.ci];
+      this.si++;
+      if (this.si >= ch.steps.length) {
+        steps[ch.chip].classList.remove('active');
+        steps[ch.chip].classList.add('done');
+        this.ci++;
+        if (this.ci >= CHAPTERS.length) return this.finish();
+        this._enterChapter();
+        return;
       }
-      this.i++;
-      if (this.i >= STEPS.length) return this.finish();
-      const step = STEPS[this.i];
-      this._await = null;
-      steps[step.chip].classList.add('active');
-      coachTitle.textContent = step.title;
-      coachBody.textContent = step.body;
-      step.arm && step.arm.call(step);
-      this._spotlight(step.target());
+      this._runStep();
     },
 
-    _spotlight(targetEl) {
+    _show(title, body, target) {
+      coachTitle.textContent = title;
+      coachBody.textContent = body;
+      this._place(target);
+    },
+
+    _place(targetEl) {
       coachLayer.hidden = false;
-      // remove old spotlight
       const old = coachLayer.querySelector('.coach-spotlight');
       if (old) old.remove();
-      if (!targetEl) return;
-      const stage = document.getElementById('demoStage').getBoundingClientRect();
-      const r = targetEl.getBoundingClientRect();
-      const spot = document.createElement('div');
-      spot.className = 'coach-spotlight';
-      const pad = 6;
-      spot.style.left   = (r.left - stage.left - pad) + 'px';
-      spot.style.top    = (r.top - stage.top - pad) + 'px';
-      spot.style.width  = (r.width + pad * 2) + 'px';
-      spot.style.height = (r.height + pad * 2) + 'px';
-      coachLayer.insertBefore(spot, coachTooltip);
+      const stageEl = document.getElementById('demoStage');
+      const stage = stageEl.getBoundingClientRect();
 
-      // place tooltip below the target if room, else above
-      const stageH = stage.height;
-      const ttTop = (r.bottom - stage.top + 16);
-      if (ttTop + 160 < stageH) {
-        coachTooltip.style.top = ttTop + 'px';
-        coachTooltip.style.bottom = 'auto';
-      } else {
-        coachTooltip.style.top = Math.max(8, r.top - stage.top - 170) + 'px';
-        coachTooltip.style.bottom = 'auto';
+      // spotlight ring on the target (inside the phone), if any
+      if (targetEl) {
+        const r = targetEl.getBoundingClientRect();
+        const spot = document.createElement('div');
+        spot.className = 'coach-spotlight';
+        const pad = 6;
+        spot.style.left   = (r.left - stage.left - pad) + 'px';
+        spot.style.top    = (r.top - stage.top - pad) + 'px';
+        spot.style.width  = (r.width + pad * 2) + 'px';
+        spot.style.height = (r.height + pad * 2) + 'px';
+        coachLayer.insertBefore(spot, coachTooltip);
       }
-      const left = Math.min(Math.max(8, r.left - stage.left - 40), stage.width - 290);
-      coachTooltip.style.left = left + 'px';
+
+      // tooltip: beside the phone on desktop (fills the empty space), pinned to
+      // the bottom on narrow screens — always visually tied to the phone.
+      const phone = stageEl.querySelector('.phone-mockup');
+      const pr = phone.getBoundingClientRect();
+      const ttW = coachTooltip.offsetWidth || 300;
+      const ttH = coachTooltip.offsetHeight || 180;
+      coachTooltip.style.bottom = 'auto';
+
+      if (stage.width > 760) {
+        // to the right of the phone, else to the left if no room
+        let left = (pr.right - stage.left) + 28;
+        if (left + ttW > stage.width - 8) left = (pr.left - stage.left) - ttW - 28;
+        left = Math.max(8, left);
+        const top = Math.min(Math.max(8, (pr.top - stage.top) + 40), stage.height - ttH - 8);
+        coachTooltip.style.left = left + 'px';
+        coachTooltip.style.top = top + 'px';
+      } else {
+        const w = Math.min(ttW, stage.width - 16);
+        coachTooltip.style.left = Math.max(8, (stage.width - w) / 2) + 'px';
+        coachTooltip.style.top = 'auto';
+        coachTooltip.style.bottom = '12px';
+      }
     },
 
     finish() {
@@ -647,40 +951,56 @@
       coachLayer.hidden = true;
       const old = coachLayer.querySelector('.coach-spotlight');
       if (old) old.remove();
-      toast('🎉 Tour complete! Now play freely — or grab the app.');
-      clearSuggestions();
+      steps.forEach(c => { c.classList.remove('active'); c.classList.add('done'); });
+      this._resetStage();
+      toast(UI_TEXT[lang].finish);
     },
 
     skip() { this.finish(); },
   };
 
-  document.getElementById('coachNext').addEventListener('click', () => {
-    // Next acts as "I'll do it / move on" — clears any pending await.
-    tour._await = null; tour.next();
-  });
-  document.getElementById('coachSkip').addEventListener('click', () => tour.skip());
+  coachNextBtn.addEventListener('click', () => tour.advance());
+  coachSkipBtn.addEventListener('click', () => tour.skip());
 
-  // keep spotlight aligned on resize/scroll while a tour step is active
+  // keep the spotlight aligned with its target on resize
   let reflow;
-  function reflowSpotlight() {
-    if (!tour.active || tour.i < 0 || tour.i >= STEPS.length) return;
-    tour._spotlight(STEPS[tour.i].target());
-  }
-  window.addEventListener('resize', () => { clearTimeout(reflow); reflow = setTimeout(reflowSpotlight, 120); });
+  window.addEventListener('resize', () => {
+    clearTimeout(reflow);
+    reflow = setTimeout(() => {
+      if (tour.active && tour.phase === 'step') tour._place(tour._curTarget ? tour._curTarget() : null);
+    }, 120);
+  });
 
   /* ───────────────────────── boot ───────────────────────── */
   function seedChat() {
     chat.reset();
     overlay.innerHTML = '';
-    chat.addBubble({ side: 'incoming', text: 'Hey! Kal subah free ho? Coffee pe milte hain ☕' });
+    chat.addBubble({ side: 'incoming', text: 'Hey! Free tomorrow for coffee? ☕' });
     keyboard.setBuffer('');
   }
 
+  // Language picker — shown when the demo starts (and on restart).
+  const langModal = document.getElementById('langModal');
+  function askLanguage() {
+    coachLayer.hidden = true;
+    langModal.hidden = false;
+  }
+  langModal.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-lang]');
+    if (!b) return;
+    lang = b.dataset.lang === 'hi' ? 'hi' : 'en';
+    langModal.hidden = true;
+    tour.start();
+  });
+
   function restart() {
     steps.forEach(s => s.classList.remove('active', 'done'));
+    tour.active = false;
+    overlay.innerHTML = '';
+    setActiveTool(null);
     seedChat();
     keyboard.render();
-    tour.start();
+    askLanguage();        // re-ask language on restart
   }
 
   document.getElementById('restartBtn').addEventListener('click', restart);
@@ -690,6 +1010,5 @@
   keyboard.render();
   seedChat();
   clearSuggestions();
-  // small delay so layout settles before measuring spotlight
-  setTimeout(() => tour.start(), 500);
+  setTimeout(askLanguage, 400);   // ask language, then start the tour
 })();
