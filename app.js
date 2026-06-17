@@ -154,15 +154,19 @@ const lightboxImg   = document.getElementById('lightboxImg');
 const lightboxLabel = document.getElementById('lightboxLabel');
 const lightboxClose = document.getElementById('lightboxClose');
 
-document.querySelectorAll('.screenshot-slot img').forEach(img => {
-  img.addEventListener('click', () => {
-    lightboxImg.src = img.src;
-    lightboxImg.alt = img.alt;
-    lightboxLabel.textContent = img.closest('.screenshot-slot')
-      ?.querySelector('.screenshot-label')?.textContent || '';
-    lightbox.classList.add('open');
-    document.body.style.overflow = 'hidden';
-  });
+function openLightbox(img) {
+  lightboxImg.src = img.src;
+  lightboxImg.alt = img.alt;
+  lightboxLabel.textContent = img.closest('.screenshot-slot')
+    ?.querySelector('.screenshot-label')?.textContent || '';
+  lightbox.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+// Delegated so cloned (carousel) slots open the lightbox too.
+document.getElementById('screenshotsRow')?.addEventListener('click', e => {
+  const img = e.target.closest('.screenshot-slot img');
+  if (img) openLightbox(img);
 });
 
 function closeLightbox() {
@@ -214,17 +218,145 @@ const navObserver = new IntersectionObserver((entries) => {
 
 navSections.forEach(s => navObserver.observe(s));
 
-// ── Screenshot dots ──────────────────────────────────────────────
-const screenshotsRow = document.getElementById('screenshotsRow');
-const dots = document.querySelectorAll('#screenshotDots .dot');
+// ── Screenshots: stepped "spotlight" carousel ───────────────────
+// The centre frame stays fixed. One slot sits centred & enlarged, holds
+// for DWELL ms, then the strip slides so the next slot lands in the frame.
+(function initScreenshotCarousel() {
+  const row = document.getElementById('screenshotsRow');
+  if (!row) return;
 
-screenshotsRow?.addEventListener('scroll', () => {
-  const slots = screenshotsRow.querySelectorAll('.screenshot-slot');
-  if (!slots.length) return;
-  const slotWidth = slots[0].offsetWidth + 12; // 12 = gap
-  const activeIndex = Math.min(Math.round(screenshotsRow.scrollLeft / slotWidth), dots.length - 1);
-  dots.forEach((dot, i) => dot.classList.toggle('active', i === activeIndex));
-}, { passive: true });
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const originals = [...row.children];
+  const N = originals.length;
+  if (!N) return;
+
+  const DWELL = 2000;   // hold the centred image for 2s
+  const SLIDE = 620;    // time to glide the next image into the frame
+
+  // Flank the originals with a cloned set on each side so every original can
+  // reach the dead-centre frame (it always has neighbours), and the forward
+  // slide past the last one loops back seamlessly.
+  const mkClone = (node) => {
+    const clone = node.cloneNode(true);
+    clone.setAttribute('aria-hidden', 'true');
+    const v = clone.querySelector('video');
+    if (v) { v.muted = true; v.play?.().catch(() => {}); }
+    return clone;
+  };
+  if (!reduce) {
+    const head = originals.map(mkClone);   // left flank
+    const tail = originals.map(mkClone);   // right flank
+    head.forEach(c => row.insertBefore(c, row.firstChild));
+    tail.forEach(c => row.appendChild(c));
+  }
+
+  const all = [...row.children];
+  // With flanks present the originals occupy [N .. 2N-1]; without (reduced
+  // motion) they stay at [0 .. N-1].
+  const FIRST = reduce ? 0 : N;
+  const WRAP  = FIRST + N;   // first right-flank index — reset point
+
+  let loopWidth = 0;
+  const measure = () => {
+    loopWidth = reduce ? 0 : (all[WRAP].offsetLeft - all[FIRST].offsetLeft);
+  };
+
+  // scrollLeft that puts element el dead-centre in the frame.
+  const centerOffsetFor = (el) =>
+    el.offsetLeft + el.offsetWidth / 2 - row.clientWidth / 2;
+
+  // Tag whichever slot is nearest the frame centre as the spotlight.
+  const updateCenter = () => {
+    const rect = row.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    let best = null, bestDist = Infinity;
+    for (const el of all) {
+      const r = el.getBoundingClientRect();
+      const d = Math.abs(r.left + r.width / 2 - cx);
+      if (d < bestDist) { bestDist = d; best = el; }
+    }
+    for (const el of all) el.classList.toggle('is-center', el === best);
+  };
+
+  const easeInOut = (p) => (p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2);
+
+  let timer = null, animating = false, paused = false, pos = 0;
+
+  function animateScrollTo(to, done) {
+    const from = row.scrollLeft;
+    const dist = to - from;
+    if (reduce || Math.abs(dist) < 1) { row.scrollLeft = to; updateCenter(); done && done(); return; }
+    const t0 = performance.now();
+    animating = true;
+    (function frame(now) {
+      const p = Math.min((now - t0) / SLIDE, 1);
+      row.scrollLeft = from + dist * easeInOut(p);
+      updateCenter();
+      if (p < 1) requestAnimationFrame(frame);
+      else { animating = false; done && done(); }
+    })(performance.now());
+  }
+
+  function scheduleAdvance() {
+    clearTimeout(timer);
+    timer = setTimeout(() => { runTo(pos + 1); }, DWELL);
+  }
+
+  function runTo(p) {
+    animateScrollTo(centerOffsetFor(all[p]), () => {
+      pos = p;
+      // Slid onto the right flank → snap back to the identical original.
+      if (pos >= WRAP) { pos -= N; row.scrollLeft -= loopWidth; updateCenter(); }
+      if (!paused) scheduleAdvance();
+    });
+  }
+
+  // Index (in `all`) of the slot currently nearest the frame centre.
+  const nearestIndex = () => {
+    const rect = row.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    let bi = pos, bd = Infinity;
+    for (let i = 0; i < all.length; i++) {
+      const r = all[i].getBoundingClientRect();
+      const d = Math.abs(r.left + r.width / 2 - cx);
+      if (d < bd) { bd = d; bi = i; }
+    }
+    return bi;
+  };
+
+  function pause()  { paused = true; clearTimeout(timer); }
+  function resume() {
+    if (!paused) return;
+    paused = false;
+    if (animating) return;
+    // After a manual swipe, adopt whatever is now centred (normalised back
+    // into the originals band) so the cycle continues from there — no jump.
+    if (!reduce && loopWidth > 0) {
+      const raw = nearestIndex();
+      let banded = ((raw - FIRST) % N + N) % N + FIRST;
+      row.scrollLeft -= ((raw - banded) / N) * loopWidth;
+      pos = banded;
+      updateCenter();
+    }
+    scheduleAdvance();
+  }
+
+  // Pause while the visitor hovers / touches / drags the strip.
+  ['mouseenter', 'touchstart'].forEach(ev => row.addEventListener(ev, pause,  { passive: true }));
+  ['mouseleave', 'touchend', 'touchcancel'].forEach(ev => row.addEventListener(ev, resume, { passive: true }));
+  document.addEventListener('visibilitychange', () => { document.hidden ? pause() : resume(); });
+  // Keep the spotlight tracking the finger during a manual swipe.
+  row.addEventListener('scroll', () => { if (!animating) updateCenter(); }, { passive: true });
+  window.addEventListener('resize', () => { measure(); row.scrollLeft = centerOffsetFor(all[pos]); });
+
+  window.addEventListener('load', () => {
+    measure();
+    pos = FIRST;
+    row.scrollLeft = centerOffsetFor(all[pos]);
+    updateCenter();
+    if (!reduce) scheduleAdvance();
+  });
+})();
 
 // ── Download toast ───────────────────────────────────────────────
 const downloadToast = document.getElementById('downloadToast');
