@@ -1318,8 +1318,8 @@
           BYOK is user-controlled (requires Groq key on device) — admin can only set Free or Premium.
         </p>
         <div class="plan-actions" id="planActions">
-          <button class="plan-btn ${tier === 'free' ? 'plan-btn-active' : ''}" onclick="setPlan('free')">Free (51/day)</button>
-          <button class="plan-btn ${tier === 'premium' ? 'plan-btn-active' : ''}" onclick="setPlan('premium')">Premium (100/day)</button>
+          <button class="plan-btn ${tier === 'free' ? 'plan-btn-active' : ''}" onclick="setPlan('free')">Free (10k tok/day)</button>
+          <button class="plan-btn ${tier === 'premium' ? 'plan-btn-active' : ''}" onclick="setPlan('premium')">Premium (50k tok/day)</button>
           ${device.admin_plan_override
             ? `<button class="plan-btn plan-btn-clear" onclick="clearPlanOverride()">Clear Override</button>`
             : ''}
