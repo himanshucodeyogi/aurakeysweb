@@ -1092,6 +1092,25 @@
             </div>
           </div>
 
+          <!-- ── Global Config (remote feature switches) ── -->
+          <div class="table-wrap" style="padding:26px;border-radius:var(--radius);margin-top:22px">
+            <h3 style="font-size:16px;font-weight:700;margin-bottom:4px;background:linear-gradient(90deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:inline-block">Global Config</h3>
+            <p style="color:var(--text2);font-size:12.5px;margin-bottom:20px">Remote feature switches — applied to every device on its next ping. No app release needed.</p>
+
+            <!-- BYOK plan switch -->
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;border-top:1px solid var(--border)">
+              <div>
+                <div style="font-size:14px;font-weight:600">Bring Your Own Key (BYOK)</div>
+                <div style="color:var(--text2);font-size:12px;margin-top:2px">When OFF, BYOK is hidden in the app and those users fall back to the Free quota. Stored keys are kept.</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
+                <span id="byok-state" style="font-size:13px;font-weight:600;color:var(--text2)">—</span>
+                <button class="btn-primary" id="byok-toggle" style="justify-content:center" onclick="toggleByok()">…</button>
+              </div>
+            </div>
+            <span id="config-status" style="font-size:13px"></span>
+          </div>
+
         </div>
       </div><!-- /tab-update -->
 
@@ -1445,7 +1464,7 @@
       });
       document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
       document.getElementById(`tab-${name}`).classList.add('active');
-      if (name === 'update')  loadLiveVersion();
+      if (name === 'update')  { loadLiveVersion(); loadGlobalConfig(); }
       if (name === 'crashes') loadCrashes(1);
       if (name === 'aitools') loadAiTools(1);
     }
@@ -1589,6 +1608,66 @@
       } catch (e) {
         statusEl.style.color = '#FF5252';
         statusEl.textContent = `Failed: ${e.message}`;
+      }
+    }
+
+    // ── Global Config (remote feature switches) ──────────────
+    let _byokEnabled = true;
+
+    function renderByokSwitch() {
+      const stateEl = document.getElementById('byok-state');
+      const btnEl   = document.getElementById('byok-toggle');
+      if (_byokEnabled) {
+        stateEl.textContent = 'Enabled';
+        stateEl.style.color = 'var(--green)';
+        btnEl.textContent = 'Disable BYOK';
+        btnEl.style.background = '#FF5252';
+      } else {
+        stateEl.textContent = 'Disabled';
+        stateEl.style.color = '#FF5252';
+        btnEl.textContent = 'Enable BYOK';
+        btnEl.style.background = '';
+      }
+    }
+
+    async function loadGlobalConfig() {
+      try {
+        const res  = await authFetch('/api/admin/set-config');
+        const data = await res.json();
+        _byokEnabled = data.byok_enabled !== false; // default on
+        renderByokSwitch();
+      } catch (_) {
+        document.getElementById('byok-state').textContent = 'Failed to load';
+      }
+    }
+
+    async function toggleByok() {
+      const next     = !_byokEnabled;
+      const statusEl = document.getElementById('config-status');
+      const btnEl    = document.getElementById('byok-toggle');
+      const verb     = next ? 'enable' : 'disable';
+      if (!confirm(`Are you sure you want to ${verb} the BYOK plan for ALL users?`)) return;
+
+      btnEl.disabled = true;
+      statusEl.style.color = 'var(--text2)';
+      statusEl.textContent = `${next ? 'Enabling' : 'Disabling'} BYOK…`;
+      try {
+        const res = await fetch(`${API_BASE}/api/admin/set-config`, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AUTH_TOKEN}` },
+          body:    JSON.stringify({ byok_enabled: next }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || `Error ${res.status}`);
+        _byokEnabled = data.byok_enabled !== false;
+        renderByokSwitch();
+        statusEl.style.color = 'var(--green)';
+        statusEl.textContent = `✓ BYOK ${_byokEnabled ? 'enabled' : 'disabled'}. Devices apply it on their next ping.`;
+      } catch (e) {
+        statusEl.style.color = '#FF5252';
+        statusEl.textContent = `Failed: ${e.message}`;
+      } finally {
+        btnEl.disabled = false;
       }
     }
 
