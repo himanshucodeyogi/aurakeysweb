@@ -128,7 +128,7 @@
   <!-- HERO -->
   <section class="privacy-hero container">
     <h1>Privacy Policy</h1>
-    <p class="updated">Last updated: June 14, 2026</p>
+    <p class="updated">Last updated: June 28, 2026</p>
   </section>
 
   <!-- BODY -->
@@ -146,6 +146,8 @@
         <li><strong>Device Info</strong> — device manufacturer, model name, and Android version. Used only to understand which devices TypeAura runs on.</li>
         <li><strong>Install & Last-use Timestamps</strong> — used to calculate usage streaks shown inside the app.</li>
         <li><strong>Crash Reports</strong> — if the app crashes or encounters an error, we collect: the anonymous device ID, app version, error type, first line of the error message, a truncated stack trace (max 8 KB), and whether the error was fatal. This is sent automatically to help us fix bugs. <strong>No personally identifiable text is included.</strong></li>
+        <li><strong>Your own AI key (optional — "Bring Your Own Key")</strong> — if you choose to enter your own Groq API key, it is stored <strong>only on your device</strong> using the Android Keystore (encrypted secure storage). It is never uploaded to or stored on our servers. See section 8a.</li>
+        <li><strong>Hashed device identifier (for purchase restore)</strong> — we send a one-way <strong>hash (SHA-256)</strong> of your device's Android ID. The raw Android ID never leaves your device. This lets us restore a Premium purchase to the same physical device if you reinstall the app, without you having to pay again. It is not linked to your name, phone number, email, or advertising ID.</li>
       </ul>
     </div>
 
@@ -160,7 +162,7 @@
     <div class="privacy-card">
       <ul>
         <li><strong>Anonymous device ID</strong> — same UUID used for analytics</li>
-        <li><strong>App version</strong> — version number and build number (e.g. 2.0.4+5)</li>
+        <li><strong>App version</strong> — version number and build number (e.g. 2.0.10+11)</li>
         <li><strong>App mode</strong> — whether the error occurred in the keyboard or the main app</li>
         <li><strong>Error type</strong> — category: flutter_error, platform_error, or zone_error</li>
         <li><strong>Error message</strong> — first line of the exception only</li>
@@ -222,6 +224,17 @@
       </ul>
     </div>
     <p>We do not sell, trade, or share your data with any third party for advertising or marketing purposes.</p>
+
+    <h2>8a. Bring Your Own Key (BYOK)</h2>
+    <p>TypeAura offers an optional <strong>Bring Your Own Key</strong> mode in which you can supply your own Groq API key to power AI features under your own account.</p>
+    <ul>
+      <li>Your key is stored <strong>locally on your device only</strong>, in encrypted secure storage (Android Keystore via <code>flutter_secure_storage</code>).</li>
+      <li>It is <strong>never sent to, logged by, or stored on our backend.</strong> When BYOK is active, your translation requests are sent directly to Groq authenticated with your key.</li>
+      <li>You can remove your key at any time from the app, which deletes it from your device. Disabling BYOK reverts you to the standard backend flow described in section 2.</li>
+    </ul>
+
+    <h2>8b. Payments (optional)</h2>
+    <p>TypeAura is free to use. If a paid <strong>Premium</strong> upgrade is offered, payments are processed by our payment provider <strong>Razorpay</strong>. <strong>TypeAura never sees or stores your card, UPI, or bank details</strong> — these are entered directly into Razorpay's secure checkout. We retain only a payment/order identifier and the Premium expiry date associated with your anonymous device ID and the hashed device identifier described in section 1, solely to unlock your Premium access and to restore it automatically if you reinstall the app on the same device. This feature is optional and may not be enabled in your region or app version.</p>
 
     <h2>9. Security</h2>
     <p>All data transmitted between the app and our servers is encrypted using <strong>HTTPS (TLS)</strong>. No personal data is transmitted in plain text. Our backend is hosted on Vercel, which enforces HTTPS on all endpoints by default.</p>
