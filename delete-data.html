@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Delete Your Data — TypeAura AI Keyboard</title>
+  <meta name="description" content="Request deletion of all data associated with your TypeAura device. TypeAura stores only an anonymous device ID and usage stats — never your typed text. Clear data in-app or request full deletion here." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://typeaura.indevs.in/delete-data.html" />
+  <link rel="icon" type="image/png" href="img/icon.png" />
+  <link rel="apple-touch-icon" href="img/icon.png" />
+  <meta name="theme-color" content="#0a84ff" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .privacy-hero {
+      padding: 80px 0 40px;
+      text-align: center;
+    }
+    .privacy-hero h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+    .privacy-hero .updated {
+      color: var(--text2);
+      font-size: 0.9rem;
+    }
+    .privacy-body {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+    }
+    .privacy-body h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 40px 0 12px;
+    }
+    .privacy-body p, .privacy-body li {
+      color: #C8CACC;
+      line-height: 1.8;
+      margin-bottom: 10px;
+    }
+    .privacy-body ul, .privacy-body ol {
+      padding-left: 20px;
+    }
+    .privacy-body ul li, .privacy-body ol li {
+      margin-bottom: 6px;
+    }
+    .privacy-body a {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+    .privacy-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-top: 16px;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text2);
+      font-size: 0.9rem;
+      margin-bottom: 40px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--accent); }
+
+    /* Deletion form */
+    .delete-form { margin-top: 18px; }
+    .delete-form label {
+      display: block;
+      color: #C8CACC;
+      font-size: 0.92rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .delete-form input[type="text"] {
+      width: 100%;
+      box-sizing: border-box;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 15px;
+      padding: 13px 15px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .delete-form input[type="text"]:focus { border-color: var(--accent); }
+    .delete-form .hint { font-size: 0.82rem; color: var(--text2); margin: 8px 0 0; }
+    .delete-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 18px;
+      width: 100%;
+      padding: 14px 18px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      color: #fff;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s, opacity 0.2s;
+    }
+    .delete-btn:hover { transform: translateY(-1px); }
+    .delete-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .form-msg { margin-top: 12px; font-size: 0.88rem; min-height: 1.2em; }
+    .form-msg.err { color: #ff6b6b; }
+    .form-msg.ok { color: #4cd07d; }
+
+    @media (max-width: 900px) {
+      .navbar .btn-nav { display: inline-flex !important; padding: 8px 14px; font-size: 12px; }
+      .nav-inner       { justify-content: space-between; gap: 12px; }
+    }
+    @media (max-width: 600px) {
+      .privacy-hero        { padding: 56px 0 24px; }
+      .privacy-hero h1     { font-size: 1.9rem; }
+      .privacy-hero .updated { font-size: 0.82rem; }
+      .privacy-body        { padding: 0 16px 56px; }
+      .privacy-body h2     { font-size: 1.05rem; margin: 32px 0 10px; }
+      .privacy-body p,
+      .privacy-body li     { font-size: 14.5px; line-height: 1.7; }
+      .privacy-card        { padding: 18px 18px; border-radius: 12px; }
+      .privacy-body ul     { padding-left: 18px; }
+      .back-link           { margin-bottom: 28px; }
+      .navbar .btn-nav     { padding: 7px 12px; font-size: 11.5px; }
+    }
+    @media (max-width: 380px) {
+      .privacy-hero h1     { font-size: 1.65rem; }
+      .privacy-body h2     { font-size: 1rem; }
+      .privacy-body p,
+      .privacy-body li     { font-size: 14px; }
+      .privacy-card        { padding: 16px 14px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="scroll-progress" id="scrollBar"></div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html" style="text-decoration:none;display:flex;align-items:center;gap:8px">
+        <span class="logo-emoji">⌨️</span>
+        <span class="logo-text">TypeAura</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html#features">Features</a>
+        <a href="index.html#install">Install</a>
+        <a href="privacy.html">Privacy</a>
+      </div>
+      <a href="typeaura.apk" class="btn-nav">Download APK</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="privacy-hero container">
+    <h1>Delete Your Data</h1>
+    <p class="updated">Last updated: June 30, 2026</p>
+  </section>
+
+  <!-- BODY -->
+  <div class="privacy-body">
+
+    <a href="index.html" class="back-link">← Back to home</a>
+
+    <p>TypeAura is built to be privacy-first. We do <strong>not</strong> collect your name, email, phone number, Google account, or advertising ID, and we <strong>never store the text you type</strong>. The only data tied to you is an <strong>anonymous device ID</strong> and basic usage statistics. This page explains exactly what we hold and gives you two ways to delete it.</p>
+
+    <h2>1. What data is associated with your device</h2>
+    <div class="privacy-card">
+      <ul>
+        <li><strong>Anonymous device ID</strong> — a randomly generated UUID created on first install (not linked to your identity).</li>
+        <li><strong>Hashed device identifier</strong> — a one-way SHA-256 hash of your Android ID, used only to restore a Premium purchase to the same physical device. The raw Android ID never leaves your device.</li>
+        <li><strong>Usage statistics</strong> — anonymous event counters (e.g. "keyboard_opened", "ai_used"), install/last-use dates, daily AI token counts, and device model / Android version.</li>
+        <li><strong>Crash reports</strong> — sanitized error logs (app version, error type, truncated stack trace). No typed text or personal data.</li>
+        <li><strong>Payment records (only if you purchased Premium)</strong> — a payment/order identifier, Premium expiry date, and a restore code linked to your anonymous device ID. We never store card, UPI, or bank details (those are handled by Razorpay).</li>
+      </ul>
+    </div>
+    <p>We do <strong>not</strong> store: your typed text, clipboard contents, voice audio, translation inputs/outputs, your Bring-Your-Own-Key Groq API key, or any personally identifiable information.</p>
+
+    <h2>2. Option A — Clear data instantly inside the app</h2>
+    <p>You can wipe all locally stored analytics and queued data yourself, at any time, without contacting us:</p>
+    <div class="privacy-card">
+      <ol>
+        <li>Open the <strong>TypeAura</strong> app.</li>
+        <li>Go to <strong>Settings → Privacy &amp; Security</strong>.</li>
+        <li>Tap <strong>Clear Analytics Data</strong>.</li>
+      </ol>
+    </div>
+    <p class="hint" style="color:var(--text2);font-size:0.85rem;">This clears the data stored on your device and stops further syncing. To also remove records already stored on our servers, use Option B below.</p>
+
+    <h2>3. Option B — Request full server-side deletion</h2>
+    <p>To delete <strong>everything</strong> associated with your device from our backend (analytics, events, crash logs, and any payment/restore records), submit a deletion request below. Your device ID is shown in the app under <strong>Settings → Privacy &amp; Security</strong> (you can also leave it blank and we'll match by the email you send from, if you contacted us before).</p>
+
+    <div class="privacy-card">
+      <form class="delete-form" id="deleteForm" onsubmit="return false;">
+        <label for="deviceId">Your anonymous Device ID (optional but recommended)</label>
+        <input type="text" id="deviceId" name="deviceId" placeholder="e.g. a1b2c3d4-…  (Settings → Privacy &amp; Security)" autocomplete="off" />
+        <p class="hint">We use this only to locate and erase your records. If you don't know it, you can still send the request.</p>
+        <button type="submit" class="delete-btn" id="submitBtn">📧 Send deletion request</button>
+        <p class="form-msg" id="formMsg" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+
+    <h2>4. What happens next</h2>
+    <ul>
+      <li>Deletion requests are processed within <strong>30 days</strong> of receipt.</li>
+      <li>All records linked to the device ID (or the requesting email) are permanently removed from our database.</li>
+      <li>We may send a short confirmation email once deletion is complete.</li>
+      <li>Note: deleting your data does not cancel a Premium purchase. If you delete the restore record, automatic Premium recovery on reinstall will no longer be possible.</li>
+    </ul>
+
+    <h2>5. Data retention</h2>
+    <p>Even without a request, analytics data is automatically deleted after a maximum of <strong>12 months</strong>. Crash reports are retained only for a limited debugging period.</p>
+
+    <h2>6. Contact</h2>
+    <p>If the form above doesn't work, or you have any questions about deletion, email us directly:</p>
+    <div class="privacy-card">
+      <p><strong>Himanshu Kashyap</strong><br />
+      Email: <a href="mailto:himanshuapps.dev@gmail.com?subject=TypeAura%20Data%20Deletion%20Request">himanshuapps.dev@gmail.com</a><br />
+      App: TypeAura — AI Keyboard</p>
+    </div>
+
+    <p style="margin-top:24px;font-size:0.85rem;color:var(--text2);">See also our full <a href="privacy.html">Privacy Policy</a>.</p>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer style="text-align:center; padding: 24px 16px; border-top: 1px solid var(--border); color: var(--text2); font-size: 0.85rem; line-height: 1.6;">
+    © 2026 TypeAura by Himanshu Kashyap &nbsp;·&nbsp;
+    <a href="privacy.html" style="color: var(--accent);">Privacy Policy</a> &nbsp;·&nbsp;
+    <a href="delete-data.html" style="color: var(--accent);">Delete Data</a>
+  </footer>
+
+  <script>
+    const bar = document.getElementById('scrollBar');
+    window.addEventListener('scroll', () => {
+      const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+      bar.style.width = pct + '%';
+    });
+
+    const DELETE_EMAIL = 'himanshuapps.dev@gmail.com';
+    document.getElementById('deleteForm').addEventListener('submit', function () {
+      const id = document.getElementById('deviceId').value.trim();
+      const msg = document.getElementById('formMsg');
+      const subject = encodeURIComponent('TypeAura Data Deletion Request');
+      const body = encodeURIComponent(
+        'I request deletion of all data associated with my TypeAura device.\n\n' +
+        'Device ID: ' + (id || '(not provided)') + '\n\n' +
+        'Please delete all analytics, events, crash logs, and payment/restore records linked to this device, and confirm once done. Thank you.'
+      );
+      window.location.href = 'mailto:' + DELETE_EMAIL + '?subject=' + subject + '&body=' + body;
+      msg.className = 'form-msg ok';
+      msg.textContent = 'Opening your email app… if nothing happens, email ' + DELETE_EMAIL + ' directly.';
+    });
+  </script>
+
+</body>
+</html>
