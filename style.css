@@ -759,9 +759,11 @@ section[id] { scroll-margin-top: 70px; }
 ═══════════════════════════════════════════════════════════════ */
 .pricing-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
   align-items: start;
+  max-width: 760px;
+  margin: 0 auto;
 }
 
 .pricing-card {
@@ -782,7 +784,6 @@ section[id] { scroll-margin-top: 70px; }
 }
 
 .pricing-card--free:hover    { transform: translateY(-5px) scale(1.035); border-color: rgba(99,102,241,0.5);  box-shadow: 0 16px 42px rgba(99,102,241,0.16);  }
-.pricing-card--byok:hover    { transform: translateY(-5px) scale(1.035); border-color: rgba(16,185,129,0.5);  box-shadow: 0 16px 42px rgba(16,185,129,0.16);  }
 .pricing-card--premium:hover { transform: translateY(-5px) scale(1.035); border-color: rgba(139,92,246,0.55); box-shadow: 0 18px 48px rgba(139,92,246,0.22);  }
 
 /* ─── Card header: icon + plan name ─── */
@@ -860,7 +861,6 @@ section[id] { scroll-margin-top: 70px; }
   margin-top: 1px;
 }
 .pricing-card--free    .pricing-list li::before { color: #818CF8; }
-.pricing-card--byok    .pricing-list li::before { color: var(--green); }
 .pricing-card--premium .pricing-list li::before { color: var(--purple); }
 
 .pricing-list strong { color: var(--text); font-weight: 700; }

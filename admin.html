@@ -728,6 +728,8 @@
     .plan-btn:hover                { border-color: var(--accent); color: var(--accent); }
     .plan-btn.plan-btn-active      { background: rgba(138,180,248,0.18); color: var(--accent); border-color: rgba(138,180,248,0.45); }
     .plan-btn.plan-btn-clear:hover { border-color: #FFB300; color: #FFB300; }
+    .plan-btn.plan-btn-danger        { border-color: rgba(255,82,82,0.5); color: #FF5252; }
+    .plan-btn.plan-btn-danger:hover  { background: rgba(255,82,82,0.12); border-color: #FF5252; }
     .plan-btn:disabled             { opacity: 0.45; cursor: default; }
 
     @media (max-width: 1100px) {
@@ -1346,6 +1348,20 @@
         </div>
       `;
 
+      // ── Danger zone ─────────────────────────────────────────
+      html += `
+        <div class="events-title" style="color:#FF5252">Danger Zone</div>
+        <p style="color:var(--text2);font-size:12px;margin-bottom:8px">
+          Permanently deletes ALL data for this user: device records (plan, premium expiry,
+          recovery code, daily AI-token counters), events, crashes and payment records —
+          including every reinstall on the same hardware. Cannot be undone.
+        </p>
+        <div class="plan-actions" id="dangerActions">
+          <button class="plan-btn plan-btn-danger" onclick="deleteUserData()">Delete All User Data</button>
+          <span id="deleteActionStatus" style="font-size:12px;color:var(--text2);align-self:center"></span>
+        </div>
+      `;
+
       if (recent_events?.length) {
         html += `<div class="events-title">Recent Activity (last ${recent_events.length})</div>`;
         html += recent_events.map(e => `
@@ -1408,7 +1424,33 @@
     }
 
     function _disablePlanButtons(disabled) {
-      document.querySelectorAll('#planActions .plan-btn').forEach(b => b.disabled = disabled);
+      document.querySelectorAll('#planActions .plan-btn, #dangerActions .plan-btn')
+        .forEach(b => b.disabled = disabled);
+    }
+
+    // ── Danger zone: full user-data wipe ───────────────────────
+    async function deleteUserData() {
+      if (!currentDetailDeviceId) return;
+      if (!confirm('Permanently delete ALL data for this user?\n\nDevice records (plan, premium, recovery code, token counters), events, crashes and payment records — including reinstalls on the same hardware.\n\nThis cannot be undone.')) return;
+      const status = document.getElementById('deleteActionStatus');
+      _disablePlanButtons(true);
+      if (status) { status.style.color = 'var(--text2)'; status.textContent = 'Deleting…'; }
+      try {
+        const res = await fetch(`${API_BASE}/api/admin/delete-user`, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AUTH_TOKEN}` },
+          body:    JSON.stringify({ device_id: currentDetailDeviceId }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || `Error ${res.status}`);
+        const d = data.deleted || {};
+        alert(`Deleted: ${d.devices || 0} device(s), ${d.events || 0} events, ${d.crashes || 0} crashes, ${d.payments || 0} payment record(s).`);
+        closeDetailModal();
+        loadUsers(currentPage);
+      } catch (e) {
+        if (status) { status.style.color = '#FF5252'; status.textContent = `Failed: ${e.message}`; }
+        _disablePlanButtons(false);
+      }
     }
 
     function closeDetailModal() {
