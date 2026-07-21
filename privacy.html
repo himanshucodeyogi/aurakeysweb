@@ -113,7 +113,7 @@
   <!-- HERO -->
   <section class="privacy-hero container">
     <h1>Privacy Policy</h1>
-    <p class="updated">Last updated: June 28, 2026</p>
+    <p class="updated">Last updated: July 21, 2026</p>
   </section>
 
   <!-- BODY -->
@@ -130,16 +130,32 @@
         <li><strong>Usage Events</strong> — events such as "keyboard_opened", "ai_used", "voice_ai", "theme_changed". No text you type is ever included in these events.</li>
         <li><strong>Device Info</strong> — device manufacturer, model name, and Android version. Used only to understand which devices TypeAura runs on.</li>
         <li><strong>Install & Last-use Timestamps</strong> — used to calculate usage streaks shown inside the app.</li>
+        <li><strong>Plan tier &amp; AI usage counters</strong> — which plan you are on (Free or Premium) and the number of AI tokens your requests consumed, counted per day and in total. These are numeric counters used to apply daily usage limits and to show your usage inside the app. <strong>They never contain the text you sent.</strong></li>
         <li><strong>Crash Reports</strong> — if the app crashes or encounters an error, we collect: the anonymous device ID, app version, error type, first line of the error message, a truncated stack trace (max 8 KB), and whether the error was fatal. This is sent automatically to help us fix bugs. <strong>No personally identifiable text is included.</strong></li>
         <li><strong>Hashed device identifier (for purchase restore)</strong> — we send a one-way <strong>hash (SHA-256)</strong> of your device's Android ID. The raw Android ID never leaves your device. This lets us restore a Premium purchase to the same physical device if you reinstall the app, without you having to pay again. It is not linked to your name, phone number, email, or advertising ID.</li>
       </ul>
     </div>
 
-    <h2>2. How AI Translation Works</h2>
-    <p>When you tap the Translate button, the text in the keyboard input field is sent over HTTPS to our backend server (<code>typeaurabackend.vercel.app</code>), which forwards it to Groq (our AI provider) for processing. The result is returned immediately. <strong>This text is never stored on our servers.</strong></p>
-    <p>When you use the Clipboard Translate feature, only the text you explicitly choose to translate is sent — it is processed and discarded, not stored.</p>
-    <p>When the Floating Lens feature is active and you tap to translate selected on-screen text, that text (up to 600 characters) is sent to the same backend endpoint and is not stored.</p>
-    <p>If you tap the <strong>Reply</strong> button in the Floating Lens translation popup, the original on-screen text is also sent to our backend to generate 3 short AI reply suggestions. This text is processed in real-time and <strong>is never stored</strong>. The reply suggestions are returned immediately and displayed in the popup for you to choose from.</p>
+    <h2>2. AI Features — Exactly What Text Is Sent</h2>
+    <p>Every AI feature in TypeAura is <strong>user-initiated</strong>: text leaves your device only when you explicitly tap an AI action. In each case the text is sent over HTTPS to our backend server (<code>typeaurabackend.vercel.app</code>), which forwards it to Groq (our AI provider) for processing and returns the result immediately. <strong>This text is never stored on our servers.</strong></p>
+    <p>These are all of the features that send text for AI processing:</p>
+    <div class="privacy-card">
+      <ul>
+        <li><strong>Translate (keyboard)</strong> — the text currently in the input field.</li>
+        <li><strong>Clipboard Translate</strong> — only the copied text you explicitly choose to translate.</li>
+        <li><strong>Voice input</strong> — the transcribed text alternatives produced on your device (see section 5). Your audio is never sent to us.</li>
+        <li><strong>Floating Lens — Translate</strong> — the on-screen text you tap, up to 600 characters.</li>
+        <li><strong>Floating Lens — Reply</strong> — the tapped text <strong>plus a small amount of surrounding chat context</strong> (up to 2 nearby messages), used to generate 3 short reply suggestions. See section 4 for exactly what this context is.</li>
+        <li><strong>AI Chat</strong> — the messages you type in the chat screen, together with up to the last 10 turns of that same conversation so the AI can follow up correctly.</li>
+        <li><strong>Smart Reply</strong> — the incoming message you paste or type in.</li>
+        <li><strong>Email Composer</strong> — the subject and points you enter for the draft.</li>
+        <li><strong>Tone Changer</strong> — the text you enter and the tone you select.</li>
+        <li><strong>Live Translate</strong> — the text you enter or speak for translation.</li>
+        <li><strong>Text tools</strong> — the text you enter for the tool you select.</li>
+      </ul>
+    </div>
+    <p>Your AI Chat conversations are saved <strong>locally on your device only</strong>, in TypeAura's private app storage, so you can resume them. They are not uploaded to our servers and are deleted when you delete the conversation or uninstall the app.</p>
+    <p><strong>Nothing else you type is transmitted.</strong> The keyboard does not log or upload keystrokes, passwords, OTPs, or your messages in the background. Text is sent only for the actions listed above, only when you tap them.</p>
 
     <h2>3. Crash Reporting</h2>
     <p>TypeAura includes an automatic crash reporter that captures unhandled errors so we can identify and fix bugs. When a crash or error occurs, the following is collected and sent to our backend (<code>typeaurabackend.vercel.app/api/crash</code>):</p>
@@ -161,8 +177,11 @@
     <p>TypeAura includes an optional <strong>Floating Lens</strong> feature — a draggable overlay that lets you translate on-screen text in any app. When you enable this feature, the app registers an Android Accessibility Service (<code>BIND_ACCESSIBILITY_SERVICE</code>) for two purposes:</p>
     <ul>
       <li><strong>Reading text:</strong> When you tap the lens over text, the Accessibility Service reads the on-screen text at that position and sends it for translation. This text is never stored.</li>
+      <li><strong>Reading nearby context (Reply feature only):</strong> If you tap <strong>Reply</strong> to generate reply suggestions, the service additionally reads <strong>up to 2 messages displayed immediately above</strong> the one you tapped (each truncated to 300 characters), so the AI can understand the conversation it is replying to. For each of those messages it also makes a rough guess of who sent it, based purely on <em>where the message sits on screen</em> (left- vs right-aligned) — it does not read contact names, phone numbers, or profile information. This context is sent with your request, used to generate the suggestions, and <strong>never stored</strong>. It is read only at the moment you tap Reply, and not at all if you only use Translate.</li>
       <li><strong>Inserting text:</strong> When you select a reply suggestion from the Floating Lens popup, the Accessibility Service inserts the chosen reply directly into the currently focused input field of the active app (e.g. WhatsApp, Gmail). If no input field is focused, the reply is copied to your clipboard instead. The reply text is not sent to our servers during insertion.</li>
     </ul>
+
+    <p><strong>The service never acts on its own.</strong> It cannot and does not autonomously decide, plan, or perform actions in other apps. It performs exactly one action, exactly once, in direct response to you tapping a specific suggestion: writing that text into the field you already have focused. It does not tap buttons, navigate apps, send messages, or take any step you did not explicitly choose.</p>
 
     <p><strong>Strict privacy safeguards built into the code:</strong></p>
     <div class="privacy-card">
@@ -190,6 +209,18 @@
     <h2>6. Clipboard Access</h2>
     <p>TypeAura reads your clipboard to display recent clips in the Clipboard panel and to offer translation of copied text. Clipboard contents are stored locally on your device only (in app storage via SharedPreferences and in-memory) and are <strong>never automatically uploaded</strong>. They are only sent to our backend if you explicitly tap the Translate Clipboard button.</p>
 
+    <h2>6a. GIF Keyboard (optional)</h2>
+    <p>The emoji panel includes an optional <strong>GIF</strong> tab powered by <strong>Giphy</strong>. It is used only when you open that tab.</p>
+    <div class="privacy-card">
+      <ul>
+        <li><strong>Search &amp; trending:</strong> the search term you type in the GIF tab is sent to our backend (<code>typeaurabackend.vercel.app/api/gif</code>), which queries Giphy on our behalf and returns a trimmed list of results. Our Giphy key stays on the server and Giphy does not receive your device ID or any analytics data from us.</li>
+        <li><strong>Loading the GIF images:</strong> the GIF previews and the GIF you send are downloaded <strong>directly from Giphy's servers by your device</strong>. As with loading any image from the internet, this means <strong>your IP address and the GIF you requested are visible to Giphy</strong>, and their privacy policy applies to that request.</li>
+        <li><strong>Local cache:</strong> a GIF you send is saved to TypeAura's private cache folder on your device so it can be handed to the app you are typing in. It is shared only with that app, only when you send it, and the cache is cleared by Android along with the app's other cached files.</li>
+        <li>No text you type outside the GIF search box is ever sent to Giphy, and we do not send your typed messages, device ID, or analytics to Giphy.</li>
+      </ul>
+    </div>
+    <p>If you never open the GIF tab, no request is made to Giphy at all. The feature can also be disabled remotely by us, in which case the tab shows "GIFs unavailable".</p>
+
     <h2>7. Data Storage & Retention</h2>
     <ul>
       <li>Analytics data (device ID, events, daily counters) is stored locally in your device's app storage (SharedPreferences).</li>
@@ -202,7 +233,8 @@
     <h2>8. Third-Party Services</h2>
     <div class="privacy-card">
       <ul>
-        <li><strong>Groq (AI Provider)</strong> — receives translation text over HTTPS and returns a result. Text is not stored by Groq. <a href="https://groq.com/privacy-policy/" target="_blank">Groq's Privacy Policy →</a></li>
+        <li><strong>Groq (AI Provider)</strong> — receives the text you submit for AI processing (see section 2) over HTTPS and returns a result. Groq acts as a processor on our behalf; their handling and retention of that text is governed by their own terms. We do not send Groq your device ID, analytics, or any other identifier — only the text of the request itself. <a href="https://groq.com/privacy-policy/" target="_blank">Groq's Privacy Policy →</a></li>
+        <li><strong>Giphy (GIF search)</strong> — used only by the optional GIF tab (see section 6a). Your search term reaches Giphy through our backend, and your device loads GIF images directly from Giphy's servers, which exposes your IP address to them. <a href="https://support.giphy.com/hc/en-us/articles/360032872931-GIPHY-Privacy-Policy" target="_blank">Giphy's Privacy Policy →</a></li>
         <li><strong>Vercel (Backend Hosting)</strong> — our API backend is hosted on Vercel. Vercel may log standard server-access data (IP address, timestamp) per their policy. All communication is HTTPS.</li>
         <li><strong>Google Speech Recognition</strong> — handles voice input via Android's built-in <code>SpeechRecognizer</code> API. On most devices this is processed by Google's cloud speech service (audio is transmitted to Google for transcription) unless the user has installed an offline language pack on their device. TypeAura itself never receives, records, or stores your audio — the transcribed text is returned to us by Android's API. <a href="https://policies.google.com/privacy" target="_blank">Google's Privacy Policy →</a></li>
       </ul>
@@ -225,7 +257,9 @@
       <li><strong>BIND_ACCESSIBILITY_SERVICE</strong> — used by the Floating Lens feature to (1) read on-screen text you select for translation, and (2) insert a chosen reply suggestion directly into the focused input field of the active app.</li>
       <li><strong>FOREGROUND_SERVICE / FOREGROUND_SERVICE_SPECIAL_USE</strong> — to keep the Floating Lens active in the background.</li>
       <li><strong>POST_NOTIFICATIONS</strong> — to show the Floating Lens persistent notification (required by Android 13+ for foreground services).</li>
+      <li><strong>oplus.permission.settings.LAUNCH_FOR_EXPORT</strong> — on realme / OPPO / OnePlus devices only, this lets the in-app setup guide open the correct Accessibility settings screen directly. It grants no access to your data and is ignored on all other devices.</li>
     </ul>
+    <p>TypeAura requests <strong>no</strong> location, contacts, camera, SMS, call log, photo, file, or calendar permissions, and does not use <code>QUERY_ALL_PACKAGES</code>. It contains no advertising or tracking SDKs.</p>
 
     <h2>11. Children's Privacy</h2>
     <p>TypeAura is not directed at children under the age of 13. We do not knowingly collect personal information from children. If you believe a child has provided us with information, please contact us and we will delete it promptly.</p>
