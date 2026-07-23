@@ -7,7 +7,7 @@
 
   <!-- ═══════════════════════ PRIMARY SEO ═══════════════════════ -->
   <title>TypeAura — AI Keyboard for Hinglish, Hindi & Better English</title>
-  <meta name="description" content="TypeAura is a free AI-powered Android keyboard with Hinglish ↔ English translation, a Floating Lens that translates any on-screen text via the Accessibility API, speech-to-text input, an emoji panel, clipboard history, and a suite of in-app AI tools (Smart Reply, Email Composer, Tone Changer, Live Translate). 10 languages (Hindi, Tamil, Telugu, Marathi, Bengali, Gujarati, Punjabi, Urdu). Free 10k tokens/day or unlimited with your own key. Powered by GPT-OSS 120B. Download the APK free." />
+  <meta name="description" content="TypeAura is a free AI-powered Android keyboard with Hinglish ↔ English translation, a Floating Lens that translates any on-screen text via the Accessibility API, speech-to-text input, an emoji panel, clipboard history, and a suite of in-app AI tools (Smart Reply, Email Composer, Tone Changer, Live Translate). 10 languages (Hindi, Tamil, Telugu, Marathi, Bengali, Gujarati, Punjabi, Urdu). Free 10k tokens/day, or one-time Pro (50k/day) and Max (150k/day) plans from ₹199 — no auto-renewal. Powered by GPT-OSS 120B. Download the APK free." />
   <meta name="keywords" content="TypeAura, type aura, TypeAura keyboard, TypeAura app, TypeAura APK, AI keyboard, Hinglish keyboard, Hindi English keyboard, Hinglish to English translation, floating lens, screen translator, translate text on screen, on-screen translator, screen translation app, overlay translator, translate any app, AI keyboard for Android, Indian keyboard app, smart keyboard, voice typing keyboard, live translate keyboard, AI writing keyboard, smart reply keyboard, email composer keyboard, tone changer, LLaMA keyboard, free AI keyboard, best AI keyboard India, Hinglish translator, English correction keyboard, multilingual keyboard, Tamil keyboard, Telugu keyboard, Marathi keyboard, Bengali keyboard, Gujarati keyboard, Punjabi keyboard, Urdu keyboard" />
   <meta name="author" content="Himanshu Kashyap" />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
@@ -85,7 +85,20 @@
         "image": "https://typeaura.indevs.in/img/og-image.png",
         "description": "TypeAura is a free AI-powered Android keyboard with Hinglish ↔ English translation, a Floating Lens that translates any on-screen text, Live Translate, Smart Reply, Email Composer, Tone Changer and AI Chat across 10 languages. Powered by GPT-OSS 120B.",
         "author": { "@type": "Person", "name": "Himanshu Kashyap" },
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" }
+        "offers": {
+          "@type": "AggregateOffer",
+          "priceCurrency": "INR",
+          "lowPrice": "0",
+          "highPrice": "2999",
+          "offerCount": "5",
+          "offers": [
+            { "@type": "Offer", "name": "Free",        "price": "0",    "priceCurrency": "INR" },
+            { "@type": "Offer", "name": "Pro 30 days",  "price": "199",  "priceCurrency": "INR" },
+            { "@type": "Offer", "name": "Pro 365 days", "price": "1499", "priceCurrency": "INR" },
+            { "@type": "Offer", "name": "Max 30 days",  "price": "399",  "priceCurrency": "INR" },
+            { "@type": "Offer", "name": "Max 365 days", "price": "2999", "priceCurrency": "INR" }
+          ]
+        }
       }
     ]
   }
@@ -424,7 +437,7 @@
       <div class="section-header">
         <div class="section-tag">Pricing</div>
         <h2>Free to start, <span class="gradient-text">yours to scale</span></h2>
-        <p class="section-desc">Every AI feature runs on a daily token budget. Start free, or go Premium for more headroom. Your daily counter resets every midnight.</p>
+        <p class="section-desc">Every AI feature runs on a daily token budget. Start free, then move up to Pro or Max for more headroom. Paid plans are <strong>one-time orders — no auto-renewal</strong>, and your daily counter resets every midnight.</p>
       </div>
       <div class="pricing-grid">
 
@@ -437,34 +450,58 @@
             <span class="pricing-amount">₹0</span>
             <span class="pricing-period">/ forever</span>
           </div>
+          <p class="pricing-alt">No card, no login — just install and type.</p>
           <div class="pricing-divider"></div>
           <p class="pricing-desc">Everything you need to get started — all AI tools, Floating Lens, Live Translate and voice, on a generous daily budget.</p>
           <ul class="pricing-list">
             <li><strong>10,000 tokens</strong> per day</li>
+            <li>Floating Lens: <strong>500 characters</strong> per translate</li>
             <li>Lens, Translate, Voice, AI Chat &amp; Tools</li>
             <li>Resets every midnight</li>
-            <li>No login required</li>
           </ul>
         </div>
 
-        <div class="pricing-card pricing-card--premium">
+        <div class="pricing-card pricing-card--pro">
           <div class="pricing-header">
             <div class="pricing-icon" style="background:linear-gradient(135deg,#8B5CF6,#A78BFA);"><iconify-icon icon="lucide:crown"></iconify-icon></div>
             <div class="pricing-name">
-              <h3>Premium <span class="pricing-badge">Coming Soon</span></h3>
+              <h3>Pro <span class="pricing-badge">Coming Soon</span></h3>
             </div>
           </div>
           <div class="pricing-price">
-            <span class="pricing-amount">₹99</span>
+            <span class="pricing-amount">₹199</span>
             <span class="pricing-period">/ 30 days</span>
           </div>
+          <p class="pricing-alt">or <strong>₹1,499</strong> / 365 days <span class="pricing-save">save 37%</span></p>
           <div class="pricing-divider"></div>
-          <p class="pricing-desc">For power users — 5× the daily budget with zero setup. Just upgrade and keep going. Launching soon.</p>
+          <p class="pricing-desc">For daily drivers — 5× the free budget with zero setup. Pay once, use it for the full period, nothing renews on its own.</p>
           <ul class="pricing-list">
-            <li><strong>50,000 tokens</strong> per day</li>
-            <li>Priority backend, lower latency</li>
+            <li><strong>50,000 tokens</strong> per day — 5× Free</li>
+            <li>Floating Lens: <strong>1,000 characters</strong> per translate</li>
+            <li>One-time payment — no auto-renewal</li>
             <li>No setup — just pay and use</li>
-            <li>One-time ₹99 / 30-day order</li>
+          </ul>
+        </div>
+
+        <div class="pricing-card pricing-card--max">
+          <div class="pricing-header">
+            <div class="pricing-icon" style="background:linear-gradient(135deg,#F97316,#FBBF24);"><iconify-icon icon="lucide:rocket"></iconify-icon></div>
+            <div class="pricing-name">
+              <h3>Max <span class="pricing-badge pricing-badge--max">Coming Soon</span></h3>
+            </div>
+          </div>
+          <div class="pricing-price">
+            <span class="pricing-amount">₹399</span>
+            <span class="pricing-period">/ 30 days</span>
+          </div>
+          <p class="pricing-alt">or <strong>₹2,999</strong> / 365 days <span class="pricing-save pricing-save--max">save 37%</span></p>
+          <div class="pricing-divider"></div>
+          <p class="pricing-desc">The heaviest budget we offer — for all-day translating, long Lens captures and back-to-back AI tool runs.</p>
+          <ul class="pricing-list">
+            <li>Everything in Pro, plus:</li>
+            <li><strong>150,000 tokens</strong> per day — 15× Free</li>
+            <li>Floating Lens: <strong>5,000 characters</strong> per translate</li>
+            <li>Priority email support</li>
           </ul>
         </div>
 

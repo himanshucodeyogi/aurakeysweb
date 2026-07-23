@@ -700,6 +700,9 @@
       white-space: nowrap;
     }
     .plan-badge-free    { color: var(--accent); background: rgba(138,180,248,0.12); border-color: rgba(138,180,248,0.3); }
+    .plan-badge-pro     { color: var(--purple); background: rgba(187,134,252,0.15); border-color: rgba(187,134,252,0.35); }
+    .plan-badge-max     { color: #FFB74D;       background: rgba(255,183,77,0.14);  border-color: rgba(255,183,77,0.35); }
+    /* legacy tiers — still present on old device docs */
     .plan-badge-byok    { color: var(--green);  background: rgba(129,201,149,0.12); border-color: rgba(129,201,149,0.3); }
     .plan-badge-premium { color: var(--purple); background: rgba(187,134,252,0.15); border-color: rgba(187,134,252,0.35); }
     .plan-override-dot {
@@ -872,8 +875,10 @@
             <option value="enabled">Keyboard Enabled</option>
             <option value="selected">Keyboard Selected</option>
             <option value="plan_free">Plan: Free</option>
-            <option value="plan_byok">Plan: BYOK</option>
-            <option value="plan_premium">Plan: Premium</option>
+            <option value="plan_pro">Plan: Pro</option>
+            <option value="plan_max">Plan: Max</option>
+            <option value="plan_paid">Plan: Paid (active)</option>
+            <option value="plan_byok">Plan: BYOK (legacy)</option>
             <option value="override_set">Has Admin Override</option>
           </select>
           <select class="filter-select" id="sortSelect" onchange="loadUsers(1)">
@@ -1099,11 +1104,27 @@
             <h3 style="font-size:16px;font-weight:700;margin-bottom:4px;background:linear-gradient(90deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:inline-block">Global Config</h3>
             <p style="color:var(--text2);font-size:12.5px;margin-bottom:20px">Remote feature switches — applied to every device on its next ping. No app release needed.</p>
 
-            <!-- BYOK plan switch -->
+            <!-- Paid plans (Pro + Max) switch -->
             <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;border-top:1px solid var(--border)">
               <div>
-                <div style="font-size:14px;font-weight:600">Bring Your Own Key (BYOK)</div>
-                <div style="color:var(--text2);font-size:12px;margin-top:2px">When OFF, BYOK is hidden in the app and those users fall back to the Free quota. Stored keys are kept.</div>
+                <div style="font-size:14px;font-weight:600">Paid plans — Pro &amp; Max</div>
+                <div style="color:var(--text2);font-size:12px;margin-top:2px">
+                  One switch covers both paid tiers. When OFF, both cards show “Coming Soon” with a
+                  Notify-me button. When ON, Pro (₹199 / ₹1,499) and Max (₹399 / ₹2,999) become
+                  purchasable — needs Razorpay keys set in Vercel env.
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
+                <span id="premium-state" style="font-size:13px;font-weight:600;color:var(--text2)">—</span>
+                <button class="btn-primary" id="premium-toggle" style="justify-content:center" onclick="togglePremium()">…</button>
+              </div>
+            </div>
+
+            <!-- BYOK plan switch (legacy builds only) -->
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;border-top:1px solid var(--border)">
+              <div>
+                <div style="font-size:14px;font-weight:600">Bring Your Own Key (BYOK) <span style="color:var(--dim);font-weight:500;font-size:12px">· legacy</span></div>
+                <div style="color:var(--text2);font-size:12px;margin-top:2px">BYOK was removed from the app — this only affects old builds still in the wild (≤ v2.0.x). When OFF, those users fall back to the Free quota. Stored keys are kept.</div>
               </div>
               <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
                 <span id="byok-state" style="font-size:13px;font-weight:600;color:var(--text2)">—</span>
@@ -1235,13 +1256,25 @@
       }
     }
 
+    // Tiers: free | pro | max. Legacy docs may still carry 'premium' (the old
+    // single paid tier → shown as Pro) or 'byok' (removed plan).
+    const TIER_LABELS = { free: 'Free', pro: 'Pro', max: 'Max', premium: 'Pro', byok: 'BYOK' };
+
     function planBadge(d) {
-      const tier = d.plan_tier || 'free';
-      const label = tier === 'byok' ? 'BYOK' : tier.charAt(0).toUpperCase() + tier.slice(1);
+      const tier  = d.plan_tier || 'free';
+      const label = TIER_LABELS[tier] || tier.charAt(0).toUpperCase() + tier.slice(1);
       const override = d.admin_plan_override
         ? `<span class="plan-override-dot" title="Admin override active"></span>`
         : '';
-      return `<span class="plan-badge plan-badge-${tier}">${label}</span>${override}`;
+      // A still-valid purchase is what actually grants the budget — mark it so a
+      // self-reported "parked as Free" device is still recognisable as paying.
+      const paidValid = d.premium_until && new Date(d.premium_until) > new Date();
+      const title = paidValid
+        ? `Paid ${TIER_LABELS[d.paid_tier] || 'Pro'} until ${fmtDate(d.premium_until)}`
+        : label;
+      return `<span class="plan-badge plan-badge-${tier}" title="${title}">${label}</span>`
+           + (paidValid ? ' <span title="Active purchase">💳</span>' : '')
+           + override;
     }
 
     function renderTable(devices) {
@@ -1303,6 +1336,12 @@
         ? fmtDatetime(device.admin_plan_override_at)
         : null;
 
+      // What the user actually bought (server-set, unforgeable) vs. what the app
+      // self-reports as plan_tier — the two differ when a paid user parks their
+      // plan as Free, or when an admin override is in play.
+      const paidValid = device.premium_until && new Date(device.premium_until) > new Date();
+      const paidTier  = device.paid_tier ? (TIER_LABELS[device.paid_tier] || device.paid_tier) : null;
+
       const fields = [
         ['Device ID',        device.device_id],
         ['Device Name',      device.device_name || '—'],
@@ -1310,7 +1349,15 @@
         ['Install Date',     fmtDate(device.install_date)],
         ['Last Active',      fmtDate(device.last_use_date)],
         ['Plan',             planBadge(device)],
-        ['BYOK Key Saved',   device.plan_byok_active ? '✓ Yes' : 'No'],
+        ['Purchased Tier',   paidTier
+          ? `${paidTier}${paidValid ? '' : ' <span style="color:var(--dim);font-size:11px">· expired</span>'}`
+          : '—'],
+        ['Purchased Plan',   device.premium_plan || '—'],
+        ['Paid Until',       device.premium_until
+          ? `${fmtDatetime(device.premium_until)}${paidValid ? '' : ' <span style="color:#FF5252;font-size:11px">· expired</span>'}`
+          : '—'],
+        ['Recovery Code',    device.recovery_code || '—'],
+        ...(device.plan_byok_active ? [['BYOK Key Saved (legacy)', '✓ Yes']] : []),
         ['Admin Override',   device.admin_plan_override
           ? `${device.admin_plan_override}${overrideAt ? ` <span style="color:var(--dim);font-size:11px">· set ${overrideAt}</span>` : ''}`
           : '—'],
@@ -1336,11 +1383,13 @@
           Sets an admin override. Applies on the user's next analytics ping (usually within minutes).
         </p>
         <p style="color:var(--dim);font-size:11px;margin-bottom:8px">
-          BYOK is user-controlled (requires Groq key on device) — admin can only set Free or Premium.
+          An override outranks the app's self-reported tier. Setting Free while a purchase is still
+          valid does <em>not</em> lower the budget — the server keeps honouring the paid tier until it expires.
         </p>
         <div class="plan-actions" id="planActions">
           <button class="plan-btn ${tier === 'free' ? 'plan-btn-active' : ''}" onclick="setPlan('free')">Free (10k tok/day)</button>
-          <button class="plan-btn ${tier === 'premium' ? 'plan-btn-active' : ''}" onclick="setPlan('premium')">Premium (50k tok/day)</button>
+          <button class="plan-btn ${tier === 'pro' || tier === 'premium' ? 'plan-btn-active' : ''}" onclick="setPlan('pro')">Pro (50k tok/day)</button>
+          <button class="plan-btn ${tier === 'max' ? 'plan-btn-active' : ''}" onclick="setPlan('max')">Max (150k tok/day)</button>
           ${device.admin_plan_override
             ? `<button class="plan-btn plan-btn-clear" onclick="clearPlanOverride()">Clear Override</button>`
             : ''}
@@ -1654,63 +1703,99 @@
     }
 
     // ── Global Config (remote feature switches) ──────────────
-    let _byokEnabled = true;
+    // `premium_enabled` gates BOTH paid tiers (Pro + Max) — off by default.
+    // `byok_enabled` only reaches legacy builds and defaults ON.
+    let _premiumEnabled = false;
+    let _byokEnabled    = true;
+
+    function renderSwitch(id, on, { onLabel, offLabel }) {
+      const stateEl = document.getElementById(`${id}-state`);
+      const btnEl   = document.getElementById(`${id}-toggle`);
+      if (!stateEl || !btnEl) return;
+      stateEl.textContent    = on ? 'Enabled' : 'Disabled';
+      stateEl.style.color    = on ? 'var(--green)' : '#FF5252';
+      btnEl.textContent      = on ? offLabel : onLabel;
+      btnEl.style.background = on ? '#FF5252' : '';
+    }
+
+    function renderPremiumSwitch() {
+      renderSwitch('premium', _premiumEnabled, { onLabel: 'Enable Paid Plans', offLabel: 'Disable Paid Plans' });
+    }
 
     function renderByokSwitch() {
-      const stateEl = document.getElementById('byok-state');
-      const btnEl   = document.getElementById('byok-toggle');
-      if (_byokEnabled) {
-        stateEl.textContent = 'Enabled';
-        stateEl.style.color = 'var(--green)';
-        btnEl.textContent = 'Disable BYOK';
-        btnEl.style.background = '#FF5252';
-      } else {
-        stateEl.textContent = 'Disabled';
-        stateEl.style.color = '#FF5252';
-        btnEl.textContent = 'Enable BYOK';
-        btnEl.style.background = '';
-      }
+      renderSwitch('byok', _byokEnabled, { onLabel: 'Enable BYOK', offLabel: 'Disable BYOK' });
     }
 
     async function loadGlobalConfig() {
       try {
         const res  = await authFetch('/api/admin/set-config');
         const data = await res.json();
-        _byokEnabled = data.byok_enabled !== false; // default on
+        _premiumEnabled = data.premium_enabled === true; // default off
+        _byokEnabled    = data.byok_enabled    !== false; // default on
+        renderPremiumSwitch();
         renderByokSwitch();
       } catch (_) {
-        document.getElementById('byok-state').textContent = 'Failed to load';
+        document.getElementById('premium-state').textContent = 'Failed to load';
+        document.getElementById('byok-state').textContent    = 'Failed to load';
       }
     }
 
-    async function toggleByok() {
-      const next     = !_byokEnabled;
+    // Shared writer for the boolean switches — one field per call, so each
+    // toggle updates independently on the server.
+    async function setConfigFlag(field, next, { id, label, confirmMsg, doneMsg }) {
       const statusEl = document.getElementById('config-status');
-      const btnEl    = document.getElementById('byok-toggle');
-      const verb     = next ? 'enable' : 'disable';
-      if (!confirm(`Are you sure you want to ${verb} the BYOK plan for ALL users?`)) return;
+      const btnEl    = document.getElementById(`${id}-toggle`);
+      if (!confirm(confirmMsg)) return null;
 
       btnEl.disabled = true;
       statusEl.style.color = 'var(--text2)';
-      statusEl.textContent = `${next ? 'Enabling' : 'Disabling'} BYOK…`;
+      statusEl.textContent = `${next ? 'Enabling' : 'Disabling'} ${label}…`;
       try {
         const res = await fetch(`${API_BASE}/api/admin/set-config`, {
           method:  'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AUTH_TOKEN}` },
-          body:    JSON.stringify({ byok_enabled: next }),
+          body:    JSON.stringify({ [field]: next }),
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || `Error ${res.status}`);
-        _byokEnabled = data.byok_enabled !== false;
-        renderByokSwitch();
         statusEl.style.color = 'var(--green)';
-        statusEl.textContent = `✓ BYOK ${_byokEnabled ? 'enabled' : 'disabled'}. Devices apply it on their next ping.`;
+        statusEl.textContent = doneMsg(data);
+        return data;
       } catch (e) {
         statusEl.style.color = '#FF5252';
         statusEl.textContent = `Failed: ${e.message}`;
+        return null;
       } finally {
         btnEl.disabled = false;
       }
+    }
+
+    async function togglePremium() {
+      const next = !_premiumEnabled;
+      const data = await setConfigFlag('premium_enabled', next, {
+        id:    'premium',
+        label: 'paid plans',
+        confirmMsg: next
+          ? 'Make Pro and Max purchasable for ALL users?\n\nRazorpay keys (RAZORPAY_KEY_ID / RAZORPAY_KEY_SECRET) must already be set in Vercel, or checkout will fail.'
+          : 'Hide Pro and Max behind "Coming Soon" for ALL users?\n\nExisting purchases stay valid — only new checkouts are blocked.',
+        doneMsg: (d) => `✓ Paid plans ${d.premium_enabled === true ? 'enabled' : 'disabled'}. Devices apply it on their next ping.`,
+      });
+      if (!data) return;
+      _premiumEnabled = data.premium_enabled === true;
+      renderPremiumSwitch();
+    }
+
+    async function toggleByok() {
+      const next = !_byokEnabled;
+      const data = await setConfigFlag('byok_enabled', next, {
+        id:    'byok',
+        label: 'BYOK',
+        confirmMsg: `Are you sure you want to ${next ? 'enable' : 'disable'} the legacy BYOK plan for ALL users on old builds?`,
+        doneMsg: (d) => `✓ BYOK ${d.byok_enabled !== false ? 'enabled' : 'disabled'}. Devices apply it on their next ping.`,
+      });
+      if (!data) return;
+      _byokEnabled = data.byok_enabled !== false;
+      renderByokSwitch();
     }
 
     // ── API Key Health Check ─────────────────────────────────
