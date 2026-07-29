@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TypeAura — Update Available</title>
-  <meta name="description" content="A new version of TypeAura is available. Download the latest APK to get new features and improvements." />
+  <meta name="description" content="A new version of TypeAura is available. Update from Google Play to get new features and improvements." />
   <meta name="robots" content="noindex, follow" />
   <link rel="icon" type="image/png" href="img/icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -214,7 +214,7 @@
         <span class="logo-emoji">⌨️</span>
         <span class="logo-text">TypeAura</span>
       </a>
-      <a href="typeaura.apk" class="btn-nav" download>⬆ Update Now</a>
+      <a href="https://play.google.com/store/apps/details?id=com.typeaura.app" class="btn-nav" target="_blank" rel="noopener">⬆ Update Now</a>
     </div>
   </nav>
 
@@ -249,24 +249,22 @@
 
         <div class="highlights-list" id="highlightsList"></div>
 
-        <a href="typeaura.apk" class="btn-update" download id="downloadBtn">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-            <polyline points="7 10 12 15 17 10"/>
-            <line x1="12" y1="15" x2="12" y2="3"/>
+        <a href="https://play.google.com/store/apps/details?id=com.typeaura.app" class="btn-update" id="downloadBtn" target="_blank" rel="noopener">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 20.5V3.5c0-.6.4-1.1.9-1.3l10.3 10.3L3.9 21.8c-.5-.2-.9-.7-.9-1.3zm13.8-5.4L6.1 21.9l8.6-8.6 2.1 1.8zm3.6-4.2c.4.3.6.7.6 1.1s-.2.8-.6 1.1l-2.2 1.3-2.4-2.4 2.4-2.4 2.2 1.3zM6.1 2.1l10.7 6.8-2.1 1.8L6.1 2.1z"/>
           </svg>
-          Update Now
+          Update on Google Play
         </a>
 
         <p class="install-note">
-          After downloading, open the APK file and tap <strong>Install</strong>.<br />
+          Tap the button to open TypeAura on the Play Store, then tap <strong>Update</strong>.<br />
           Your data and settings will be preserved.
         </p>
 
         <hr class="divider" />
 
         <p class="install-note" style="color:var(--dim)">
-          ⚠ If asked, allow <strong>Install from unknown sources</strong> in your phone settings.
+          💡 Turn on <strong>auto-update</strong> in the Play Store to always stay on the latest version.
         </p>
       </div>
 
@@ -286,7 +284,7 @@
         document.getElementById('versionLabel').textContent  = `v${data.version || ''}`;
         document.getElementById('updateTitle').textContent   = data.title || 'Update Available';
         document.getElementById('updateSubtitle').textContent =
-          `TypeAura ${data.version} is here! Install the latest APK to get all new features.`;
+          `TypeAura ${data.version} is here! Update from Google Play to get all new features.`;
 
         const highlights = Array.isArray(data.highlights) ? data.highlights : [];
         if (highlights.length) {

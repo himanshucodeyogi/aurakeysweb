@@ -6,5 +6,9 @@
     { "source": "/update", "destination": "/update.html" },
     { "source": "/demo",   "destination": "/demo.html" },
     { "source": "/info",   "destination": "/info.html" }
+  ],
+  "redirects": [
+    { "source": "/typeaura.apk", "destination": "https://play.google.com/store/apps/details?id=com.typeaura.app", "permanent": true },
+    { "source": "/download",     "destination": "https://play.google.com/store/apps/details?id=com.typeaura.app", "permanent": true }
   ]
 }

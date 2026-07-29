@@ -1217,23 +1217,6 @@ section[id] { scroll-margin-top: 70px; }
   box-shadow: 0 4px 18px rgba(124, 108, 248, 0.25);
 }
 
-/* Download toast */
-.toast {
-  position: fixed; bottom: 80px; left: 50%;
-  transform: translateX(-50%) translateY(16px);
-  background: var(--card-solid);
-  border: 1px solid var(--border-mid);
-  border-left: 3px solid var(--accent);
-  border-radius: var(--radius-sm);
-  padding: 13px 22px; font-size: 14px; color: var(--text);
-  z-index: 200; opacity: 0; pointer-events: none;
-  transition: opacity 0.3s, transform 0.3s;
-  max-width: calc(100vw - 48px); text-align: center;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-  white-space: nowrap;
-}
-.toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
-
 /* Hamburger */
 .hamburger {
   display: none; flex-direction: column; justify-content: center;
@@ -1394,7 +1377,6 @@ section[id] { scroll-margin-top: 70px; }
   .btn-primary, .btn-secondary { min-height: 48px; }
   .mobile-nav a  { min-height: 48px; display: flex; align-items: center; }
 
-  .toast { white-space: normal; line-height: 1.4; }
   .lightbox-close { top: 12px; right: 14px; font-size: 26px; padding: 6px 10px; }
   .back-to-top {
     bottom: calc(20px + env(safe-area-inset-bottom));

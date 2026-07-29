@@ -683,11 +683,11 @@
   const UI_TEXT = {
     en: {
       next: 'Next →', start: 'Start ▶', finishBtn: 'Finish ✓', skip: 'Skip tour',
-      finish: '🎉 That\'s TypeAura! Loved it? Download the app free 👇',
+      finish: '🎉 That\'s TypeAura! Loved it? Get it free on Google Play 👇',
     },
     hi: {
       next: 'आगे →', start: 'शुरू करें ▶', finishBtn: 'पूरा करें ✓', skip: 'टूर छोड़ें',
-      finish: '🎉 यही है TypeAura! पसंद आया? ऐप फ्री डाउनलोड करें 👇',
+      finish: '🎉 यही है TypeAura! पसंद आया? Google Play से फ्री पाएं 👇',
     },
   };
 

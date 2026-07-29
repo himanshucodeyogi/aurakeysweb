@@ -358,16 +358,3 @@ navSections.forEach(s => navObserver.observe(s));
   });
 })();
 
-// ── Download toast ───────────────────────────────────────────────
-const downloadToast = document.getElementById('downloadToast');
-let toastTimer;
-
-function showDownloadToast() {
-  clearTimeout(toastTimer);
-  downloadToast.classList.add('visible');
-  toastTimer = setTimeout(() => downloadToast.classList.remove('visible'), 4000);
-}
-
-document.querySelectorAll('a[href="typeaura.apk"]').forEach(a => {
-  a.addEventListener('click', showDownloadToast);
-});

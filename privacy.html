@@ -76,12 +76,6 @@
     .back-link:hover { color: var(--accent); }
 
     /* Mobile fine-tuning */
-    @media (max-width: 900px) {
-      /* Keep the Download button visible on tablet/mobile */
-      .navbar .btn-nav { display: inline-flex !important; padding: 8px 14px; font-size: 12px; }
-      .nav-inner       { justify-content: space-between; gap: 12px; }
-    }
-
     @media (max-width: 600px) {
       .privacy-hero        { padding: 56px 0 24px; }
       .privacy-hero h1     { font-size: 1.9rem; }
@@ -93,7 +87,6 @@
       .privacy-card        { padding: 18px 18px; border-radius: 12px; }
       .privacy-body ul     { padding-left: 18px; }
       .back-link           { margin-bottom: 28px; }
-      .navbar .btn-nav     { padding: 7px 12px; font-size: 11.5px; }
     }
 
     @media (max-width: 380px) {
@@ -174,7 +167,7 @@
     <p>Crash reports are queued locally and sent when internet is available. Up to 50 reports are kept locally at a time. No user text, keystrokes, clipboard contents, or personal information is ever included in crash reports.</p>
 
     <h2>4. Accessibility Service (Floating Lens)</h2>
-    <p>TypeAura includes an optional <strong>Floating Lens</strong> feature — a draggable overlay that lets you translate on-screen text in any app. When you enable this feature, the app registers an Android Accessibility Service (<code>BIND_ACCESSIBILITY_SERVICE</code>) for two purposes:</p>
+    <p>TypeAura includes an optional <strong>Floating Lens</strong> feature — a draggable overlay that lets you translate on-screen text in any app. When you enable this feature, the app registers an Android Accessibility Service (<code>BIND_ACCESSIBILITY_SERVICE</code>) for three purposes:</p>
     <ul>
       <li><strong>Reading text:</strong> When you tap the lens over text, the Accessibility Service reads the on-screen text at that position and sends it for translation. This text is never stored.</li>
       <li><strong>Reading nearby context (Reply feature only):</strong> If you tap <strong>Reply</strong> to generate reply suggestions, the service additionally reads <strong>up to 2 messages displayed immediately above</strong> the one you tapped (each truncated to 300 characters), so the AI can understand the conversation it is replying to. For each of those messages it also makes a rough guess of who sent it, based purely on <em>where the message sits on screen</em> (left- vs right-aligned) — it does not read contact names, phone numbers, or profile information. This context is sent with your request, used to generate the suggestions, and <strong>never stored</strong>. It is read only at the moment you tap Reply, and not at all if you only use Translate.</li>
