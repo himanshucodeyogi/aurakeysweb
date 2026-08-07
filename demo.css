@@ -16,20 +16,41 @@
   --wa-out:     #005c4b;
 }
 
-/* full-screen demo: only the phone mockup + step chips are shown */
-.demo-body { overflow: hidden; height: 100vh; height: 100dvh; }
-.demo-body .navbar,
+/* Locked-scroll kiosk: the body IS the 100dvh column, and the navbar and
+   <main> split it. Previously .demo-main claimed the full 100dvh on its
+   own, which is why the navbar had to be hidden — leaving the page with no
+   way back to the site and no download CTA. Making the body the flex
+   column lets both coexist with no calc() magic number. */
+.demo-body {
+  overflow: hidden;
+  height: 100vh; height: 100dvh;
+  display: flex; flex-direction: column;
+}
+
 .demo-body .footer,
-.demo-controls,
-.demo-foot-note,
 .demo-head .hero-badge,
-.demo-title,
 .demo-sub { display: none !important; }
+
+/* The page's only <h1>. It was display:none — an SEO own-goal. Now it
+   occupies zero pixels but still exists for crawlers and screen readers. */
+.demo-title {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0);
+  white-space: nowrap; border: 0;
+}
+
+/* The Play CTA is display:none below 900px in style.css and demo.html has
+   no hamburger, so it must be forced back on — this page's nav is only
+   two items wide and always has room. */
+.demo-body .navbar { flex-shrink: 0; }
+.demo-body .navbar .btn-nav { display: inline-flex !important; }
 
 /* ───────────── layout ───────────── */
 .demo-main {
   max-width: none; margin: 0; width: 100%;
-  height: 100vh; height: 100dvh;
+  height: auto; flex: 1; min-height: 0;
   padding: 10px 10px 12px;
   display: flex; flex-direction: column; align-items: center;
 }
@@ -339,8 +360,39 @@
 .lang-btn[data-lang="hi"] { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18); }
 
 /* ───────────── controls ───────────── */
-.demo-controls { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 34px; }
-.demo-foot-note { text-align: center; color: var(--muted, #A6A6C2); font-size: .82rem; max-width: 600px; margin: 18px auto 0; line-height: 1.6; }
+/* margin-top was 34px — trimmed to 10px because these controls now cost
+   real phone height rather than being hidden. flex-shrink:0 keeps them
+   from being squeezed away when the stage competes for space. */
+.demo-controls {
+  display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+  margin-top: 10px; flex-shrink: 0;
+}
+.demo-controls .btn-primary,
+.demo-controls .btn-secondary { padding: 10px 20px; font-size: 14px; }
+
+/* Desktop has vertical slack for the explainer; phones don't. */
+.demo-foot-note {
+  text-align: center; color: var(--muted, #A6A6C2);
+  font-size: .82rem; max-width: 600px; margin: 12px auto 0; line-height: 1.6;
+  flex-shrink: 0;
+}
+@media (max-width: 900px) {
+  .demo-foot-note { display: none !important; }
+}
+/* style.css hides .nav-links below 900px behind a hamburger, but this page
+   has no hamburger — and "back to the site" is the exact affordance the
+   demo was missing. Keep the back link; drop the secondary ones. */
+@media (max-width: 900px) {
+  .demo-body .nav-links { display: flex !important; flex: 0 1 auto; gap: 0; }
+  .demo-body .nav-links a:not(:first-child) { display: none; }
+}
+
+@media (max-width: 600px) {
+  .demo-controls .btn-primary,
+  .demo-controls .btn-secondary { min-height: 40px; padding: 8px 16px; font-size: 13px; }
+  .demo-body .navbar .btn-nav   { padding: 7px 12px; font-size: 11.5px; }
+  .demo-body .nav-links a:first-child { font-size: 12.5px; }
+}
 
 /* ───────────── responsive ───────────── */
 @media (max-width: 480px) {

@@ -54,44 +54,8 @@ function animateCount(el, target, suffix = '') {
   requestAnimationFrame(step);
 }
 
-// ── Hamburger menu ──────────────────────────────────────────────
-const hamburger  = document.getElementById('hamburger');
-const mobileNav  = document.getElementById('mobileNav');
-
-function closeMobileNav() {
-  hamburger?.classList.remove('open');
-  mobileNav?.classList.remove('open');
-  hamburger?.setAttribute('aria-expanded', 'false');
-  document.body.style.overflow = '';
-}
-
-hamburger?.addEventListener('click', () => {
-  const isOpen = mobileNav.classList.toggle('open');
-  hamburger.classList.toggle('open', isOpen);
-  hamburger.setAttribute('aria-expanded', String(isOpen));
-  document.body.style.overflow = isOpen ? 'hidden' : '';
-});
-
-// Close when a mobile nav link is tapped
-document.querySelectorAll('.mobile-nav-link').forEach(a => {
-  a.addEventListener('click', closeMobileNav);
-});
-
-// Close on outside tap
-mobileNav?.addEventListener('click', e => {
-  if (e.target === mobileNav) closeMobileNav();
-});
-
-// Smooth scroll for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
-    const target = document.querySelector(a.getAttribute('href'));
-    if (target) {
-      e.preventDefault();
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  });
-});
+// Hamburger nav and smooth anchor scroll now live in the shared site.js
+// so every page gets a working mobile menu, not just this one.
 
 // Intersection observer — fade-in cards on scroll
 const observer = new IntersectionObserver((entries) => {
@@ -103,39 +67,14 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.1 });
 
-// Mark that JS is active so CSS can safely hide-then-reveal feature cards.
-document.documentElement.classList.add('js');
-
 document.querySelectorAll(
-  '.stat-card, .step-card, .feedback-card, .what-is-card, .founder-card'
+  '.stat-card, .step-card, .feedback-card, .what-is-card, .founder-card, .faq-list, .cta-band'
 ).forEach(el => {
   el.style.opacity = '0';
   el.style.transform = 'translateY(20px)';
   el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
   observer.observe(el);
 });
-
-// ── Feature cards: staggered rise-in (kept separate from the generic
-// observer so its !important transform doesn't block the hover lift). ──
-const featureObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (!entry.isIntersecting) return;
-    const card = entry.target;
-    const col = [...card.parentElement.children].indexOf(card) % 5; // wave per row (5-col grid)
-    card.style.animationDelay = `${col * 90}ms`;
-    card.classList.add('in');
-    // Once the entrance finishes, drop to a plain stable state so the
-    // animation's held transform stops overriding :hover.
-    card.addEventListener('animationend', () => {
-      card.classList.remove('in');
-      card.classList.add('done');
-      card.style.animationDelay = '';
-    }, { once: true });
-    featureObserver.unobserve(card);
-  });
-}, { threshold: 0.12 });
-
-document.querySelectorAll('.features-grid .feature-card').forEach(c => featureObserver.observe(c));
 
 document.addEventListener('DOMContentLoaded', () => {
   // Add loading state to stat values
@@ -154,53 +93,72 @@ const lightboxImg   = document.getElementById('lightboxImg');
 const lightboxLabel = document.getElementById('lightboxLabel');
 const lightboxClose = document.getElementById('lightboxClose');
 
+// Remembers where focus came from so closing can return it there, instead
+// of dumping the visitor back to <body> to tab from the top again.
+let lightboxOpener = null;
+
 function openLightbox(img) {
-  lightboxImg.src = img.src;
+  // With <picture>, img.src resolves to the JPEG *fallback* (305–599 KB).
+  // data-full points at the 1080w WebP the browser already knows how to
+  // decode; currentSrc is the responsive candidate actually in use.
+  lightboxImg.src = img.dataset.full || img.currentSrc || img.src;
   lightboxImg.alt = img.alt;
   lightboxLabel.textContent = img.closest('.screenshot-slot')
     ?.querySelector('.screenshot-label')?.textContent || '';
+  lightboxOpener = document.activeElement;
   lightbox.classList.add('open');
   document.body.style.overflow = 'hidden';
+  lightboxClose?.focus();
 }
 
-// Delegated so cloned (carousel) slots open the lightbox too.
-document.getElementById('screenshotsRow')?.addEventListener('click', e => {
+const screenshotsRow = document.getElementById('screenshotsRow');
+
+// Delegated so cloned (carousel) slots work too, with no extra wiring.
+screenshotsRow?.addEventListener('click', e => {
   const img = e.target.closest('.screenshot-slot img');
   if (img) openLightbox(img);
 });
 
+// The slots are <div role="button" tabindex="0">, so they need Enter/Space
+// handled explicitly — a real <button> would get this for free, but nesting
+// <picture> inside a button breaks the carousel's layout measurements.
+screenshotsRow?.addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const slot = e.target.closest('.screenshot-slot[role="button"]');
+  const img = slot?.querySelector('img');
+  if (!img) return;
+  e.preventDefault();           // stop Space from scrolling the page
+  openLightbox(img);
+});
+
 function closeLightbox() {
+  if (!lightbox?.classList.contains('open')) return;
   lightbox.classList.remove('open');
   document.body.style.overflow = '';
+  lightboxOpener?.focus?.();
+  lightboxOpener = null;
 }
 
-lightboxClose.addEventListener('click', closeLightbox);
+lightboxClose?.addEventListener('click', closeLightbox);
 
 // Click outside image to close
-lightbox.addEventListener('click', e => {
+lightbox?.addEventListener('click', e => {
   if (e.target === lightbox) closeLightbox();
 });
 
-// ESC key to close
+// Escape closes; Tab is trapped. Only one focusable element lives inside the
+// dialog, so the "trap" is simply refusing to let Tab leave it.
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeLightbox();
+  if (!lightbox?.classList.contains('open')) return;
+  if (e.key === 'Escape') { closeLightbox(); return; }
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    lightboxClose?.focus();
+  }
 });
 
-// ── Scroll progress bar ──────────────────────────────────────────
-const scrollProgress = document.getElementById('scrollProgress');
-window.addEventListener('scroll', () => {
-  const total = document.documentElement.scrollHeight - window.innerHeight;
-  scrollProgress.style.width = ((window.scrollY / total) * 100) + '%';
-}, { passive: true });
-
-// ── Back to top ──────────────────────────────────────────────────
-const backToTop = document.getElementById('backToTop');
-window.addEventListener('scroll', () => {
-  backToTop.classList.toggle('visible', window.scrollY > 400);
-}, { passive: true });
-backToTop?.addEventListener('click', () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
+// Scroll progress bar and back-to-top now live in the shared site.js,
+// rAF-batched into a single frame instead of two unthrottled listeners.
 
 // ── Active nav link (highlight current section) ──────────────────
 const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
@@ -236,11 +194,25 @@ navSections.forEach(s => navObserver.observe(s));
   // Flank the originals with a cloned set on each side so every original can
   // reach the dead-centre frame (it always has neighbours), and the forward
   // slide past the last one loops back seamlessly.
+  // Clones are decorative flankers — they only need to LOOK right.
+  // Cloning the <video> meant 4 extra elements decoding concurrently
+  // forever; swapping in the poster still renders identically.
+  // tabindex=-1 keeps them out of the tab order (a focusable
+  // aria-hidden element is an axe violation).
   const mkClone = (node) => {
     const clone = node.cloneNode(true);
     clone.setAttribute('aria-hidden', 'true');
+    clone.setAttribute('tabindex', '-1');
+    clone.removeAttribute('role');
     const v = clone.querySelector('video');
-    if (v) { v.muted = true; v.play?.().catch(() => {}); }
+    if (v) {
+      const im = document.createElement('img');
+      im.src = v.getAttribute('poster') || '';
+      im.alt = '';
+      im.loading = 'lazy';
+      im.decoding = 'async';
+      v.replaceWith(im);
+    }
     return clone;
   };
   if (!reduce) {
@@ -358,3 +330,62 @@ navSections.forEach(s => navObserver.observe(s));
   });
 })();
 
+
+// ── Lazy video playback ──────────────────────────────────────────
+// None of the <video> elements carry `autoplay`: with that attribute set,
+// browsers fetch the media regardless of preload="none", putting ~1 MB on
+// the LCP critical path. Instead we start them here, after load, only while
+// they're actually on screen — and never for prefers-reduced-motion, where
+// the poster is the whole experience.
+(function initLazyVideo() {
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  const start = () => {
+    // Query after the carousel has cloned, so clones (now <img>) are excluded.
+    const videos = [...document.querySelectorAll('video[preload="none"]')];
+    if (!videos.length) return;
+
+    const pauseBtn = document.getElementById('heroPause');
+    const heroVideo = document.getElementById('heroVideo');
+    let userPaused = false;
+
+    if (reduce.matches) {
+      // Poster only. Leave the pause button hidden — nothing is moving.
+      return;
+    }
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const v = entry.target;
+        if (entry.isIntersecting) {
+          if (v === heroVideo && userPaused) return;
+          v.play?.().catch(() => {});
+        } else {
+          v.pause?.();
+        }
+      });
+    }, { threshold: 0.5 });
+
+    videos.forEach(v => io.observe(v));
+
+    // WCAG 2.2.2 — the hero clip loops past 5s, so it needs a stop control.
+    if (pauseBtn && heroVideo) {
+      heroVideo.addEventListener('playing', () => { pauseBtn.hidden = false; }, { once: true });
+      pauseBtn.addEventListener('click', () => {
+        userPaused = !heroVideo.paused;
+        if (userPaused) {
+          heroVideo.pause();
+          pauseBtn.setAttribute('aria-label', 'Play demo video');
+          pauseBtn.innerHTML = '<svg class="icon" aria-hidden="true" focusable="false"><use href="#i-play"/></svg>';
+        } else {
+          heroVideo.play().catch(() => {});
+          pauseBtn.setAttribute('aria-label', 'Pause demo video');
+          pauseBtn.innerHTML = '<svg class="icon" aria-hidden="true" focusable="false"><use href="#i-pause"/></svg>';
+        }
+      });
+    }
+  };
+
+  if (document.readyState === 'complete') start();
+  else window.addEventListener('load', start, { once: true });
+})();

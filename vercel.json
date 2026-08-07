@@ -10,5 +10,13 @@
   "redirects": [
     { "source": "/typeaura.apk", "destination": "https://play.google.com/store/apps/details?id=com.typeaura.app", "permanent": true },
     { "source": "/download",     "destination": "https://play.google.com/store/apps/details?id=com.typeaura.app", "permanent": true }
+  ],
+  "headers": [
+    {
+      "source": "/img/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    }
   ]
 }

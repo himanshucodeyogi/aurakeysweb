@@ -1003,7 +1003,7 @@
     askLanguage();        // re-ask language on restart
   }
 
-  document.getElementById('restartBtn').addEventListener('click', restart);
+  document.getElementById('restartBtn')?.addEventListener('click', restart);
 
   // init
   fillIcons();           // toolbar + bottom-row (emoji, enter) icons

@@ -7,21 +7,30 @@
   <title>Try TypeAura Live — Interactive AI Keyboard Demo</title>
   <meta name="description" content="Try the TypeAura AI keyboard right in your browser — no install needed. A guided live demo of the Floating Lens, Hinglish ↔ English translation, Email Composer and Live Translate, powered by real GPT-OSS 120B." />
   <meta name="robots" content="index, follow" />
-  <meta name="theme-color" content="#171717" />
+  <meta name="theme-color" content="#7C6CF8" />
   <link rel="canonical" href="https://typeaura.indevs.in/demo" />
 
-  <link rel="icon" type="image/png" href="img/icon.png" />
-  <link rel="apple-touch-icon" href="img/icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png" />
+  <link rel="manifest" href="site.webmanifest" />
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
 
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="TypeAura" />
   <meta property="og:title" content="Try TypeAura Live — Interactive AI Keyboard Demo" />
   <meta property="og:description" content="Try the TypeAura AI keyboard right in your browser — no install needed. Guided live demo powered by real GPT-OSS 120B." />
   <meta property="og:url" content="https://typeaura.indevs.in/demo" />
   <meta property="og:image" content="https://typeaura.indevs.in/img/og-image.png" />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="TypeAura — AI Keyboard for Hinglish, Hindi and better English" />
+  <meta property="og:locale" content="en_IN" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Try TypeAura Live — Interactive AI Keyboard Demo" />
+  <meta name="twitter:description" content="Try the TypeAura AI keyboard right in your browser — no install needed. Guided live demo powered by real GPT-OSS 120B." />
+  <meta name="twitter:image" content="https://typeaura.indevs.in/img/og-image.png" />
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="demo.css" />
 </head>
@@ -30,12 +39,14 @@
   <!-- ═══════════════════════ NAVBAR ═══════════════════════ -->
   <nav class="navbar">
     <div class="nav-inner">
-      <a href="/" class="nav-logo" style="text-decoration:none">
-        <div class="logo-emoji">⌨️</div>
+      <a href="/" class="nav-logo">
+        <div class="logo-emoji"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M10 8h.01M12 12h.01M14 8h.01M16 12h.01M18 8h.01M6 8h.01M7 16h10m-9-4h.01"/><rect width="20" height="16" x="2" y="4" rx="2"/></g></svg></div>
         <span class="logo-text">TypeAura</span>
       </a>
       <div class="nav-links">
         <a href="/">← Back to site</a>
+        <a href="/#pricing">Pricing</a>
+        <a href="/privacy">Privacy</a>
       </div>
       <a href="https://play.google.com/store/apps/details?id=com.typeaura.app" class="btn-nav" target="_blank" rel="noopener">Get it on Google Play</a>
     </div>
@@ -46,7 +57,7 @@
     <header class="demo-head">
       <div class="hero-badge">
         <span class="badge-dot"></span>
-        Live · No install · Real LLaMA&nbsp;3.3
+        Live · No install · Real GPT-OSS&nbsp;120B
       </div>
       <h1 class="demo-title">Try TypeAura <span class="gradient-text">right here</span></h1>
       <p class="demo-sub">
@@ -156,10 +167,10 @@
       <div class="lang-modal" id="langModal" hidden>
         <div class="lang-card">
           <div class="lang-title">Choose tour language</div>
-          <div class="lang-sub">टूर की भाषा चुनें</div>
+          <div class="lang-sub" lang="hi">टूर की भाषा चुनें</div>
           <div class="lang-btns">
             <button type="button" class="lang-btn" data-lang="en">English</button>
-            <button type="button" class="lang-btn" data-lang="hi">हिन्दी</button>
+            <button type="button" class="lang-btn" data-lang="hi" lang="hi">हिन्दी</button>
           </div>
         </div>
       </div>

@@ -8,7 +8,6 @@
   <!-- ═══════════════════════ PRIMARY SEO ═══════════════════════ -->
   <title>TypeAura — AI Keyboard for Hinglish, Hindi & Better English</title>
   <meta name="description" content="TypeAura is a free AI-powered Android keyboard with Hinglish ↔ English translation, a Floating Lens that translates any on-screen text via the Accessibility API, speech-to-text input, an emoji panel, clipboard history, and a suite of in-app AI tools (Smart Reply, Email Composer, Tone Changer, Live Translate). 10 languages (Hindi, Tamil, Telugu, Marathi, Bengali, Gujarati, Punjabi, Urdu). Free 10k tokens/day, or one-time Pro (50k/day) and Max (150k/day) plans from ₹299 — no auto-renewal. Powered by GPT-OSS 120B. Free on Google Play." />
-  <meta name="keywords" content="TypeAura, type aura, TypeAura keyboard, TypeAura app, TypeAura Play Store, TypeAura Google Play, AI keyboard, Hinglish keyboard, Hindi English keyboard, Hinglish to English translation, floating lens, screen translator, translate text on screen, on-screen translator, screen translation app, overlay translator, translate any app, AI keyboard for Android, Indian keyboard app, smart keyboard, voice typing keyboard, live translate keyboard, AI writing keyboard, smart reply keyboard, email composer keyboard, tone changer, LLaMA keyboard, free AI keyboard, best AI keyboard India, Hinglish translator, English correction keyboard, multilingual keyboard, Tamil keyboard, Telugu keyboard, Marathi keyboard, Bengali keyboard, Gujarati keyboard, Punjabi keyboard, Urdu keyboard" />
   <meta name="author" content="Himanshu Kashyap" />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
   <meta name="googlebot" content="index, follow" />
@@ -17,9 +16,8 @@
   <link rel="canonical" href="https://typeaura.indevs.in/" />
 
   <!-- ═══════════════════════ FAVICONS ═══════════════════════ -->
-  <link rel="icon" type="image/png" href="img/icon.png" />
-  <link rel="shortcut icon" type="image/png" href="img/icon.png" />
-  <link rel="apple-touch-icon" href="img/icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png" />
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
   <link rel="manifest" href="site.webmanifest" />
 
   <!-- ═══════════════════════ OPEN GRAPH ═══════════════════════ -->
@@ -29,9 +27,9 @@
   <meta property="og:description" content="A free AI-powered Android keyboard with Hinglish ↔ English translation, Live Translate, Smart Reply & 6 AI tools built in. Powered by GPT-OSS 120B." />
   <meta property="og:url" content="https://typeaura.indevs.in/" />
   <meta property="og:image" content="https://typeaura.indevs.in/img/og-image.png" />
-  <meta property="og:image:width" content="500" />
-  <meta property="og:image:height" content="500" />
-  <meta property="og:image:alt" content="TypeAura AI Keyboard logo" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="TypeAura — AI Keyboard for Hinglish, Hindi and better English" />
   <meta property="og:locale" content="en_IN" />
 
   <!-- ═══════════════════════ TWITTER CARD ═══════════════════════ -->
@@ -39,108 +37,267 @@
   <meta name="twitter:title" content="TypeAura — AI Keyboard for Hinglish, Hindi & Better English" />
   <meta name="twitter:description" content="A free AI-powered Android keyboard with Hinglish ↔ English translation, Live Translate, Smart Reply & 6 AI tools built in. Powered by GPT-OSS 120B." />
   <meta name="twitter:image" content="https://typeaura.indevs.in/img/og-image.png" />
-  <meta name="twitter:image:alt" content="TypeAura AI Keyboard logo" />
+  <meta name="twitter:image:alt" content="TypeAura — AI Keyboard for Hinglish, Hindi and better English" />
 
+  <!-- gstatic is where the woff2 files actually live — preconnecting only to
+       googleapis warms the wrong hop. crossorigin is required on both. -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 
-  <!-- Iconify — SVG icons fetched on-demand from the Iconify API (replaces emojis) -->
-  <script src="https://code.iconify.design/iconify-icon/2.3.0/iconify-icon.min.js"></script>
-
   <!-- ═══════════════════════ STRUCTURED DATA ═══════════════════════ -->
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebSite",
-        "@id": "https://typeaura.indevs.in/#website",
-        "url": "https://typeaura.indevs.in/",
-        "name": "TypeAura",
-        "description": "AI-powered Android keyboard for Hinglish, Hindi and better English.",
-        "inLanguage": "en",
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": "https://typeaura.indevs.in/?q={search_term_string}",
-          "query-input": "required name=search_term_string"
-        }
-      },
-      {
-        "@type": "Organization",
-        "@id": "https://typeaura.indevs.in/#organization",
-        "name": "TypeAura",
-        "url": "https://typeaura.indevs.in/",
-        "logo": "https://typeaura.indevs.in/img/icon.png",
-        "founder": { "@type": "Person", "name": "Himanshu Kashyap" }
-      },
-      {
-        "@type": "SoftwareApplication",
-        "name": "TypeAura — AI Keyboard",
-        "operatingSystem": "Android 5.0+",
-        "applicationCategory": "UtilitiesApplication",
-        "url": "https://typeaura.indevs.in/",
-        "downloadUrl": "https://play.google.com/store/apps/details?id=com.typeaura.app",
-        "installUrl": "https://play.google.com/store/apps/details?id=com.typeaura.app",
-        "softwareVersion": "3.0.0",
-        "image": "https://typeaura.indevs.in/img/og-image.png",
-        "description": "TypeAura is a free AI-powered Android keyboard with Hinglish ↔ English translation, a Floating Lens that translates any on-screen text, Live Translate, Smart Reply, Email Composer, Tone Changer and AI Chat across 10 languages. Powered by GPT-OSS 120B.",
-        "author": { "@type": "Person", "name": "Himanshu Kashyap" },
-        "offers": {
-          "@type": "AggregateOffer",
-          "priceCurrency": "INR",
-          "lowPrice": "0",
-          "highPrice": "3749",
-          "offerCount": "5",
-          "offers": [
-            { "@type": "Offer", "name": "Free",        "price": "0",    "priceCurrency": "INR" },
-            { "@type": "Offer", "name": "Pro 30 days",  "price": "299",  "priceCurrency": "INR" },
-            { "@type": "Offer", "name": "Pro 365 days", "price": "2249", "priceCurrency": "INR" },
-            { "@type": "Offer", "name": "Max 30 days",  "price": "499",  "priceCurrency": "INR" },
-            { "@type": "Offer", "name": "Max 365 days", "price": "3749", "priceCurrency": "INR" }
-          ]
-        }
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://typeaura.indevs.in/#website",
+      "url": "https://typeaura.indevs.in/",
+      "name": "TypeAura",
+      "description": "AI-powered Android keyboard for Hinglish, Hindi and better English.",
+      "inLanguage": "en",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://typeaura.indevs.in/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
       }
-    ]
-  }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://typeaura.indevs.in/#organization",
+      "name": "TypeAura",
+      "url": "https://typeaura.indevs.in/",
+      "logo": "https://typeaura.indevs.in/img/icon.png",
+      "founder": {
+        "@type": "Person",
+        "name": "Himanshu Kashyap"
+      }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "TypeAura — AI Keyboard",
+      "operatingSystem": "Android 5.0+",
+      "applicationCategory": "UtilitiesApplication",
+      "url": "https://typeaura.indevs.in/",
+      "downloadUrl": "https://play.google.com/store/apps/details?id=com.typeaura.app",
+      "installUrl": "https://play.google.com/store/apps/details?id=com.typeaura.app",
+      "softwareVersion": "3.0.0",
+      "image": "https://typeaura.indevs.in/img/og-image.png",
+      "description": "TypeAura is a free AI-powered Android keyboard with Hinglish ↔ English translation, a Floating Lens that translates any on-screen text, Live Translate, Smart Reply, Email Composer, Tone Changer and AI Chat across 10 languages. Powered by GPT-OSS 120B.",
+      "author": {
+        "@type": "Person",
+        "name": "Himanshu Kashyap"
+      },
+      "offers": {
+        "@type": "AggregateOffer",
+        "priceCurrency": "INR",
+        "lowPrice": "0",
+        "highPrice": "3749",
+        "offerCount": "5",
+        "offers": [
+          {
+            "@type": "Offer",
+            "name": "Free",
+            "price": "0",
+            "priceCurrency": "INR",
+            "availability": "https://schema.org/InStock"
+          },
+          {
+            "@type": "Offer",
+            "name": "Pro 30 days",
+            "price": "299",
+            "priceCurrency": "INR",
+            "availability": "https://schema.org/InStock"
+          },
+          {
+            "@type": "Offer",
+            "name": "Pro 365 days",
+            "price": "2249",
+            "priceCurrency": "INR",
+            "availability": "https://schema.org/InStock"
+          },
+          {
+            "@type": "Offer",
+            "name": "Max 30 days",
+            "price": "499",
+            "priceCurrency": "INR",
+            "availability": "https://schema.org/InStock"
+          },
+          {
+            "@type": "Offer",
+            "name": "Max 365 days",
+            "price": "3749",
+            "priceCurrency": "INR",
+            "availability": "https://schema.org/InStock"
+          }
+        ]
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://typeaura.indevs.in/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is TypeAura really free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Every AI feature — the Floating Lens, Live Translate, voice typing, AI Chat and all six AI tools — runs on a free budget of 10,000 tokens per day that resets every midnight. No card, no login, no trial period. Pro and Max are optional one-time top-ups for people who need more headroom."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do you store what I type?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Your keystrokes, passwords and OTPs never leave your device. Text is sent to our server only when you explicitly tap an AI action — translate, rewrite, reply — and it is processed and returned immediately, never stored. Read the full detail in our Privacy Policy."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does the Floating Lens need Accessibility permission?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The Lens translates text that belongs to other apps, so it needs Android's Accessibility API to read the text you tap on. It reads only at the moment you tap, and it explicitly skips password fields and editable text boxes. The permission is entirely optional — the keyboard and every AI tool work without it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do Pro and Max auto-renew?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. They are one-time purchases for a fixed period — 30 or 365 days. Nothing renews on its own, nothing is charged again, and there is no subscription to cancel. When the period ends you simply drop back to the Free budget."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I buy Pro or Max?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Inside the app, not on this website. Install TypeAura, open Settings → Plans, pick Pro or Max, and pay through Google Play. You will get a TA-XXXX-XXXX recovery code — save it, as that code is how you move your plan to a new device or restore it after a reinstall."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which languages are supported?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Ten: Hindi, Tamil, Telugu, Marathi, Bengali, Gujarati, Punjabi, Urdu, English — plus Hinglish, which is what TypeAura is really built for. Type the way you actually speak and it converts to clean English (or the reverse)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it work offline?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Typing, glide typing, suggestions, themes, emoji and clipboard history all work fully offline. The AI features — translation, the Lens, AI Chat and the tools — need an internet connection, because the model runs on a server rather than on your phone."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What happens when I run out of daily tokens?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The keyboard keeps working normally — only the AI actions pause. Your counter resets automatically at midnight. If you hit the limit regularly, Pro gives you 5× the budget and Max gives you 15×."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which Android versions work? Is there an iPhone version?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "TypeAura runs on Android 5.0 and above. There is no iOS version — iOS does not allow the kind of system-wide overlay the Floating Lens depends on. There is a Windows desktop app with the same AI tools and a global-hotkey Lens."
+          }
+        }
+      ]
+    }
+  ]
+}
   </script>
 </head>
 <body>
+  <!-- Icon sprite: 32 lucide glyphs inlined once (~8KB) — replaces the
+       render-blocking Iconify script, its third-party DNS+TLS handshake and
+       a runtime API round-trip for every icon. -->
+  <svg class="icon-sprite" aria-hidden="true" focusable="false"><defs>
+  <symbol id="i-arrow-down" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14m7-7l-7 7l-7-7"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7-7l7 7l-7 7"/></symbol>
+  <symbol id="i-arrow-up" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></symbol>
+  <symbol id="i-bot" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2m16 0h2m-7-1v2m-6-2v2"/></g></symbol>
+  <symbol id="i-bug" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 20v-9m2-4a4 4 0 0 1 4 4v3a6 6 0 0 1-12 0v-3a4 4 0 0 1 4-4zm.12-3.12L16 2"/><path d="M21 21a4 4 0 0 0-3.81-4M21 5a4 4 0 0 1-3.55 3.97M22 13h-4M3 21a4 4 0 0 1 3.81-4M3 5a4 4 0 0 0 3.55 3.97M6 13H2M8 2l1.88 1.88M9 7.13V6a3 3 0 1 1 6 0v1.13"/></g></symbol>
+  <symbol id="i-chevron-down" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 18l6-6l-6-6"/></symbol>
+  <symbol id="i-crown" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294zM5 21h14"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 15V3m9 12v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10l5 5l5-5"/></g></symbol>
+  <symbol id="i-focus" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M3 7V5a2 2 0 0 1 2-2h2m10 0h2a2 2 0 0 1 2 2v2m0 10v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/></g></symbol>
+  <symbol id="i-gift" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 7v14m8-10v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8m3.5-4a1 1 0 0 1 0-5A4.8 8 0 0 1 12 7a4.8 8 0 0 1 4.5-5a1 1 0 0 1 0 5"/><rect width="18" height="4" x="3" y="7" rx="1"/></g></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20a14.5 14.5 0 0 0 0-20M2 12h20"/></g></symbol>
+  <symbol id="i-keyboard" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M10 8h.01M12 12h.01M14 8h.01M16 12h.01M18 8h.01M6 8h.01M7 16h10m-9-4h.01"/><rect width="20" height="16" x="2" y="4" rx="2"/></g></symbol>
+  <symbol id="i-languages" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 8l6 6m-7 0l6-6l2-3M2 5h12M7 2h1m14 20l-5-10l-5 10m2-4h6"/></symbol>
+  <symbol id="i-lightbulb" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 14c.2-1 .7-1.7 1.5-2.5c1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5c.7.7 1.3 1.5 1.5 2.5m0 4h6m-5 4h4"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></g></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="m22 7l-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect width="20" height="16" x="2" y="4" rx="2"/></g></symbol>
+  <symbol id="i-message-circle" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092a10 10 0 1 0-4.777-4.719"/></symbol>
+  <symbol id="i-party-popper" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M5.8 11.3L2 22l10.7-3.79M4 3h.01M22 8h.01M15 2h.01M22 20h.01M22 2l-2.24.75a2.9 2.9 0 0 0-1.96 3.12c.1.86-.57 1.63-1.45 1.63h-.38c-.86 0-1.6.6-1.76 1.44L14 10m8 3l-.82-.33c-.86-.34-1.82.2-1.98 1.11c-.11.7-.72 1.22-1.43 1.22H17M11 2l.33.82c.34.86-.2 1.82-1.11 1.98c-.7.1-1.22.72-1.22 1.43V7"/><path d="M11 13c1.93 1.93 2.83 4.17 2 5s-3.07-.07-5-2s-2.83-4.17-2-5s3.07.07 5 2"/></g></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><rect width="5" height="18" x="14" y="3" rx="1"/><rect width="5" height="18" x="5" y="3" rx="1"/></g></symbol>
+  <symbol id="i-pen-line" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 21h8m.174-14.188a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></symbol>
+  <symbol id="i-reply" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M20 18v-2a4 4 0 0 0-4-4H4"/><path d="m9 17l-5-5l5-5"/></g></symbol>
+  <symbol id="i-rocket" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09"/><path d="M9 12a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.4 22.4 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 .05 5 .05"/></g></symbol>
+  <symbol id="i-scan-text" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7V5a2 2 0 0 1 2-2h2m10 0h2a2 2 0 0 1 2 2v2m0 10v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2m4-9h8m-8 4h10M7 16h6"/></symbol>
+  <symbol id="i-shield-check" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12l2 2l4-4"/></g></symbol>
+  <symbol id="i-sliders-horizontal" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 5H3m9 14H3M14 3v4m2 10v4m5-9h-9m9 7h-5m5-14h-7m-6 5v4m0-2H3"/></symbol>
+  <symbol id="i-smartphone" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></g></symbol>
+  <symbol id="i-sparkles" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594zM20 2v4m2-2h-4"/><circle cx="4" cy="20" r="2"/></g></symbol>
+  <symbol id="i-users-round" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M18 21a8 8 0 0 0-16 0"/><circle cx="10" cy="8" r="5"/><path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3"/></g></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 6L6 18M6 6l12 12"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.914 4a1.5 1.5 0 0 0-2.474-1.561l-9 9A1.5 1.5 0 0 0 5.5 14h4.002a.5.5 0 0 1 .471.666L8.086 20a1.5 1.5 0 0 0 2.475 1.56l9-9A1.5 1.5 0 0 0 18.5 10h-3.997a.5.5 0 0 1-.472-.667z"/></symbol>
+  </defs></svg>
+
+  <a href="#main" class="skip-link">Skip to content</a>
 
   <!-- ═══════════════════════════════ NAVBAR ═══════════════════════════════ -->
-  <nav class="navbar">
-    <div class="nav-inner">
-      <div class="nav-logo">
-        <div class="logo-emoji"><iconify-icon icon="lucide:keyboard"></iconify-icon></div>
-        <span class="logo-text">TypeAura</span>
+  <!-- @partial:navbar v1 — canonical copy. Mirrored in privacy/delete-data/update/demo. -->
+  <header>
+    <nav class="navbar" aria-label="Main">
+      <div class="nav-inner">
+        <a class="nav-logo" href="/">
+          <div class="logo-emoji"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-keyboard"/></svg></div>
+          <span class="logo-text">TypeAura</span>
+        </a>
+        <div class="nav-links">
+          <a href="/demo">Live Demo</a>
+          <a href="#ai-tools">AI Tools</a>
+          <a href="#lens">Floating Lens</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#faq">FAQ</a>
+          <a href="#install">Install</a>
+        </div>
+        <a href="https://play.google.com/store/apps/details?id=com.typeaura.app" class="btn-nav" target="_blank" rel="noopener">Get it on Google Play</a>
+        <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false" aria-controls="mobileNav">
+          <span></span><span></span><span></span>
+        </button>
       </div>
-      <div class="nav-links">
-        <a href="/demo">Live Demo</a>
-        <a href="#ai-tools">AI Tools</a>
-        <a href="#lens">Floating Lens</a>
-        <a href="#pricing">Pricing</a>
-        <a href="#install">Install</a>
-        <a href="#about">About</a>
-      </div>
-      <a href="https://play.google.com/store/apps/details?id=com.typeaura.app" class="btn-nav" target="_blank" rel="noopener">Get it on Google Play</a>
-      <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </nav>
+    </nav>
+  </header>
 
   <!-- Mobile nav overlay -->
-  <div class="mobile-nav" id="mobileNav" role="navigation">
-    <a href="/demo"        class="mobile-nav-link"><iconify-icon icon="lucide:play" inline></iconify-icon> Live Demo</a>
+  <div class="mobile-nav" id="mobileNav" role="navigation" aria-label="Mobile">
+    <a href="/demo"        class="mobile-nav-link"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-play"/></svg> Live Demo</a>
     <a href="#ai-tools"    class="mobile-nav-link">AI Tools</a>
     <a href="#lens"        class="mobile-nav-link">Floating Lens</a>
     <a href="#pricing"     class="mobile-nav-link">Pricing</a>
+    <a href="#faq"         class="mobile-nav-link">FAQ</a>
     <a href="#install"     class="mobile-nav-link">How to Install</a>
     <a href="#stats"       class="mobile-nav-link">Live Stats</a>
     <a href="#about"       class="mobile-nav-link">About</a>
     <a href="#feedback"    class="mobile-nav-link">Feedback</a>
-    <a href="https://play.google.com/store/apps/details?id=com.typeaura.app" class="mobile-download" target="_blank" rel="noopener"><iconify-icon icon="lucide:play" inline></iconify-icon> Get it on Google Play</a>
+    <a href="https://play.google.com/store/apps/details?id=com.typeaura.app" class="mobile-download" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-play"/></svg> Get it on Google Play</a>
   </div>
+
+  <main id="main">
 
   <!-- ═══════════════════════════════ HERO ════════════════════════════════ -->
   <section class="hero" id="home">
@@ -148,31 +305,55 @@
     <div class="hero-glow hero-glow-2"></div>
     <div class="hero-glow hero-glow-3"></div>
     <div class="container">
-      <div class="hero-badge">
-        <span class="badge-dot"></span>
-        AI-Powered &nbsp;·&nbsp; Android Keyboard &nbsp;·&nbsp; Free Forever
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div class="hero-badge">
+            <span class="badge-dot"></span>
+            AI-Powered &nbsp;·&nbsp; Android Keyboard &nbsp;·&nbsp; Free Forever
+          </div>
+          <h1 class="hero-title">
+            One Keyboard.<br />
+            <span class="gradient-text">Unlimited AI Superpowers.</span>
+          </h1>
+          <p class="hero-sub">
+            TypeAura is a smart Android keyboard with AI support for <strong>10 languages</strong>.
+            Live Translate, AI Chat, Smart Reply, Email Composer, Tone Changer — <strong>6 AI tools</strong>
+            built right in — plus a <strong>Floating Lens</strong> that translates any text on your screen.
+            Powered by GPT-OSS&nbsp;120B.
+          </p>
+          <div class="hero-cta" id="download">
+            <a href="https://play.google.com/store/apps/details?id=com.typeaura.app" class="btn-primary" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+                <path d="M3 20.5V3.5c0-.6.4-1.1.9-1.3l10.3 10.3L3.9 21.8c-.5-.2-.9-.7-.9-1.3zm13.8-5.4L6.1 21.9l8.6-8.6 2.1 1.8zm3.6-4.2c.4.3.6.7.6 1.1s-.2.8-.6 1.1l-2.2 1.3-2.4-2.4 2.4-2.4 2.2 1.3zM6.1 2.1l10.7 6.8-2.1 1.8L6.1 2.1z"/>
+              </svg>
+              Get it on Google Play
+            </a>
+            <a href="/demo" class="btn-secondary"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-play"/></svg> Try the Live Demo</a>
+          </div>
+          <div class="hero-note">
+            Android 5.0+ &nbsp;·&nbsp; No login required &nbsp;·&nbsp; Free forever
+            &nbsp;·&nbsp; <a href="#install" class="hero-note-link">How to install <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-down"/></svg></a>
+          </div>
+        </div>
+
+        <!-- Product shot. No `autoplay` attribute on purpose: with it set,
+             browsers fetch the video regardless of preload="none", putting
+             it on the LCP critical path. app.js starts it after load. -->
+        <div class="hero-visual">
+          <div class="phone-frame">
+            <video id="heroVideo" muted loop playsinline preload="none"
+                   poster="img/translate-demo-poster.webp"
+                   width="720" height="1600"
+                   aria-label="TypeAura translating a Hinglish message into English inside a chat app">
+              <source src="img/translate-demo.mp4" type="video/mp4" />
+            </video>
+            <button type="button" class="frame-pause" id="heroPause"
+                    aria-label="Pause demo video" hidden>
+              <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-pause"/></svg>
+            </button>
+          </div>
+        </div>
       </div>
-      <h1 class="hero-title">
-        One Keyboard.<br />
-        <span class="gradient-text">Unlimited AI Superpowers.</span>
-      </h1>
-      <p class="hero-sub">
-        TypeAura is a smart Android keyboard with AI support for <strong>10 languages</strong>.
-        Live Translate, AI Chat, Smart Reply, Email Composer, Tone Changer — <strong>6 AI tools</strong>
-        built right in — plus a <strong>Floating Lens</strong> that translates any text on your screen.
-        Powered by GPT-OSS&nbsp;120B.
-      </p>
-      <div class="hero-cta" id="download">
-        <a href="https://play.google.com/store/apps/details?id=com.typeaura.app" class="btn-primary" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M3 20.5V3.5c0-.6.4-1.1.9-1.3l10.3 10.3L3.9 21.8c-.5-.2-.9-.7-.9-1.3zm13.8-5.4L6.1 21.9l8.6-8.6 2.1 1.8zm3.6-4.2c.4.3.6.7.6 1.1s-.2.8-.6 1.1l-2.2 1.3-2.4-2.4 2.4-2.4 2.2 1.3zM6.1 2.1l10.7 6.8-2.1 1.8L6.1 2.1z"/>
-          </svg>
-          Get it on Google Play
-        </a>
-        <a href="/demo" class="btn-secondary"><iconify-icon icon="lucide:play" inline></iconify-icon> Try the Live Demo</a>
-        <a href="#install" class="btn-secondary">How to Install <iconify-icon icon="lucide:arrow-down" inline></iconify-icon></a>
-      </div>
-      <div class="hero-note">Android 5.0+ &nbsp;·&nbsp; No login required &nbsp;·&nbsp; Free forever</div>
 
       <!-- Trust strip -->
       <div class="hero-trust">
@@ -192,7 +373,7 @@
         </div>
         <div class="trust-divider"></div>
         <div class="trust-item">
-          <span class="trust-num">v2.0.5</span>
+          <span class="trust-num">v3.0.0</span>
           <span class="trust-label">Latest Version</span>
         </div>
         <div class="trust-divider"></div>
@@ -213,33 +394,70 @@
       </div>
       <div class="screenshots-row" id="screenshotsRow">
         <div class="screenshot-slot video-slot">
-          <video autoplay muted loop playsinline poster="img/lens-demo-poster.jpg">
+          <video muted loop playsinline preload="none"
+                 poster="img/lens-demo-poster.webp"
+                 width="720" height="1600"
+                 aria-label="The TypeAura Floating Lens translating on-screen text in another app">
             <source src="img/lens-demo.mp4" type="video/mp4" />
           </video>
           <p class="screenshot-label">Floating Lens</p>
         </div>
-        <div class="screenshot-slot">
-          <img src="img/home-v3.jpg" alt="TypeAura Home Screen" loading="lazy" />
+        <div class="screenshot-slot" role="button" tabindex="0" aria-label="Open a larger view of the TypeAura home screen">
+          <picture>
+            <source type="image/webp"
+                    srcset="img/home-v3-480.webp 480w, img/home-v3-720.webp 720w, img/home-v3-1080.webp 1080w"
+                    sizes="(max-width: 380px) 64vw, (max-width: 600px) 56vw, (max-width: 900px) 32vw, 165px" />
+            <img src="img/home-v3.jpg" width="1080" height="2400"
+                 data-full="img/home-v3-1080.webp"
+                 alt="TypeAura Home Screen" loading="lazy" decoding="async" />
+          </picture>
           <p class="screenshot-label">Home</p>
         </div>
-        <div class="screenshot-slot">
-          <img src="img/aitools-v3.jpg" alt="TypeAura AI Tools — Live Translate, Text Tools, AI Chat, Smart Reply, Email Composer, Tone Changer" loading="lazy" />
+        <div class="screenshot-slot" role="button" tabindex="0" aria-label="Open a larger view of the TypeAura AI Tools screen">
+          <picture>
+            <source type="image/webp"
+                    srcset="img/aitools-v3-480.webp 480w, img/aitools-v3-720.webp 720w, img/aitools-v3-1080.webp 1080w"
+                    sizes="(max-width: 380px) 64vw, (max-width: 600px) 56vw, (max-width: 900px) 32vw, 165px" />
+            <img src="img/aitools-v3.jpg" width="1080" height="2400"
+                 data-full="img/aitools-v3-1080.webp"
+                 alt="TypeAura AI Tools — Live Translate, Text Tools, AI Chat, Smart Reply, Email Composer, Tone Changer" loading="lazy" decoding="async" />
+          </picture>
           <p class="screenshot-label">AI Tools</p>
         </div>
         <div class="screenshot-slot video-slot">
-          <video autoplay muted loop playsinline poster="img/translate-demo-poster.jpg">
+          <video muted loop playsinline preload="none"
+                 poster="img/translate-demo-poster.webp"
+                 width="720" height="1600"
+                 aria-label="Hinglish text being converted to English as the user types">
             <source src="img/translate-demo.mp4" type="video/mp4" />
           </video>
           <p class="screenshot-label">Hinglish → English</p>
         </div>
-        <div class="screenshot-slot">
-          <img src="img/themes-v3.jpg" alt="TypeAura Themes — 25 keyboard theme presets" loading="lazy" />
+        <div class="screenshot-slot" role="button" tabindex="0" aria-label="Open a larger view of the TypeAura themes gallery">
+          <picture>
+            <source type="image/webp"
+                    srcset="img/themes-v3-480.webp 480w, img/themes-v3-720.webp 720w, img/themes-v3-1080.webp 1080w"
+                    sizes="(max-width: 380px) 64vw, (max-width: 600px) 56vw, (max-width: 900px) 32vw, 165px" />
+            <img src="img/themes-v3.jpg" width="1080" height="2400"
+                 data-full="img/themes-v3-1080.webp"
+                 alt="TypeAura Themes — 25 keyboard theme presets" loading="lazy" decoding="async" />
+          </picture>
           <p class="screenshot-label">Themes</p>
         </div>
-        <div class="screenshot-slot">
-          <img src="img/settings-v3.jpg" alt="TypeAura Settings" loading="lazy" />
+        <div class="screenshot-slot" role="button" tabindex="0" aria-label="Open a larger view of the TypeAura settings screen">
+          <picture>
+            <source type="image/webp"
+                    srcset="img/settings-v3-480.webp 480w, img/settings-v3-720.webp 720w, img/settings-v3-1080.webp 1080w"
+                    sizes="(max-width: 380px) 64vw, (max-width: 600px) 56vw, (max-width: 900px) 32vw, 165px" />
+            <img src="img/settings-v3.jpg" width="1080" height="2400"
+                 data-full="img/settings-v3-1080.webp"
+                 alt="TypeAura Settings" loading="lazy" decoding="async" />
+          </picture>
           <p class="screenshot-label">Settings</p>
         </div>
+      </div>
+      <div class="section-cta">
+        <a href="/demo" class="btn-secondary">See the full walkthrough <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg></a>
       </div>
     </div>
   </section>
@@ -254,22 +472,22 @@
       </div>
       <div class="stats-grid">
         <div class="stat-card" id="stat-installs">
-          <div class="stat-icon"><iconify-icon icon="lucide:download"></iconify-icon></div>
+          <div class="stat-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-download"/></svg></div>
           <div class="stat-value" data-endpoint="total_installs">—</div>
           <div class="stat-label">Total Installs</div>
         </div>
         <div class="stat-card" id="stat-active">
-          <div class="stat-icon"><iconify-icon icon="lucide:users-round"></iconify-icon></div>
+          <div class="stat-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-users-round"/></svg></div>
           <div class="stat-value" data-endpoint="active_users">—</div>
           <div class="stat-label">Active Users (30d)</div>
         </div>
         <div class="stat-card" id="stat-sessions">
-          <div class="stat-icon"><iconify-icon icon="lucide:keyboard"></iconify-icon></div>
+          <div class="stat-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-keyboard"/></svg></div>
           <div class="stat-value" data-endpoint="keyboard_sessions">—</div>
           <div class="stat-label">Keyboard Sessions</div>
         </div>
         <div class="stat-card" id="stat-ai">
-          <div class="stat-icon"><iconify-icon icon="lucide:sparkles"></iconify-icon></div>
+          <div class="stat-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-sparkles"/></svg></div>
           <div class="stat-value" data-endpoint="ai_actions">—</div>
           <div class="stat-label">AI Actions Used</div>
         </div>
@@ -300,13 +518,17 @@
           </p>
         </div>
         <div class="what-right">
-          <div class="stat-pill"><iconify-icon icon="lucide:scan-text" inline></iconify-icon> Reads on-screen text on tap</div>
-          <div class="stat-pill"><iconify-icon icon="lucide:globe" inline></iconify-icon> Translates into 10 languages</div>
-          <div class="stat-pill"><iconify-icon icon="lucide:smartphone" inline></iconify-icon> Works in every app, system-wide</div>
-          <div class="stat-pill"><iconify-icon icon="lucide:focus" inline></iconify-icon> Floating bubble — always one tap away</div>
-          <div class="stat-pill"><iconify-icon icon="lucide:lock" inline></iconify-icon> Skips passwords &amp; private fields</div>
-          <div class="stat-pill"><iconify-icon icon="lucide:zap" inline></iconify-icon> No copy-paste, no app switching</div>
+          <div class="stat-pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-scan-text"/></svg> Reads on-screen text on tap</div>
+          <div class="stat-pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-globe"/></svg> Translates into 10 languages</div>
+          <div class="stat-pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-smartphone"/></svg> Works in every app, system-wide</div>
+          <div class="stat-pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-focus"/></svg> Floating bubble — always one tap away</div>
+          <div class="stat-pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-lock"/></svg> Skips passwords &amp; private fields</div>
+          <div class="stat-pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-zap"/></svg> No copy-paste, no app switching</div>
         </div>
+      </div>
+      <div class="section-cta">
+        <a href="https://play.google.com/store/apps/details?id=com.typeaura.app" class="btn-primary" target="_blank" rel="noopener">Try the Lens free — Install TypeAura</a>
+        <a href="/demo" class="btn-secondary">See it in the live demo <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg></a>
       </div>
     </div>
   </section>
@@ -323,7 +545,7 @@
 
         <div class="ai-tool-card">
           <div class="ai-tool-top">
-            <div class="ai-tool-icon"><iconify-icon icon="lucide:languages"></iconify-icon></div>
+            <div class="ai-tool-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-languages"/></svg></div>
             <div class="ai-tool-meta">
               <div class="ai-tool-header"><h3>Live Translate</h3></div>
               <p class="ai-tool-sub">Face-to-face real-time conversation</p>
@@ -340,7 +562,7 @@
 
         <div class="ai-tool-card">
           <div class="ai-tool-top">
-            <div class="ai-tool-icon"><iconify-icon icon="lucide:pen-line"></iconify-icon></div>
+            <div class="ai-tool-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-pen-line"/></svg></div>
             <div class="ai-tool-meta">
               <div class="ai-tool-header"><h3>Text Tools</h3></div>
               <p class="ai-tool-sub">Write, fix, translate &amp; transform</p>
@@ -357,7 +579,7 @@
 
         <div class="ai-tool-card">
           <div class="ai-tool-top">
-            <div class="ai-tool-icon"><iconify-icon icon="lucide:bot"></iconify-icon></div>
+            <div class="ai-tool-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-bot"/></svg></div>
             <div class="ai-tool-meta">
               <div class="ai-tool-header"><h3>AI Chat</h3></div>
               <p class="ai-tool-sub">Smart multi-turn assistant</p>
@@ -374,7 +596,7 @@
 
         <div class="ai-tool-card">
           <div class="ai-tool-top">
-            <div class="ai-tool-icon"><iconify-icon icon="lucide:reply"></iconify-icon></div>
+            <div class="ai-tool-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-reply"/></svg></div>
             <div class="ai-tool-meta">
               <div class="ai-tool-header"><h3>Smart Reply</h3><span class="tool-new-badge">New</span></div>
               <p class="ai-tool-sub">3 instant replies from any message</p>
@@ -391,7 +613,7 @@
 
         <div class="ai-tool-card">
           <div class="ai-tool-top">
-            <div class="ai-tool-icon"><iconify-icon icon="lucide:mail"></iconify-icon></div>
+            <div class="ai-tool-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-mail"/></svg></div>
             <div class="ai-tool-meta">
               <div class="ai-tool-header"><h3>Email Composer</h3><span class="tool-new-badge">New</span></div>
               <p class="ai-tool-sub">Bullet points in, polished email out</p>
@@ -408,7 +630,7 @@
 
         <div class="ai-tool-card">
           <div class="ai-tool-top">
-            <div class="ai-tool-icon"><iconify-icon icon="lucide:sliders-horizontal"></iconify-icon></div>
+            <div class="ai-tool-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-sliders-horizontal"/></svg></div>
             <div class="ai-tool-meta">
               <div class="ai-tool-header"><h3>Tone Changer</h3><span class="tool-new-badge">New</span></div>
               <p class="ai-tool-sub">Switch tone with one tap</p>
@@ -424,10 +646,13 @@
         </div>
 
       </div>
+      <div class="section-cta">
+        <a href="https://play.google.com/store/apps/details?id=com.typeaura.app" class="btn-primary" target="_blank" rel="noopener">Get all 6 AI tools — free</a>
+        <a href="/demo" class="btn-secondary">Try them in your browser <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg></a>
+      </div>
     </div>
   </section>
 
-  
   <!-- ═══════════════════════════════ PRICING ══════════════════════════════ -->
   <section class="section section--dark" id="pricing">
     <div class="container">
@@ -440,7 +665,7 @@
 
         <div class="pricing-card pricing-card--free">
           <div class="pricing-header">
-            <div class="pricing-icon" style="background:linear-gradient(135deg,#6366F1,#818CF8);"><iconify-icon icon="lucide:gift"></iconify-icon></div>
+            <div class="pricing-icon" style="background:linear-gradient(135deg,#6366F1,#818CF8);"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-gift"/></svg></div>
             <div class="pricing-name"><h3>Free</h3></div>
           </div>
           <div class="pricing-price">
@@ -457,13 +682,15 @@
             <li>Lens, Translate, Voice, AI Chat &amp; Tools</li>
             <li>Resets every midnight</li>
           </ul>
+          <a href="https://play.google.com/store/apps/details?id=com.typeaura.app" class="btn-secondary pricing-cta" target="_blank" rel="noopener">Start free — no card needed</a>
+          <p class="pricing-note">No purchase &nbsp;·&nbsp; No account &nbsp;·&nbsp; Install and start typing</p>
         </div>
 
         <div class="pricing-card pricing-card--pro">
           <div class="pricing-header">
-            <div class="pricing-icon" style="background:linear-gradient(135deg,#8B5CF6,#A78BFA);"><iconify-icon icon="lucide:crown"></iconify-icon></div>
+            <div class="pricing-icon" style="background:linear-gradient(135deg,#8B5CF6,#A78BFA);"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-crown"/></svg></div>
             <div class="pricing-name">
-              <h3>Pro <span class="pricing-badge">Coming Soon</span></h3>
+              <h3>Pro <span class="pricing-badge">Most Popular</span></h3>
             </div>
           </div>
           <div class="pricing-price">
@@ -480,13 +707,15 @@
             <li>One-time payment — no auto-renewal</li>
             <li>No setup — just pay and use</li>
           </ul>
+          <a href="https://play.google.com/store/apps/details?id=com.typeaura.app" class="btn-primary pricing-cta" target="_blank" rel="noopener">Get Pro — ₹299</a>
+          <p class="pricing-note">Buy inside the app &nbsp;·&nbsp; Google Play Billing &nbsp;·&nbsp; One-time, no auto-renewal</p>
         </div>
 
         <div class="pricing-card pricing-card--max">
           <div class="pricing-header">
-            <div class="pricing-icon" style="background:linear-gradient(135deg,#F97316,#FBBF24);"><iconify-icon icon="lucide:rocket"></iconify-icon></div>
+            <div class="pricing-icon" style="background:linear-gradient(135deg,#F97316,#FBBF24);"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-rocket"/></svg></div>
             <div class="pricing-name">
-              <h3>Max <span class="pricing-badge pricing-badge--max">Coming Soon</span></h3>
+              <h3>Max <span class="pricing-badge pricing-badge--max">Best Value</span></h3>
             </div>
           </div>
           <div class="pricing-price">
@@ -503,8 +732,19 @@
             <li>AI tools: <strong>8,000 characters</strong> per input</li>
             <li>Priority email support</li>
           </ul>
+          <a href="https://play.google.com/store/apps/details?id=com.typeaura.app" class="btn-primary pricing-cta" target="_blank" rel="noopener">Get Max — ₹499</a>
+          <p class="pricing-note">Buy inside the app &nbsp;·&nbsp; Google Play Billing &nbsp;·&nbsp; One-time, no auto-renewal</p>
         </div>
 
+      </div>
+
+      <!-- How to buy — the purchase happens in-app via Play Billing, not on the web -->
+      <div class="pricing-howto">
+        <div class="howto-step"><span class="howto-num">1</span> Install TypeAura</div>
+        <div class="howto-sep"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg></div>
+        <div class="howto-step"><span class="howto-num">2</span> Open <strong>Settings → Plans</strong></div>
+        <div class="howto-sep"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg></div>
+        <div class="howto-step"><span class="howto-num">3</span> Pick Pro or Max, pay with Google Play</div>
       </div>
     </div>
   </section>
@@ -525,7 +765,7 @@
             <a href="https://play.google.com/store/apps/details?id=com.typeaura.app" class="btn-primary btn-sm" target="_blank" rel="noopener">Get it on Google Play</a>
           </div>
         </div>
-        <div class="step-arrow"><iconify-icon icon="lucide:arrow-right"></iconify-icon></div>
+        <div class="step-arrow"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg></div>
         <div class="step-card">
           <div class="step-num">2</div>
           <div class="step-body">
@@ -533,7 +773,7 @@
             <p>Go to <strong>Settings → System → Languages &amp; Input → On-screen keyboard</strong> and enable TypeAura.</p>
           </div>
         </div>
-        <div class="step-arrow"><iconify-icon icon="lucide:arrow-right"></iconify-icon></div>
+        <div class="step-arrow"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg></div>
         <div class="step-card">
           <div class="step-num">3</div>
           <div class="step-body">
@@ -544,7 +784,7 @@
       </div>
 
       <!-- Hindi guide -->
-      <div class="hindi-guide" id="hindi-guide">
+      <div class="hindi-guide" id="hindi-guide" lang="hi">
         <div class="section-tag" style="margin-bottom: 12px;">हिंदी गाइड</div>
         <h3 style="color: var(--accent-light); margin-bottom: 16px;">हिंदी में install कैसे करें?</h3>
         <ol class="hindi-steps">
@@ -552,14 +792,104 @@
           <li>Play Store पर <strong>Install</strong> दबाएं और app install होने का इंतज़ार करें।</li>
           <li>App install होने के बाद खोलें। अंदर <strong>"Keyboard Enable"</strong> पर tap करें।</li>
           <li>Phone के settings में जाकर TypeAura को <strong>Default Keyboard</strong> बनाएं।</li>
-          <li>अब किसी भी text field पर type करें — TypeAura खुल जायेगा! <iconify-icon icon="lucide:party-popper" inline></iconify-icon></li>
+          <li>अब किसी भी text field पर type करें — TypeAura खुल जायेगा! <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-party-popper"/></svg></li>
         </ol>
       </div>
     </div>
   </section>
 
+  <!-- ═══════════════════════════════ FAQ ══════════════════════════════════ -->
+  <!-- Native <details>/<summary>: keyboard-operable and screen-reader
+       announced with zero JS, and the answers stay in the DOM for crawlers
+       and answer engines (a JS accordion would hide them). -->
+  <section class="section section--dark" id="faq">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">FAQ</div>
+        <h2>Questions, <span class="gradient-text">answered</span></h2>
+        <p class="section-desc">Everything people ask before installing — privacy, permissions, pricing and limits.</p>
+      </div>
+
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>Is TypeAura really free?<span class="faq-chev" aria-hidden="true"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg></span></summary>
+          <div class="faq-answer">
+            <p>Yes. Every AI feature — the Floating Lens, Live Translate, voice typing, AI Chat and all six AI tools — runs on a free budget of <strong>10,000 tokens per day</strong> that resets every midnight. No card, no login, no trial period. Pro and Max are optional one-time top-ups for people who need more headroom.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Do you store what I type?<span class="faq-chev" aria-hidden="true"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg></span></summary>
+          <div class="faq-answer">
+            <p>No. Your keystrokes, passwords and OTPs never leave your device. Text is sent to our server <strong>only when you explicitly tap an AI action</strong> — translate, rewrite, reply — and it is processed and returned immediately, never stored. Read the full detail in our <a href="/privacy">Privacy Policy</a>.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Why does the Floating Lens need Accessibility permission?<span class="faq-chev" aria-hidden="true"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg></span></summary>
+          <div class="faq-answer">
+            <p>The Lens translates text that belongs to <em>other</em> apps, so it needs Android's Accessibility API to read the text you tap on. It reads only at the moment you tap, and it <strong>explicitly skips password fields and editable text boxes</strong>. The permission is entirely optional — the keyboard and every AI tool work without it.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Do Pro and Max auto-renew?<span class="faq-chev" aria-hidden="true"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg></span></summary>
+          <div class="faq-answer">
+            <p>No. They are <strong>one-time purchases</strong> for a fixed period — 30 or 365 days. Nothing renews on its own, nothing is charged again, and there is no subscription to cancel. When the period ends you simply drop back to the Free budget.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>How do I buy Pro or Max?<span class="faq-chev" aria-hidden="true"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg></span></summary>
+          <div class="faq-answer">
+            <p>Inside the app, not on this website. Install TypeAura, open <strong>Settings → Plans</strong>, pick Pro or Max, and pay through Google Play. You will get a <strong>TA-XXXX-XXXX recovery code</strong> — save it, as that code is how you move your plan to a new device or restore it after a reinstall.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Which languages are supported?<span class="faq-chev" aria-hidden="true"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg></span></summary>
+          <div class="faq-answer">
+            <p>Ten: <strong>Hindi, Tamil, Telugu, Marathi, Bengali, Gujarati, Punjabi, Urdu, English</strong> — plus <strong>Hinglish</strong>, which is what TypeAura is really built for. Type the way you actually speak and it converts to clean English (or the reverse).</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Does it work offline?<span class="faq-chev" aria-hidden="true"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg></span></summary>
+          <div class="faq-answer">
+            <p>Typing, glide typing, suggestions, themes, emoji and clipboard history all work fully offline. The AI features — translation, the Lens, AI Chat and the tools — need an internet connection, because the model runs on a server rather than on your phone.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>What happens when I run out of daily tokens?<span class="faq-chev" aria-hidden="true"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg></span></summary>
+          <div class="faq-answer">
+            <p>The keyboard keeps working normally — only the AI actions pause. Your counter resets automatically at midnight. If you hit the limit regularly, Pro gives you 5× the budget and Max gives you 15×.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Which Android versions work? Is there an iPhone version?<span class="faq-chev" aria-hidden="true"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg></span></summary>
+          <div class="faq-answer">
+            <p>TypeAura runs on <strong>Android 5.0 and above</strong>. There is no iOS version — iOS does not allow the kind of system-wide overlay the Floating Lens depends on. There is a <strong>Windows desktop app</strong> with the same AI tools and a global-hotkey Lens.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="cta-band">
+        <h2>Ready to type smarter?</h2>
+        <div class="section-cta">
+          <a href="https://play.google.com/store/apps/details?id=com.typeaura.app" class="btn-primary" target="_blank" rel="noopener">Install TypeAura — Free</a>
+          <a href="/demo" class="btn-secondary">Try the live demo</a>
+        </div>
+        <p class="cta-band-note">Android 5.0+ &nbsp;·&nbsp; No login &nbsp;·&nbsp; 10,000 free AI tokens every day</p>
+      </div>
+    </div>
+  </section>
+
   <!-- ═══════════════════════════════ FOUNDER ══════════════════════════════ -->
-  <section class="section section--dark" id="about">
+  <!-- Plain .section (not --dark): FAQ above is dark, so this restores the
+       alternating rhythm that the new section would otherwise break. -->
+  <section class="section" id="about">
     <div class="container">
       <div class="founder-card">
         <div class="founder-avatar">HK</div>
@@ -595,17 +925,17 @@
       </div>
       <div class="feedback-row">
         <a href="mailto:himanshuapps.dev@gmail.com?subject=TypeAura Feedback" class="feedback-card">
-          <div class="feedback-icon"><iconify-icon icon="lucide:message-circle"></iconify-icon></div>
+          <div class="feedback-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-message-circle"/></svg></div>
           <h3>Give Feedback</h3>
           <p>Tell us what you love, what you hate, or what you wish was different.</p>
         </a>
         <a href="mailto:himanshuapps.dev@gmail.com?subject=TypeAura Bug Report" class="feedback-card">
-          <div class="feedback-icon"><iconify-icon icon="lucide:bug"></iconify-icon></div>
+          <div class="feedback-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-bug"/></svg></div>
           <h3>Report a Bug</h3>
           <p>Found something broken? Let us know and we'll fix it ASAP.</p>
         </a>
         <a href="mailto:himanshuapps.dev@gmail.com?subject=TypeAura Feature Request" class="feedback-card">
-          <div class="feedback-icon"><iconify-icon icon="lucide:lightbulb"></iconify-icon></div>
+          <div class="feedback-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-lightbulb"/></svg></div>
           <h3>Request a Feature</h3>
           <p>Have an idea for something new? We're listening.</p>
         </a>
@@ -613,30 +943,34 @@
     </div>
   </section>
 
+  </main>
+
   <!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
+  <!-- @partial:footer v1 — canonical copy. Mirrored in privacy/delete-data. -->
   <footer class="footer">
     <div class="container">
       <div class="footer-top">
         <div class="footer-brand">
-          <div class="logo-emoji"><iconify-icon icon="lucide:keyboard"></iconify-icon></div>
+          <div class="logo-emoji"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-keyboard"/></svg></div>
           <span class="logo-text" style="font-weight:800; font-size:16px;">TypeAura</span>
-          <span class="footer-badge">Beta</span>
+          <span class="footer-badge">v3.0.0</span>
         </div>
         <div class="footer-links">
           <a href="#ai-tools">AI Tools</a>
           <a href="#lens">Floating Lens</a>
           <a href="#pricing">Pricing</a>
+          <a href="#faq">FAQ</a>
           <a href="#install">Install</a>
           <a href="#about">About</a>
-          <a href="#feedback">Feedback</a>
-          <a href="privacy.html">Privacy Policy</a>
+          <a href="/privacy">Privacy Policy</a>
+          <a href="/delete-data">Delete Data</a>
         </div>
       </div>
       <div class="footer-divider"></div>
       <div class="footer-bottom">
-        <p>Built by <strong>Himanshu Kashyap</strong> &nbsp;·&nbsp; Android only &nbsp;·&nbsp; Version 2.0.5</p>
+        <p>Built by <strong>Himanshu Kashyap</strong> &nbsp;·&nbsp; Android only &nbsp;·&nbsp; Version 3.0.0</p>
         <p class="footer-privacy">
-          <iconify-icon icon="lucide:shield-check" inline></iconify-icon> TypeAura does not store your typed text, passwords, OTPs, or personal messages.
+          <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-shield-check"/></svg> TypeAura does not store your typed text, passwords, OTPs, or personal messages.
           Only anonymous usage stats are collected to improve the product.
         </p>
       </div>
@@ -644,8 +978,8 @@
   </footer>
 
   <!-- Lightbox -->
-  <div class="lightbox" id="lightbox">
-    <span class="lightbox-close" id="lightboxClose"><iconify-icon icon="lucide:x"></iconify-icon></span>
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-labelledby="lightboxLabel">
+    <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Close image viewer"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-x"/></svg></button>
     <img id="lightboxImg" src="" alt="" />
     <span class="lightbox-label" id="lightboxLabel"></span>
   </div>
@@ -654,8 +988,9 @@
   <div class="scroll-progress" id="scrollProgress"></div>
 
   <!-- Back to top -->
-  <button class="back-to-top" id="backToTop" aria-label="Back to top"><iconify-icon icon="lucide:arrow-up"></iconify-icon></button>
+  <button class="back-to-top" id="backToTop" aria-label="Back to top"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg></button>
 
+  <script src="site.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
