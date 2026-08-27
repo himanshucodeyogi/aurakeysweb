@@ -11,12 +11,16 @@ async function loadStats() {
     const data = await res.json();
 
     // Expected response shape:
-    // { total_installs: 124, active_users: 31, keyboard_sessions: 842, ai_actions: 219 }
+    // { total_installs: 124, active_users: 31, keyboard_sessions: 842,
+    //   ai_actions: 219, countries: 14 }
 
     setStatValue('stat-installs', 'total_installs',    data, '+', 30);
     setStatValue('stat-active',   'active_users',      data, '+', 25);
     setStatValue('stat-sessions', 'keyboard_sessions', data);
     setStatValue('stat-ai',       'ai_actions',        data);
+    // No floor: this one is a real count of distinct countries, and rounding it
+    // up to a marketing minimum would be a claim rather than a stat.
+    setStatValue('stat-countries', 'countries',        data);
   } catch (e) {
     // silent fail — placeholders remain
   }
@@ -28,10 +32,19 @@ function setStatValue(cardId, key, data, suffix = '', minVal = 0) {
   const el = card.querySelector('.stat-value');
   if (!el) return;
   const val = data[key];
-  if (val !== undefined && val !== null) {
-    el.classList.remove('loading');
-    animateCount(el, Math.max(val, minVal), suffix);
+  if (val === undefined || val === null) {
+    /* The site and the backend deploy separately, so a card can outrun the
+       field that feeds it. Hide it rather than leaving a permanent "—", which
+       reads as "zero countries" instead of "not deployed yet"; the grid is
+       auto-fit, so the remaining cards close the gap. A failed or non-OK fetch
+       never reaches here — loadStats() returns first and the placeholders
+       stay, which is the right look for a temporary outage. */
+    card.hidden = true;
+    return;
   }
+  card.hidden = false;
+  el.classList.remove('loading');
+  animateCount(el, Math.max(val, minVal), suffix);
 }
 
 function formatNumber(n, suffix = '') {

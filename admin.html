@@ -3,2106 +3,492 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TypeAura Admin Dashboard</title>
+  <title>TypeAura Admin Console</title>
   <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#7C6CF8" />
   <link rel="icon" type="image/png" href="img/icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
-  <style>
-    /* ── Admin-specific styles ── */
-    body {
-      background:
-        radial-gradient(1100px 600px at 12% -10%, rgba(138,180,248,0.10), transparent 60%),
-        radial-gradient(900px 500px at 90% 0%, rgba(187,134,252,0.08), transparent 60%),
-        var(--bg);
-      min-height: 100vh;
-    }
-
-    .admin-login {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .login-card {
-      position: relative;
-      background: linear-gradient(180deg, rgba(26,26,36,0.95), rgba(22,22,30,0.95));
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 44px 36px;
-      width: 100%;
-      max-width: 400px;
-      text-align: center;
-      box-shadow: 0 24px 60px -20px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.02);
-      overflow: hidden;
-    }
-    .login-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      padding: 1px;
-      border-radius: var(--radius);
-      background: linear-gradient(135deg, rgba(138,180,248,0.45), rgba(187,134,252,0.35), transparent 60%);
-      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-              mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-      -webkit-mask-composite: xor;
-              mask-composite: exclude;
-      pointer-events: none;
-    }
-
-    .login-icon {
-      width: 56px;
-      height: 56px;
-      margin: 0 auto 16px;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 26px;
-      background: linear-gradient(135deg, rgba(138,180,248,0.18), rgba(187,134,252,0.18));
-      border: 1px solid rgba(138,180,248,0.3);
-      box-shadow: 0 8px 20px -8px rgba(138,180,248,0.45);
-    }
-
-    .login-card h2 {
-      font-size: 23px;
-      margin-bottom: 6px;
-      background: linear-gradient(90deg, var(--accent), var(--purple));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .login-card p  { color: var(--text2); font-size: 13px; margin-bottom: 26px; }
-
-    .input-field {
-      width: 100%;
-      padding: 12px 16px;
-      background: rgba(15,15,19,0.7);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      color: var(--text);
-      font-family: var(--font);
-      font-size: 14px;
-      margin-bottom: 14px;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
-    }
-    .input-field:focus {
-      border-color: var(--accent);
-      background: rgba(15,15,19,0.95);
-      box-shadow: 0 0 0 3px rgba(138,180,248,0.12);
-    }
-
-    .login-error {
-      color: #FF5252;
-      font-size: 13px;
-      margin-top: -8px;
-      margin-bottom: 12px;
-      display: none;
-    }
-
-    /* ── Dashboard layout ── */
-    .dashboard { display: none; }
-
-    .admin-nav {
-      background: rgba(22, 22, 30, 0.78);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--border);
-      padding: 0 24px;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-    }
-
-    .admin-nav-brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      font-size: 15px;
-    }
-    .admin-nav-brand > span:first-child { font-size: 20px; }
-    .admin-badge {
-      padding: 3px 11px;
-      background: linear-gradient(90deg, rgba(138,180,248,0.18), rgba(187,134,252,0.22));
-      color: var(--purple);
-      border-radius: 20px;
-      font-size: 10.5px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      border: 1px solid rgba(187,134,252,0.25);
-    }
-
-    .admin-content { padding: 32px 24px 60px; max-width: 1240px; margin: 0 auto; }
-
-    /* ── Summary cards ── */
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-      margin-bottom: 32px;
-    }
-
-    .summary-card {
-      position: relative;
-      background: linear-gradient(180deg, rgba(26,26,36,0.9), rgba(22,22,30,0.9));
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 18px 20px;
-      overflow: hidden;
-      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-    .summary-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--accent), var(--purple));
-      opacity: 0.6;
-      transition: opacity 0.2s ease;
-    }
-    .summary-card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(138,180,248,0.35);
-      box-shadow: 0 12px 30px -16px rgba(0,0,0,0.6);
-    }
-    .summary-card:hover::before { opacity: 1; }
-
-    .summary-label {
-      color: var(--text2);
-      font-size: 11.5px;
-      font-weight: 600;
-      letter-spacing: 0.3px;
-      margin-bottom: 8px;
-      text-transform: uppercase;
-    }
-    .summary-value {
-      font-size: 28px;
-      font-weight: 800;
-      color: var(--text);
-      background: linear-gradient(135deg, var(--accent), var(--purple));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      line-height: 1.1;
-    }
-    .summary-sub   { font-size: 11px; color: var(--dim); margin-top: 4px; }
-
-    /* ── Table ── */
-    .table-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 14px;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .table-header h3 { font-size: 16px; font-weight: 700; }
-
-    .table-controls { display: flex; gap: 10px; flex-wrap: wrap; }
-
-    .search-input {
-      padding: 9px 14px 9px 36px;
-      background: var(--card) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='7'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>") no-repeat 12px center;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      color: var(--text);
-      font-family: var(--font);
-      font-size: 13px;
-      outline: none;
-      width: 240px;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .search-input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(138,180,248,0.12);
-    }
-
-    .filter-select {
-      padding: 9px 32px 9px 14px;
-      background: var(--card) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>") no-repeat right 12px center;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      color: var(--text2);
-      font-family: var(--font);
-      font-size: 13px;
-      outline: none;
-      cursor: pointer;
-      appearance: none;
-      -webkit-appearance: none;
-      transition: border-color 0.2s, color 0.2s;
-    }
-    .filter-select:hover { color: var(--text); border-color: rgba(138,180,248,0.35); }
-    .filter-select:focus { border-color: var(--accent); color: var(--text); }
-
-    .table-wrap {
-      background: linear-gradient(180deg, rgba(26,26,36,0.9), rgba(22,22,30,0.9));
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow-x: auto;
-      box-shadow: 0 8px 24px -16px rgba(0,0,0,0.5);
-    }
-
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
-
-    thead tr {
-      background: rgba(15,15,19,0.5);
-    }
-
-    th {
-      padding: 14px 16px;
-      text-align: left;
-      color: var(--text2);
-      font-weight: 700;
-      font-size: 10.5px;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      border-bottom: 1px solid var(--border);
-      white-space: nowrap;
-      cursor: pointer;
-      user-select: none;
-      position: sticky;
-      top: 0;
-      background: rgba(20,20,28,0.95);
-      backdrop-filter: blur(6px);
-      z-index: 1;
-    }
-    th:hover { color: var(--accent); }
-
-    td {
-      padding: 13px 16px;
-      color: var(--text);
-      border-bottom: 1px solid rgba(42,42,58,0.5);
-      white-space: nowrap;
-    }
-
-    tr:last-child td { border-bottom: none; }
-
-    tr { transition: background 0.15s ease; }
-    tr:hover td { background: rgba(138,180,248,0.05); }
-
-    .tag-yes { color: var(--green); font-size: 11px; font-weight: 600; }
-    .tag-no  { color: var(--dim);   font-size: 11px; }
-
-    .btn-detail {
-      padding: 5px 14px;
-      background: rgba(138,180,248,0.10);
-      border: 1px solid rgba(138,180,248,0.28);
-      color: var(--accent);
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-      font-family: var(--font);
-    }
-    .btn-detail:hover {
-      background: rgba(138,180,248,0.22);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px -4px rgba(138,180,248,0.4);
-    }
-
-    /* ── Pagination ── */
-    .pagination { display: flex; align-items: center; gap: 8px; margin-top: 18px; justify-content: flex-end; }
-    .page-btn {
-      padding: 7px 14px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      color: var(--text2);
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: var(--font);
-      transition: all 0.2s;
-    }
-    .page-btn:hover    { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
-    .page-btn.active   { background: var(--accent); color: #0F0F13; border-color: var(--accent); font-weight: 700; }
-    .page-btn:disabled { opacity: 0.35; cursor: default; transform: none; }
-    .page-info { color: var(--text2); font-size: 12px; margin-right: auto; }
-
-    /* ── Tabs ── */
-    .tabs-bar {
-      display: inline-flex;
-      gap: 4px;
-      margin-bottom: 24px;
-      padding: 5px;
-      background: rgba(22,22,30,0.6);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      backdrop-filter: blur(6px);
-      flex-wrap: wrap;
-    }
-    .tab-btn {
-      padding: 9px 16px;
-      background: transparent;
-      border: none;
-      color: var(--text2);
-      font-family: var(--font);
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      border-radius: 10px;
-      transition: color 0.2s, background 0.2s;
-    }
-    .tab-btn:hover  { color: var(--text); background: rgba(255,255,255,0.03); }
-    .tab-btn.active {
-      color: #0F0F13;
-      background: linear-gradient(135deg, var(--accent), #a5c4fc);
-      box-shadow: 0 4px 14px -6px rgba(138,180,248,0.55);
-    }
-
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; animation: fadeIn 0.25s ease; }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ── API Health ── */
-    .api-health-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 14px;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-    .api-health-header h3 { font-size: 16px; font-weight: 700; }
-
-    .btn-check {
-      padding: 9px 18px;
-      background: linear-gradient(135deg, rgba(138,180,248,0.18), rgba(187,134,252,0.16));
-      border: 1px solid rgba(138,180,248,0.4);
-      color: var(--accent);
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      font-family: var(--font);
-      transition: all 0.2s;
-    }
-    .btn-check:hover    {
-      background: linear-gradient(135deg, rgba(138,180,248,0.28), rgba(187,134,252,0.26));
-      transform: translateY(-1px);
-      box-shadow: 0 6px 18px -8px rgba(138,180,248,0.55);
-    }
-    .btn-check:disabled { opacity: 0.45; cursor: default; transform: none; }
-
-    .api-summary-bar {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-    }
-    .api-sum-chip {
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      border: 1px solid var(--border);
-      background: var(--card);
-    }
-    .chip-working  { color: var(--green);  border-color: rgba(129,201,149,0.3); background: rgba(129,201,149,0.07); }
-    .chip-failed   { color: #FF5252;       border-color: rgba(255,82,82,0.3);   background: rgba(255,82,82,0.07); }
-    .chip-blocked  { color: #FFB300;       border-color: rgba(255,179,0,0.3);   background: rgba(255,179,0,0.07); }
-    .chip-unknown  { color: var(--text2);  }
-
-    /* ── Rate Limit Status section ── */
-    .limit-section {
-      margin-top: 28px;
-    }
-    .limit-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 14px;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-    .limit-header h3 { font-size: 16px; font-weight: 700; }
-
-    .status-available { background: rgba(129,201,149,0.12); color: var(--green);  border: 1px solid rgba(129,201,149,0.3); }
-    .status-blocked   { background: rgba(255,179,0,0.12);   color: #FFB300;       border: 1px solid rgba(255,179,0,0.3); }
-    .status-invalid   { background: rgba(255,82,82,0.12);   color: #FF5252;       border: 1px solid rgba(255,82,82,0.3); }
-
-    .btn-unblock {
-      padding: 3px 11px;
-      background: rgba(255,179,0,0.1);
-      border: 1px solid rgba(255,179,0,0.35);
-      color: #FFB300;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: var(--font);
-      transition: background 0.2s;
-    }
-    .btn-unblock:hover    { background: rgba(255,179,0,0.22); }
-    .btn-unblock:disabled { opacity: 0.4; cursor: default; }
-
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 600;
-    }
-    .status-working { background: rgba(129,201,149,0.12); color: var(--green);  border: 1px solid rgba(129,201,149,0.3); }
-    .status-failed  { background: rgba(255,82,82,0.12);   color: #FF5252;       border: 1px solid rgba(255,82,82,0.3); }
-    .status-ratelimit { background: rgba(255,179,0,0.12); color: #FFB300;       border: 1px solid rgba(255,179,0,0.3); }
-    .status-checking  { background: rgba(138,180,248,0.1); color: var(--accent); border: 1px solid rgba(138,180,248,0.2); }
-    .status-unknown   { background: var(--bg); color: var(--dim); border: 1px solid var(--border); }
-
-    .key-masked {
-      font-family: monospace;
-      font-size: 12px;
-      color: var(--text2);
-      letter-spacing: 1px;
-    }
-
-    .latency-badge {
-      font-size: 11px;
-      color: var(--dim);
-    }
-
-    /* ── Crashes ── */
-    .crash-message {
-      color: var(--text);
-      font-weight: 500;
-      max-width: 460px;
-      white-space: normal;
-      word-break: break-word;
-    }
-    .crash-msg-sub {
-      color: var(--dim);
-      font-size: 11px;
-      margin-top: 3px;
-      font-family: monospace;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 460px;
-    }
-    .crash-count-badge {
-      display: inline-block;
-      padding: 2px 10px;
-      background: rgba(255,82,82,0.12);
-      color: #FF5252;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 700;
-    }
-    .crash-fatal-badge {
-      display: inline-block;
-      padding: 2px 8px;
-      background: rgba(255,82,82,0.15);
-      color: #FF5252;
-      border-radius: 4px;
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .crash-handled-badge {
-      display: inline-block;
-      padding: 2px 8px;
-      background: rgba(255,179,0,0.12);
-      color: #FFB300;
-      border-radius: 4px;
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .crash-type-tag {
-      font-size: 11px;
-      color: var(--text2);
-      font-family: monospace;
-    }
-    .stack-trace {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 14px;
-      font-family: monospace;
-      font-size: 11px;
-      line-height: 1.6;
-      color: var(--text);
-      max-height: 320px;
-      overflow: auto;
-      white-space: pre;
-      margin-top: 8px;
-    }
-    .crash-detail-section { margin-top: 18px; }
-    .crash-detail-section h4 {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text2);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 8px;
-    }
-    .modal-box.modal-wide { max-width: 820px; }
-
-    /* ── Detail modal ── */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.65);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      z-index: 200;
-      align-items: center;
-      justify-content: center;
-      animation: overlayIn 0.2s ease;
-    }
-    .modal-overlay.open { display: flex; }
-
-    @keyframes overlayIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
-
-    .modal-box {
-      background: linear-gradient(180deg, rgba(26,26,36,0.98), rgba(22,22,30,0.98));
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      width: 100%;
-      max-width: 620px;
-      max-height: 85vh;
-      overflow-y: auto;
-      padding: 28px;
-      margin: 16px;
-      box-shadow: 0 32px 80px -24px rgba(0,0,0,0.7);
-      animation: modalIn 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-
-    @keyframes modalIn {
-      from { opacity: 0; transform: scale(0.96) translateY(8px); }
-      to   { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 22px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid var(--border);
-    }
-    .modal-header h3 {
-      font-size: 18px;
-      font-weight: 700;
-      background: linear-gradient(90deg, var(--accent), var(--purple));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .modal-close {
-      color: var(--text2);
-      cursor: pointer;
-      font-size: 18px;
-      width: 32px;
-      height: 32px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      transition: background 0.2s, color 0.2s;
-    }
-    .modal-close:hover { color: var(--text); background: rgba(255,255,255,0.06); }
-
-    .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
-    .detail-row:last-child { border-bottom: none; }
-    .detail-key   { color: var(--text2); }
-    .detail-value { color: var(--text); font-weight: 500; text-align: right; }
-
-    .events-title { font-size: 14px; font-weight: 700; margin: 20px 0 10px; }
-
-    .event-item {
-      padding: 8px 12px;
-      background: var(--bg);
-      border-radius: var(--radius-sm);
-      margin-bottom: 6px;
-      font-size: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .event-type  { color: var(--accent); font-weight: 600; }
-    .event-meta  { color: var(--text2); }
-    .event-time  { color: var(--dim); font-size: 11px; }
-
-    .logout-btn {
-      padding: 7px 16px;
-      border: 1px solid var(--border);
-      color: var(--text2);
-      border-radius: 20px;
-      font-size: 12px;
-      cursor: pointer;
-      background: transparent;
-      font-family: var(--font);
-      transition: all 0.2s;
-    }
-    .logout-btn:hover {
-      color: #FF5252;
-      border-color: rgba(255,82,82,0.4);
-      background: rgba(255,82,82,0.06);
-    }
-
-    .loading-row td {
-      color: var(--dim);
-      text-align: center;
-      padding: 40px;
-      font-size: 13px;
-    }
-    .loading-row td::before {
-      content: '';
-      display: inline-block;
-      width: 12px;
-      height: 12px;
-      margin-right: 8px;
-      border: 2px solid rgba(138,180,248,0.2);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      vertical-align: -2px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── Plan badges ── */
-    .plan-badge {
-      display: inline-block;
-      padding: 2px 9px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.3px;
-      border: 1px solid transparent;
-      white-space: nowrap;
-    }
-    .plan-badge-free    { color: var(--accent); background: rgba(138,180,248,0.12); border-color: rgba(138,180,248,0.3); }
-    .plan-badge-pro     { color: var(--purple); background: rgba(187,134,252,0.15); border-color: rgba(187,134,252,0.35); }
-    .plan-badge-max     { color: #FFB74D;       background: rgba(255,183,77,0.14);  border-color: rgba(255,183,77,0.35); }
-    /* legacy tiers — still present on old device docs */
-    .plan-badge-byok    { color: var(--green);  background: rgba(129,201,149,0.12); border-color: rgba(129,201,149,0.3); }
-    .plan-badge-premium { color: var(--purple); background: rgba(187,134,252,0.15); border-color: rgba(187,134,252,0.35); }
-    .plan-override-dot {
-      display: inline-block;
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: #FFB300;
-      margin-left: 5px;
-      vertical-align: middle;
-    }
-    .plan-actions {
-      display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;
-    }
-    .plan-btn {
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--text);
-      font-family: var(--font);
-      transition: background 0.2s, border-color 0.2s, color 0.2s;
-    }
-    .plan-btn:hover                { border-color: var(--accent); color: var(--accent); }
-    .plan-btn.plan-btn-active      { background: rgba(138,180,248,0.18); color: var(--accent); border-color: rgba(138,180,248,0.45); }
-    .plan-btn.plan-btn-clear:hover { border-color: #FFB300; color: #FFB300; }
-    .plan-btn.plan-btn-danger        { border-color: rgba(255,82,82,0.5); color: #FF5252; }
-    .plan-btn.plan-btn-danger:hover  { background: rgba(255,82,82,0.12); border-color: #FF5252; }
-    .plan-btn:disabled             { opacity: 0.45; cursor: default; }
-
-    @media (max-width: 1100px) {
-      .summary-grid   { grid-template-columns: repeat(3, 1fr); }
-    }
-
-    @media (max-width: 900px) {
-      .summary-grid   { grid-template-columns: repeat(2, 1fr); }
-      .table-controls { flex-wrap: wrap; }
-      .tabs-bar       {
-        width: 100%;
-        overflow-x: auto;
-        flex-wrap: nowrap;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-      }
-      .tabs-bar::-webkit-scrollbar { display: none; }
-      .tab-btn        { white-space: nowrap; flex-shrink: 0; }
-      .admin-nav      { padding: 0 16px; height: 56px; }
-      .admin-nav-brand { font-size: 14px; gap: 8px; }
-      .admin-badge    { padding: 2px 9px; font-size: 9.5px; }
-    }
-
-    @media (max-width: 600px) {
-      .login-card     { padding: 32px 22px; }
-      .admin-content  { padding: 18px 14px 40px; }
-      .summary-grid   { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-      .summary-card   { padding: 14px 16px; }
-      .summary-value  { font-size: 22px; }
-      .summary-label  { font-size: 10.5px; }
-      .table-header   { flex-direction: column; align-items: flex-start; }
-      .table-controls { width: 100%; flex-direction: column; gap: 8px; }
-      .search-input   { width: 100%; }
-      .filter-select  { width: 100%; }
-      /* On mobile, table scrolls horizontally */
-      .table-wrap     { font-size: 12px; }
-      th, td          { padding: 11px 12px; }
-      .modal-box      { padding: 22px 18px; margin: 12px; max-height: calc(100vh - 24px); }
-      .modal-header h3 { font-size: 16px; }
-      .pagination     { flex-wrap: wrap; justify-content: center; }
-      .page-info      { margin-right: 0; width: 100%; text-align: center; }
-      /* API health summary chips wrap nicely */
-      .api-summary-bar { gap: 8px; }
-      .api-sum-chip   { font-size: 11px; padding: 5px 12px; }
-      /* Nav action buttons */
-      #refreshAllBtn  { padding: 5px 12px !important; font-size: 11px !important; }
-      .logout-btn     { padding: 6px 12px; font-size: 11px; }
-      /* Update form */
-      .table-wrap[style*="padding:26px"] { padding: 20px !important; }
-      /* Detail rows wrap on narrow screens */
-      .detail-row     { flex-direction: column; align-items: flex-start; gap: 4px; }
-      .detail-value   { text-align: left; font-size: 12.5px; word-break: break-word; }
-      .plan-actions   { gap: 6px; }
-      .plan-btn       { padding: 7px 12px; font-size: 11.5px; }
-      .event-item     { flex-wrap: wrap; gap: 4px; }
-    }
-
-    @media (max-width: 380px) {
-      .summary-grid  { grid-template-columns: 1fr 1fr; }
-      .summary-value { font-size: 20px; }
-      .admin-nav-brand > span:nth-child(2) { display: none; }
-      .tab-btn       { padding: 8px 12px; font-size: 12px; }
-    }
-  </style>
+  <link rel="stylesheet" href="admin.css" />
 </head>
 <body>
 
-  <!-- ── Login ─────────────────────────────────────────── -->
-  <div class="admin-login" id="loginScreen">
-    <div class="login-card">
-      <div class="login-icon">🔐</div>
-      <h2>Admin Dashboard</h2>
-      <p>TypeAura Analytics — Private Access</p>
-      <input
-        type="password"
-        class="input-field"
-        id="adminPassword"
-        placeholder="Admin password"
-      />
-      <p class="login-error" id="loginError">Incorrect password.</p>
-      <button class="btn-primary" style="width:100%;justify-content:center;" onclick="login()">
-        Login
-      </button>
-    </div>
+<!-- ═══ Icon sprite ═══════════════════════════════════════════════
+     Stroke icons replace the emoji the old console used as iconography.
+     Referenced everywhere as <svg><use href="#i-name"/></svg>. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <g id="i-base" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></g>
+  </defs>
+  <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-keyboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M6 9h.01M10 9h.01M14 9h.01M18 9h.01M6 13h.01M18 13h.01M9 13h6"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h6v8H3zM3 3h6v6H3zM15 3h6v8h-6zM15 15h6v6h-6z"/></symbol>
+  <symbol id="i-device" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></symbol>
+  <symbol id="i-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M11.4 11.6 21 2"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></symbol>
+  <symbol id="i-bug" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="6" width="8" height="14" rx="4"/><path d="M8 12H3M21 12h-5M8 16l-4 2M20 18l-4-2M8 8 4 6M20 6l-4 2M9 6a3 3 0 0 1 6 0"/></symbol>
+  <symbol id="i-rocket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.7-.8.7-2.1 0-2.9a2 2 0 0 0-3 0zM12 15l-3-3a22 22 0 0 1 2-3.9A12.9 12.9 0 0 1 22 2a12.9 12.9 0 0 1-6.1 11 22 22 0 0 1-3.9 2z"/><path d="M9 12H4s.5-2.8 2-4c1.7-1.3 5 0 5 0M12 15v5s2.8-.5 4-2c1.3-1.7 0-5 0-5"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.4M21 3v6h-6"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/></symbol>
+  <symbol id="i-activity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></symbol>
+  <symbol id="i-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4M12 16h.01"/></symbol>
+  <symbol id="i-inbox" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5.1 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.5-6.9A2 2 0 0 0 16.7 4H7.3a2 2 0 0 0-1.8 1.1z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22V4a6 6 0 0 1 8 0 6 6 0 0 0 8 0v9a6 6 0 0 1-8 0 6 6 0 0 0-8 0"/></symbol>
+  <symbol id="i-gif" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M11 10a2 2 0 1 0 0 4h1v-2M15 9v6M18 9h3M18 12h2.5"/></symbol>
+</svg>
+
+<!-- ═══ Login ══════════════════════════════════════════════════ -->
+<div class="a-login" id="loginScreen">
+  <div class="a-login-card">
+    <div class="a-login-mark"><svg><use href="#i-lock"/></svg></div>
+    <h1>Admin Console</h1>
+    <p>TypeAura operations — private access</p>
+    <form class="a-login-form" id="loginForm" autocomplete="off">
+      <input type="password" class="a-input" id="adminPassword" placeholder="Admin password"
+             aria-label="Admin password" autocomplete="current-password" />
+      <p class="a-error-text a-hidden" id="loginError" role="alert"></p>
+      <button type="submit" class="a-btn a-btn-primary" id="loginBtn" style="width:100%">Sign in</button>
+    </form>
   </div>
+</div>
 
-  <!-- ── Dashboard ─────────────────────────────────────── -->
-  <div class="dashboard" id="dashboard">
+<!-- ═══ App shell ══════════════════════════════════════════════ -->
+<div class="a-app" id="app">
 
-    <nav class="admin-nav">
-      <div class="admin-nav-brand">
-        <span>⌨️</span>
-        <span>TypeAura</span>
-        <span class="admin-badge">Admin</span>
+  <div class="a-nav-backdrop" id="navBackdrop" data-action="close-nav"></div>
+
+  <aside class="a-sidebar" id="sidebar">
+    <div class="a-brand">
+      <div class="a-brand-mark"><svg><use href="#i-keyboard"/></svg></div>
+      <div class="a-brand-text">
+        <div class="a-brand-name">TypeAura</div>
+        <div class="a-brand-sub">Admin</div>
       </div>
-      <div style="display:flex;align-items:center;gap:10px">
-        <button class="btn-check" id="refreshAllBtn" onclick="refreshAll()" style="padding:6px 16px;font-size:12px">🔄 Refresh</button>
-        <button class="logout-btn" onclick="logout()">Logout</button>
-      </div>
+    </div>
+
+    <nav class="a-nav" aria-label="Sections">
+      <button class="a-nav-item is-active" data-section="overview"><svg><use href="#i-grid"/></svg><span>Overview</span></button>
+      <button class="a-nav-item" data-section="devices"><svg><use href="#i-device"/></svg><span>Devices</span><span class="a-nav-count a-hidden" id="navCountDevices"></span></button>
+      <button class="a-nav-item" data-section="aitools"><svg><use href="#i-sparkles"/></svg><span>AI Tools</span></button>
+      <button class="a-nav-item" data-section="apikeys"><svg><use href="#i-key"/></svg><span>API Keys</span></button>
+      <button class="a-nav-item" data-section="crashes"><svg><use href="#i-bug"/></svg><span>Crashes</span><span class="a-nav-count a-hidden" id="navCountCrashes"></span></button>
+      <button class="a-nav-item" data-section="releases"><svg><use href="#i-rocket"/></svg><span>Releases</span></button>
     </nav>
 
-    <div class="admin-content">
-
-      <!-- Summary -->
-      <div class="summary-grid" id="summaryGrid">
-        <div class="summary-card"><div class="summary-label">📱 Total Installs</div><div class="summary-value" id="s-total">—</div></div>
-        <div class="summary-card"><div class="summary-label">🟢 Daily Active (24h)</div><div class="summary-value" id="s-dau">—</div></div>
-        <div class="summary-card"><div class="summary-label">📅 Weekly Active (7d)</div><div class="summary-value" id="s-wau">—</div></div>
-        <div class="summary-card"><div class="summary-label">🗓️ Monthly Active (30d)</div><div class="summary-value" id="s-mau">—</div></div>
-        <div class="summary-card"><div class="summary-label">⌨️ Total Keyboard Opens</div><div class="summary-value" id="s-kb">—</div></div>
-        <div class="summary-card"><div class="summary-label">🤖 Total AI Uses</div><div class="summary-value" id="s-ai">—</div></div>
-        <div class="summary-card"><div class="summary-label">🎤 Voice AI Uses</div><div class="summary-value" id="s-voice-ai">—</div></div>
-        <div class="summary-card"><div class="summary-label">🔍 Lens Translate</div><div class="summary-value" id="s-lens-tr">—</div></div>
-        <div class="summary-card"><div class="summary-label">💬 Lens Reply</div><div class="summary-value" id="s-lens-re">—</div></div>
-        <div class="summary-card"><div class="summary-label">🚀 Total App Opens</div><div class="summary-value" id="s-app">—</div></div>
-        <div class="summary-card"><div class="summary-label">✨ New Installs (7d)</div><div class="summary-value" id="s-new">—</div></div>
+    <div class="a-sidebar-foot">
+      <div class="a-health" id="health" data-state="ok">
+        <span class="a-health-dot"></span>
+        <span id="healthText">Backend healthy</span>
       </div>
+      <button class="a-btn a-btn-ghost" data-action="logout" style="width:100%">
+        <svg><use href="#i-logout"/></svg><span>Sign out</span>
+      </button>
+    </div>
+  </aside>
 
-      <!-- Tabs -->
-      <div class="tabs-bar">
-        <button class="tab-btn active" onclick="switchTab('users')">Devices</button>
-        <button class="tab-btn" onclick="switchTab('aitools')">🤖 AI Tools</button>
-        <button class="tab-btn" onclick="switchTab('apikeys')">API Key Health</button>
-        <button class="tab-btn" onclick="switchTab('crashes')">🐛 Crashes</button>
-        <button class="tab-btn" onclick="switchTab('update')">🚀 App Update</button>
-      </div>
+  <div class="a-main">
+    <header class="a-topbar">
+      <button class="a-icon-btn a-burger" data-action="toggle-nav" aria-label="Open navigation">
+        <svg><use href="#i-menu"/></svg>
+      </button>
+      <h1 id="pageTitle">Overview</h1>
+      <span class="a-stamp" id="stamp"></span>
+      <button class="a-icon-btn" data-action="refresh" id="refreshBtn" aria-label="Refresh this section" title="Refresh this section">
+        <svg><use href="#i-refresh"/></svg>
+      </button>
+    </header>
 
-      <!-- ═══ Tab: Users ═══ -->
-      <div class="tab-panel active" id="tab-users">
+    <main class="a-content">
 
-      <!-- Users table -->
-      <div class="table-header">
-        <h3>All Devices</h3>
-        <div class="table-controls">
-          <input type="text" class="search-input" id="searchInput" placeholder="Search device name or ID…" oninput="debounceSearch()" />
-          <select class="filter-select" id="filterSelect" onchange="loadUsers(1)">
-            <option value="">All Users</option>
-            <option value="active7d">Active 7d</option>
-            <option value="active30d">Active 30d</option>
-            <option value="enabled">Keyboard Enabled</option>
-            <option value="selected">Keyboard Selected</option>
-            <option value="plan_free">Plan: Free</option>
-            <option value="plan_pro">Plan: Pro</option>
-            <option value="plan_max">Plan: Max</option>
-            <option value="plan_paid">Plan: Paid (active)</option>
-            <option value="plan_byok">Plan: BYOK (legacy)</option>
-            <option value="override_set">Has Admin Override</option>
-          </select>
-          <select class="filter-select" id="sortSelect" onchange="loadUsers(1)">
-            <option value="last_use_date">Sort: Last Active</option>
-            <option value="install_date">Sort: Install Date</option>
-            <option value="total_keyboard_opens">Sort: KB Opens</option>
-            <option value="total_app_opens">Sort: App Opens</option>
-          </select>
+      <!-- ─── Overview ───────────────────────────────────────── -->
+      <section class="a-section is-active" id="sec-overview">
+        <div class="a-kpi-row">
+          <article class="a-kpi">
+            <div class="a-kpi-top"><span class="a-kpi-icon"><svg><use href="#i-users"/></svg></span><span class="a-kpi-label">Total Installs</span></div>
+            <div class="a-kpi-value" id="k-total">—</div>
+            <div class="a-kpi-foot" id="k-total-foot"></div>
+          </article>
+          <article class="a-kpi">
+            <div class="a-kpi-top"><span class="a-kpi-icon"><svg><use href="#i-activity"/></svg></span><span class="a-kpi-label">Daily Active</span></div>
+            <div class="a-kpi-value" id="k-dau">—</div>
+            <div class="a-kpi-spark" id="k-dau-spark"></div>
+          </article>
+          <article class="a-kpi">
+            <div class="a-kpi-top"><span class="a-kpi-icon"><svg><use href="#i-clock"/></svg></span><span class="a-kpi-label">Monthly Active</span></div>
+            <div class="a-kpi-value" id="k-mau">—</div>
+            <div class="a-kpi-foot" id="k-mau-foot"></div>
+          </article>
+          <article class="a-kpi">
+            <div class="a-kpi-top"><span class="a-kpi-icon"><svg><use href="#i-zap"/></svg></span><span class="a-kpi-label">AI Tokens · 30d</span></div>
+            <div class="a-kpi-value" id="k-tokens">—</div>
+            <div class="a-kpi-spark" id="k-tokens-spark"></div>
+          </article>
         </div>
-      </div>
 
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Device</th>
-              <th>Plan</th>
-              <th>Android</th>
-              <th>Install Date</th>
-              <th>Last Active</th>
-              <th>App Opens</th>
-              <th>KB Opens</th>
-              <th>KB Enabled</th>
-              <th>Default</th>
-              <th>Theme</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="usersTableBody">
-            <tr class="loading-row"><td colspan="11">Loading…</td></tr>
-          </tbody>
-        </table>
-      </div>
+        <div class="a-stat-strip">
+          <div class="a-stat"><span class="a-stat-label">Weekly Active</span><span class="a-stat-value" id="k-wau">—</span></div>
+          <div class="a-stat"><span class="a-stat-label">Total AI Uses</span><span class="a-stat-value" id="k-ai">—</span></div>
+          <div class="a-stat"><span class="a-stat-label">Voice AI</span><span class="a-stat-value" id="k-voice">—</span></div>
+          <div class="a-stat"><span class="a-stat-label">Lens Uses</span><span class="a-stat-value" id="k-lens">—</span></div>
+          <div class="a-stat"><span class="a-stat-label">Keyboard Opens</span><span class="a-stat-value" id="k-kb">—</span></div>
+          <div class="a-stat"><span class="a-stat-label">App Opens</span><span class="a-stat-value" id="k-app">—</span></div>
+        </div>
 
-      <div class="pagination" id="paginationRow"></div>
+        <div class="a-chart-grid">
+          <section class="a-panel">
+            <div class="a-panel-head">
+              <h2>Daily active devices</h2>
+              <div class="a-seg" role="group" aria-label="Chart range" id="activeRange">
+                <button type="button" class="a-seg-btn" data-action="active-range" data-range="7" aria-pressed="false">7d</button>
+                <button type="button" class="a-seg-btn is-active" data-action="active-range" data-range="30" aria-pressed="true">30d</button>
+              </div>
+            </div>
+            <div class="a-panel-body"><div class="a-chart-wrap" id="chartActive"></div></div>
+          </section>
+          <section class="a-panel">
+            <div class="a-panel-head"><h2>Plan mix</h2></div>
+            <div class="a-panel-body"><div id="chartPlans"></div></div>
+          </section>
+        </div>
 
-      </div><!-- /tab-users -->
+        <div class="a-chart-grid">
+          <section class="a-panel">
+            <div class="a-panel-head"><h2>AI tokens per day</h2><span class="a-chip a-chip-muted">Last 30 days</span></div>
+            <div class="a-panel-body"><div class="a-chart-wrap" id="chartTokens"></div></div>
+          </section>
+          <section class="a-panel">
+            <div class="a-panel-head">
+              <h2>Devices by country</h2>
+              <span class="a-chip a-chip-muted">Total · active 7d</span>
+              <button type="button" class="a-btn a-btn-ghost a-btn-sm" data-action="open-readiness">
+                <svg><use href="#i-expand"/></svg>All countries
+              </button>
+            </div>
+            <div class="a-panel-body"><div id="countryPanel"></div></div>
+          </section>
+        </div>
+      </section>
 
-      <!-- ═══ Tab: AI Tools Breakdown ═══ -->
-      <div class="tab-panel" id="tab-aitools">
-        <div class="table-header">
-          <h3>🤖 AI Tool Usage per User</h3>
-          <div class="table-controls">
-            <input class="search-input" id="aitoolsSearch" placeholder="Search device…" oninput="debounceAiTools()" />
-            <select class="filter-select" id="aitoolsSortSelect" onchange="loadAiTools(1)">
-              <option value="total_ai_uses">Sort: Keyboard AI</option>
-              <option value="total_voice_ai_uses">Sort: Voice AI</option>
-              <option value="total_lens_translate">Sort: Lens Translate</option>
-              <option value="total_lens_reply">Sort: Lens Reply</option>
-            </select>
+      <!-- ─── Devices ────────────────────────────────────────── -->
+      <section class="a-section" id="sec-devices">
+        <div class="a-panel">
+          <div class="a-panel-head">
+            <h2>All devices</h2>
+            <div class="a-controls">
+              <label class="a-search">
+                <svg><use href="#i-search"/></svg>
+                <input class="a-input" id="devSearch" placeholder="Search device name or ID…" aria-label="Search devices" />
+              </label>
+              <!-- Options past "All countries" are filled in from stats.countries
+                   once Overview has loaded, so the list only ever offers codes
+                   that actually exist in the data. -->
+              <select class="a-select" id="devCountry" aria-label="Filter devices by country">
+                <option value="">All countries</option>
+              </select>
+              <select class="a-select" id="devFilter" aria-label="Filter devices">
+                <option value="">All users</option>
+                <option value="active7d">Active 7d</option>
+                <option value="active30d">Active 30d</option>
+                <option value="enabled">Keyboard enabled</option>
+                <option value="selected">Keyboard selected</option>
+                <option value="plan_free">Plan: Free</option>
+                <option value="plan_pro">Plan: Pro</option>
+                <option value="plan_max">Plan: Max</option>
+                <option value="plan_paid">Plan: Paid (active)</option>
+                <option value="plan_byok">Plan: BYOK (legacy)</option>
+                <option value="override_set">Has admin override</option>
+              </select>
+              <select class="a-select" id="devSort" aria-label="Sort devices">
+                <option value="last_use_date">Sort: Last active</option>
+                <option value="install_date">Sort: Install date</option>
+                <option value="total_keyboard_opens">Sort: KB opens</option>
+                <option value="total_app_opens">Sort: App opens</option>
+              </select>
+            </div>
           </div>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr>
-              <th>Device</th>
-              <th>⌨️ Keyboard AI</th>
-              <th>🎤 Voice AI</th>
-              <th>🔍 Lens Translate</th>
-              <th>💬 Lens Reply</th>
-              <th>Top Tool</th>
-              <th>Total AI</th>
-            </tr></thead>
-            <tbody id="aitoolsTableBody">
-              <tr class="loading-row"><td colspan="7">Click "AI Tools" tab to load…</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="pagination" id="aitoolsPaginationRow"></div>
-      </div><!-- /tab-aitools -->
-
-      <!-- ═══ Tab: API Key Health ═══ -->
-      <div class="tab-panel" id="tab-apikeys">
-
-        <div class="api-health-header">
-          <h3>API Key Health</h3>
-          <button class="btn-check" id="checkAllBtn" onclick="checkAllKeys()">⚡ Run Health Check</button>
-        </div>
-
-        <div class="api-summary-bar" id="apiSummaryBar">
-          <span class="api-sum-chip chip-unknown" id="chip-total">— Total</span>
-          <span class="api-sum-chip chip-working" id="chip-working">— Working</span>
-          <span class="api-sum-chip chip-failed"  id="chip-failed">— Failed</span>
-        </div>
-
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Key Name / Label</th>
-                <th>Masked Key</th>
-                <th>Status</th>
-                <th>Latency</th>
-                <th>Model</th>
-                <th>Last Checked</th>
-                <th>Error</th>
-              </tr>
-            </thead>
-            <tbody id="apiKeysTableBody">
-              <tr class="loading-row"><td colspan="8">Click "Run Health Check" to test all API keys.</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- ── Rate Limit Status ── -->
-        <div class="limit-section">
-          <div class="limit-header">
-            <h3>🚦 Rate Limit Status</h3>
-            <button class="btn-check" id="limitStatusBtn" onclick="loadLimitStatus()">📊 Check Limit Status</button>
-          </div>
-
-          <div class="api-summary-bar" id="limitSummaryBar" style="display:none">
-            <span class="api-sum-chip chip-working"  id="lchip-available">— Available</span>
-            <span class="api-sum-chip chip-blocked"  id="lchip-blocked">— Blocked</span>
-            <span class="api-sum-chip chip-failed"   id="lchip-invalid" style="display:none">— Invalid</span>
-          </div>
-
-          <div class="table-wrap">
-            <table>
+          <div class="a-table-scroll">
+            <table class="a-table">
               <thead>
                 <tr>
-                  <th>#</th>
-                  <th>Key Name</th>
-                  <th>Masked Key</th>
-                  <th>Limit Status</th>
-                  <th>Blocked Until</th>
-                  <th>Action</th>
+                  <th>Device</th><th>Plan</th><th>Country</th><th>Android</th>
+                  <th>Installed</th><th>Last active</th>
+                  <th class="a-right">App</th><th class="a-right">Keyboard</th><th class="a-right">Tokens</th>
+                  <th>Enabled</th><th>Default</th><th>Theme</th>
                 </tr>
               </thead>
-              <tbody id="limitTableBody">
-                <tr class="loading-row"><td colspan="6">Click "Check Limit Status" to view.</td></tr>
-              </tbody>
+              <tbody id="devBody"></tbody>
             </table>
           </div>
+          <div class="a-pager" id="devPager"></div>
         </div>
+      </section>
 
-      </div><!-- /tab-apikeys -->
-
-      <!-- ═══ Tab: Crashes ═══ -->
-      <div class="tab-panel" id="tab-crashes">
-
-        <div class="table-header">
-          <h3>Crash Groups</h3>
-          <div class="table-controls">
-            <input type="text" class="search-input" id="crashSearchInput" placeholder="Search error message…" oninput="debounceCrashSearch()" />
-            <select class="filter-select" id="crashSortSelect" onchange="loadCrashes(1)">
-              <option value="occurrences">Sort: Most Frequent</option>
-              <option value="last_seen" selected>Sort: Recent</option>
-              <option value="first_seen">Sort: First Seen</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Error</th>
-                <th>Type</th>
-                <th>Occurrences</th>
-                <th>Devices</th>
-                <th>Last Seen</th>
-                <th>First Seen</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="crashesTableBody">
-              <tr class="loading-row"><td colspan="7">Loading…</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="pagination" id="crashPaginationRow"></div>
-
-      </div><!-- /tab-crashes -->
-
-      <!-- ═══ Tab: App Update ═══ -->
-      <div class="tab-panel" id="tab-update">
-
-        <div style="max-width:580px">
-
-          <!-- Current live version card -->
-          <div class="summary-card" style="margin-bottom:22px" id="liveVersionCard">
-            <div class="summary-label">🚀 Current Live Version</div>
-            <div style="display:flex;align-items:baseline;gap:12px;margin-top:6px;flex-wrap:wrap">
-              <div class="summary-value" id="liveVersion" style="font-size:24px">—</div>
-              <div style="color:var(--text2);font-size:13px;font-weight:500" id="liveTitle"></div>
-            </div>
-            <div class="summary-sub" id="liveDate"></div>
-          </div>
-
-          <!-- Update form -->
-          <div class="table-wrap" style="padding:26px;border-radius:var(--radius)">
-            <h3 style="font-size:16px;font-weight:700;margin-bottom:4px;background:linear-gradient(90deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:inline-block">Publish New Update</h3>
-            <p style="color:var(--text2);font-size:12.5px;margin-bottom:20px">Notify all installed devices about a new release.</p>
-
-            <label style="display:block;font-size:12px;color:var(--text2);margin-bottom:6px">Version <span style="color:var(--accent)">*</span></label>
-            <input id="uv-version" class="input-field" placeholder="e.g. 1.2.0" style="width:100%;margin-bottom:14px" />
-
-            <label style="display:block;font-size:12px;color:var(--text2);margin-bottom:6px">Title <span style="color:var(--accent)">*</span></label>
-            <input id="uv-title" class="input-field" placeholder="e.g. Speed & Stability" style="width:100%;margin-bottom:14px" />
-
-            <label style="display:block;font-size:12px;color:var(--text2);margin-bottom:4px">Highlights <span style="color:var(--dim);font-weight:400">(one per line)</span></label>
-            <textarea
-              id="uv-highlights"
-              rows="5"
-              class="input-field"
-              placeholder="✨ New AI shortcut&#10;⚡ Faster keyboard&#10;🐛 Bug fixes"
-              style="width:100%;resize:vertical;font-family:var(--font);line-height:1.6;margin-bottom:18px"
-            ></textarea>
-
-            <div style="display:flex;align-items:center;gap:12px">
-              <button class="btn-primary" style="justify-content:center" onclick="publishUpdate()">
-                🚀 Publish Update
-              </button>
-              <span id="uv-status" style="font-size:13px"></span>
+      <!-- ─── AI Tools ───────────────────────────────────────── -->
+      <section class="a-section" id="sec-aitools">
+        <div class="a-panel">
+          <div class="a-panel-head">
+            <h2>AI tool usage per device</h2>
+            <div class="a-controls">
+              <label class="a-search">
+                <svg><use href="#i-search"/></svg>
+                <input class="a-input" id="aiSearch" placeholder="Search device…" aria-label="Search devices" />
+              </label>
+              <select class="a-select" id="aiSort" aria-label="Sort by tool">
+                <option value="total_ai_uses">Sort: Keyboard AI</option>
+                <option value="total_voice_ai_uses">Sort: Voice AI</option>
+                <option value="total_lens_translate">Sort: Lens translate</option>
+                <option value="total_lens_reply">Sort: Lens reply</option>
+              </select>
             </div>
           </div>
-
-          <!-- ── Global Config (remote feature switches) ── -->
-          <div class="table-wrap" style="padding:26px;border-radius:var(--radius);margin-top:22px">
-            <h3 style="font-size:16px;font-weight:700;margin-bottom:4px;background:linear-gradient(90deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:inline-block">Global Config</h3>
-            <p style="color:var(--text2);font-size:12.5px;margin-bottom:20px">Remote feature switches — applied to every device on its next ping. No app release needed.</p>
-
-            <!-- Paid plans (Pro + Max) switch -->
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;border-top:1px solid var(--border)">
-              <div>
-                <div style="font-size:14px;font-weight:600">Paid plans — Pro &amp; Max</div>
-                <div style="color:var(--text2);font-size:12px;margin-top:2px">
-                  One switch covers both paid tiers. When OFF, both cards show “Coming Soon” with a
-                  Notify-me button. When ON, Pro (₹299 / ₹2,249) and Max (₹499 / ₹3,749) become
-                  purchasable — needs Razorpay keys set in Vercel env.
-                </div>
-              </div>
-              <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
-                <span id="premium-state" style="font-size:13px;font-weight:600;color:var(--text2)">—</span>
-                <button class="btn-primary" id="premium-toggle" style="justify-content:center" onclick="togglePremium()">…</button>
-              </div>
-            </div>
-
-            <!-- BYOK plan switch (legacy builds only) -->
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;border-top:1px solid var(--border)">
-              <div>
-                <div style="font-size:14px;font-weight:600">Bring Your Own Key (BYOK) <span style="color:var(--dim);font-weight:500;font-size:12px">· legacy</span></div>
-                <div style="color:var(--text2);font-size:12px;margin-top:2px">BYOK was removed from the app — this only affects old builds still in the wild (≤ v2.0.x). When OFF, those users fall back to the Free quota. Stored keys are kept.</div>
-              </div>
-              <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
-                <span id="byok-state" style="font-size:13px;font-weight:600;color:var(--text2)">—</span>
-                <button class="btn-primary" id="byok-toggle" style="justify-content:center" onclick="toggleByok()">…</button>
-              </div>
-            </div>
-            <span id="config-status" style="font-size:13px"></span>
+          <div class="a-legend" id="aiLegend"></div>
+          <div class="a-table-scroll">
+            <table class="a-table">
+              <thead>
+                <tr>
+                  <th>Device</th><th>Keyboard AI</th><th>Voice AI</th>
+                  <th>Lens translate</th><th>Lens reply</th><th>Top tool</th><th class="a-right">Total</th>
+                </tr>
+              </thead>
+              <tbody id="aiBody"></tbody>
+            </table>
           </div>
-
+          <div class="a-pager" id="aiPager"></div>
         </div>
-      </div><!-- /tab-update -->
+      </section>
 
-    </div><!-- /admin-content -->
-  </div><!-- /dashboard -->
+      <!-- ─── API Keys ───────────────────────────────────────── -->
+      <section class="a-section" id="sec-apikeys">
+        <div class="a-panel">
+          <div class="a-panel-head">
+            <h2>Groq key health</h2>
+            <p class="a-sub">Each check live-tests every key against Groq from the server — the browser can't call Groq directly.</p>
+            <div class="a-controls">
+              <button class="a-btn a-btn-ghost a-btn-sm" data-action="check-keys" id="checkKeysBtn"><svg><use href="#i-zap"/></svg>Run health check</button>
+              <button class="a-btn a-btn-ghost a-btn-sm" data-action="check-limits" id="checkLimitsBtn"><svg><use href="#i-shield"/></svg>Refresh limit status</button>
+            </div>
+          </div>
+          <div class="a-panel-body">
+            <div class="a-key-chips" id="keySummary" style="margin-bottom:14px"></div>
+            <div class="a-key-grid" id="keyGrid"></div>
+          </div>
+        </div>
+      </section>
 
-  <!-- ── Detail Modal ───────────────────────────────────── -->
-  <div class="modal-overlay" id="detailModal" onclick="closeModal(event)">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h3 id="modalTitle">Device Detail</h3>
-        <span class="modal-close" onclick="closeDetailModal()">✕</span>
+      <!-- ─── Crashes ────────────────────────────────────────── -->
+      <section class="a-section" id="sec-crashes">
+        <div class="a-stat-strip" id="crashStats" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+          <div class="a-stat"><span class="a-stat-label">Crash groups</span><span class="a-stat-value" id="c-groups">—</span></div>
+          <div class="a-stat"><span class="a-stat-label">Occurrences (page)</span><span class="a-stat-value" id="c-occ">—</span></div>
+          <div class="a-stat"><span class="a-stat-label">Devices affected (page)</span><span class="a-stat-value" id="c-dev">—</span></div>
+        </div>
+        <div class="a-panel">
+          <div class="a-panel-head">
+            <h2>Crash groups</h2>
+            <div class="a-controls">
+              <label class="a-search">
+                <svg><use href="#i-search"/></svg>
+                <input class="a-input" id="crashSearch" placeholder="Search error message…" aria-label="Search crashes" />
+              </label>
+              <select class="a-select" id="crashSort" aria-label="Sort crashes">
+                <option value="last_seen">Sort: Last seen</option>
+                <option value="occurrences">Sort: Occurrences</option>
+                <option value="first_seen">Sort: First seen</option>
+              </select>
+            </div>
+          </div>
+          <div class="a-table-scroll">
+            <table class="a-table">
+              <thead>
+                <tr><th>Error</th><th>Type</th><th class="a-right">Count</th><th class="a-right">Devices</th><th>Last seen</th><th>First seen</th></tr>
+              </thead>
+              <tbody id="crashBody"></tbody>
+            </table>
+          </div>
+          <div class="a-pager" id="crashPager"></div>
+        </div>
+      </section>
+
+      <!-- ─── Releases & config ──────────────────────────────── -->
+      <section class="a-section" id="sec-releases">
+        <div class="a-kpi-row" style="grid-template-columns:minmax(0,1fr)">
+          <article class="a-kpi">
+            <div class="a-kpi-top"><span class="a-kpi-icon"><svg><use href="#i-rocket"/></svg></span><span class="a-kpi-label">Current live version</span></div>
+            <div class="a-kpi-value" id="liveVersion">—</div>
+            <div class="a-kpi-foot" id="liveMeta"></div>
+          </article>
+        </div>
+
+        <section class="a-panel">
+          <div class="a-panel-head">
+            <h2>Publish an update</h2>
+            <p class="a-sub">Notifies every installed device on its next check.</p>
+          </div>
+          <div class="a-panel-body">
+            <div class="a-form-grid">
+              <label class="a-field">
+                <span class="a-field-label">Version <span class="a-req">*</span></span>
+                <input class="a-input" id="uvVersion" placeholder="e.g. 3.0.1" inputmode="decimal" />
+              </label>
+              <label class="a-field">
+                <span class="a-field-label">Title <span class="a-req">*</span></span>
+                <input class="a-input" id="uvTitle" placeholder="e.g. Speed &amp; stability" />
+              </label>
+              <label class="a-field">
+                <span class="a-field-label">Highlights</span>
+                <textarea class="a-textarea" id="uvHighlights" rows="5" placeholder="New AI shortcut&#10;Faster keyboard&#10;Bug fixes"></textarea>
+                <span class="a-field-hint">One per line. Blank lines are dropped.</span>
+              </label>
+              <div class="a-form-foot">
+                <button class="a-btn a-btn-primary" data-action="publish"><svg><use href="#i-rocket"/></svg>Publish update</button>
+                <span class="a-action-status" id="uvStatus"></span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="a-panel">
+          <div class="a-panel-head">
+            <h2>Remote config</h2>
+            <p class="a-sub">Feature switches applied on each device's next ping — no app release needed.</p>
+          </div>
+          <div class="a-panel-body">
+
+            <div class="a-switch-row">
+              <div class="a-switch-copy">
+                <div class="a-switch-title">Paid plans <span class="a-chip a-chip-info">Pro &amp; Max</span></div>
+                <p class="a-switch-desc">
+                  One switch covers both paid tiers. When off, both cards show “Coming Soon” with a
+                  Notify-me button. When on, Pro (₹299 / ₹2,249) and Max (₹499 / ₹3,749) become
+                  purchasable — Razorpay keys must already be set in Vercel or checkout fails.
+                </p>
+              </div>
+              <div class="a-switch-side">
+                <span class="a-switch-state" id="premiumState">—</span>
+                <button class="a-switch" id="premiumSwitch" role="switch" aria-checked="false" aria-label="Paid plans" data-action="toggle-premium"></button>
+              </div>
+            </div>
+
+            <div class="a-switch-row">
+              <div class="a-switch-copy">
+                <div class="a-switch-title">GIF keyboard</div>
+                <p class="a-switch-desc">
+                  Global kill-switch for the GIF tab in the emoji panel. When off, <code>/api/gif</code>
+                  stops serving and the tab shows “GIFs unavailable”. Needs a Giphy key in Vercel to work at all.
+                </p>
+              </div>
+              <div class="a-switch-side">
+                <span class="a-switch-state" id="gifState">—</span>
+                <button class="a-switch" id="gifSwitch" role="switch" aria-checked="false" aria-label="GIF keyboard" data-action="toggle-gif"></button>
+              </div>
+            </div>
+
+            <div class="a-switch-row">
+              <div class="a-switch-copy">
+                <div class="a-switch-title">Bring Your Own Key <span class="a-chip a-chip-muted">legacy</span></div>
+                <p class="a-switch-desc">
+                  BYOK was removed from the app — this only reaches old builds still in the wild (≤ v2.0.x).
+                  When off, those users fall back to the Free quota. Stored keys are kept.
+                </p>
+              </div>
+              <div class="a-switch-side">
+                <span class="a-switch-state" id="byokState">—</span>
+                <button class="a-switch" id="byokSwitch" role="switch" aria-checked="false" aria-label="Bring your own key" data-action="toggle-byok"></button>
+              </div>
+            </div>
+
+            <div class="a-switch-row">
+              <div class="a-switch-copy">
+                <div class="a-switch-title">Gated AI tools</div>
+                <p class="a-switch-desc">
+                  Tools selected here are locked behind a paid plan for every device. Leave all off to keep
+                  the whole AI suite available on the Free tier.
+                </p>
+                <div class="a-pill-set" id="gatedTools"></div>
+              </div>
+            </div>
+
+            <p class="a-action-status" id="configStatus" style="margin-top:14px"></p>
+          </div>
+        </section>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- ═══ Drawer ═════════════════════════════════════════════════ -->
+<div class="a-scrim" id="scrim" data-action="close-drawer"></div>
+<aside class="a-drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-hidden="true">
+  <div class="a-drawer-head">
+    <h2 id="drawerTitle">Details</h2>
+    <button class="a-icon-btn" data-action="close-drawer" aria-label="Close details"><svg><use href="#i-close"/></svg></button>
+  </div>
+  <div class="a-drawer-body" id="drawerBody"></div>
+</aside>
+
+<!-- ═══ Country readiness board ════════════════════════════════
+     Full-screen because it is a checklist of every country on earth, not a
+     chart: 250 rows only become scannable when they can spread across the
+     whole viewport in columns. -->
+<div class="a-full" id="readiness" role="dialog" aria-modal="true" aria-labelledby="readyTitle" aria-hidden="true">
+  <header class="a-full-head">
+    <div class="a-full-title">
+      <svg class="a-full-icon"><use href="#i-flag"/></svg>
+      <div>
+        <h2 id="readyTitle">Country readiness</h2>
+        <p class="a-full-sub" id="readySub">Tick a country once the app and the keyboard are ready for it.</p>
       </div>
-      <div id="modalBody"></div>
     </div>
+    <div class="a-full-status a-action-status" id="readyStatus"></div>
+    <button class="a-icon-btn" data-action="close-readiness" aria-label="Close country readiness"><svg><use href="#i-close"/></svg></button>
+  </header>
+
+  <div class="a-full-tools">
+    <label class="a-search">
+      <svg><use href="#i-search"/></svg>
+      <input type="search" class="a-input" id="readySearch" placeholder="Search country or code…" autocomplete="off">
+    </label>
+    <div class="a-seg" role="group" aria-label="Filter countries" id="readyFilter">
+      <button type="button" class="a-seg-btn is-active" data-action="ready-filter" data-filter="all" aria-pressed="true">All</button>
+      <button type="button" class="a-seg-btn" data-action="ready-filter" data-filter="ready" aria-pressed="false">Ready</button>
+      <button type="button" class="a-seg-btn" data-action="ready-filter" data-filter="pending" aria-pressed="false">Not ready</button>
+      <button type="button" class="a-seg-btn" data-action="ready-filter" data-filter="devices" aria-pressed="false">Has devices</button>
+    </div>
+    <div class="a-ready-count" id="readyCount"></div>
   </div>
 
-  <script>
-    // ── State ───────────────────────────────────────────────
-    let API_BASE = '';
-    let AUTH_TOKEN = '';
-    let currentPage = 1;
-    let searchTimer = null;
-    let crashCurrentPage = 1;
-    let crashSearchTimer = null;
-
-    // ── Login / logout ──────────────────────────────────────
-    async function login() {
-      const url  = 'https://typeaurabackend.vercel.app';
-      const pass = document.getElementById('adminPassword').value.trim();
-      if (!pass) return showLoginError();
-
-      try {
-        // Fetch stats to verify auth — reuse the response to populate dashboard
-        const [statsRes] = await Promise.all([
-          fetch(`${url}/api/admin/stats`, { headers: { 'Authorization': `Bearer ${pass}` } }),
-        ]);
-        if (!statsRes.ok) throw new Error('auth failed');
-
-        API_BASE   = url;
-        AUTH_TOKEN = pass;
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('dashboard').style.display   = 'block';
-
-        // Populate stats from the response we already have — no second fetch
-        const statsData = await statsRes.json();
-        populateStats(statsData);
-
-        // Load users in parallel while stats are being rendered
-        loadUsers(1);
-      } catch (e) {
-        showLoginError();
-      }
-    }
-
-    function logout() {
-      API_BASE   = '';
-      AUTH_TOKEN = '';
-      document.getElementById('loginScreen').style.display = 'flex';
-      document.getElementById('dashboard').style.display   = 'none';
-      document.getElementById('adminPassword').value = '';
-      document.getElementById('loginError').style.display  = 'none';
-    }
-
-    function showLoginError() {
-      document.getElementById('loginError').style.display = 'block';
-    }
-
-    // Enter key on password field
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('adminPassword').addEventListener('keydown', e => {
-        if (e.key === 'Enter') login();
-      });
-    });
-
-    // ── Load summary stats ──────────────────────────────────
-    function populateStats(data) {
-      document.getElementById('s-total').textContent = fmt(data.total_users);
-      document.getElementById('s-dau').textContent   = fmt(data.dau);
-      document.getElementById('s-wau').textContent   = fmt(data.wau);
-      document.getElementById('s-mau').textContent   = fmt(data.mau);
-      document.getElementById('s-kb').textContent    = fmt(data.total_keyboard_opens);
-      document.getElementById('s-ai').textContent       = fmt(data.total_ai_uses);
-      document.getElementById('s-voice-ai').textContent = fmt(data.total_voice_ai_uses);
-      document.getElementById('s-lens-tr').textContent  = fmt(data.total_lens_translate);
-      document.getElementById('s-lens-re').textContent  = fmt(data.total_lens_reply);
-      document.getElementById('s-app').textContent      = fmt(data.total_app_opens);
-      document.getElementById('s-new').textContent      = fmt(data.new_installs_7d);
-    }
-
-    async function loadStats() {
-      try {
-        const res  = await authFetch('/api/admin/stats');
-        const data = await res.json();
-        populateStats(data);
-      } catch (_) {}
-    }
-
-    // ── Load users table ────────────────────────────────────
-    async function loadUsers(page = 1) {
-      currentPage = page;
-      const search = document.getElementById('searchInput').value.trim();
-      const filter = document.getElementById('filterSelect').value;
-      const sort   = document.getElementById('sortSelect').value;
-
-      const params = new URLSearchParams({ page, limit: 50, sort, order: 'desc' });
-      if (search) params.set('search', search);
-      if (filter) params.set('filter', filter);
-
-      const tbody = document.getElementById('usersTableBody');
-      tbody.innerHTML = '<tr class="loading-row"><td colspan="11">Loading…</td></tr>';
-
-      try {
-        const res  = await authFetch(`/api/admin/users?${params}`);
-        const data = await res.json();
-        renderTable(data.devices || []);
-        renderPagination(data.pagination);
-      } catch (_) {
-        tbody.innerHTML = '<tr class="loading-row"><td colspan="11">Failed to load. Check connection.</td></tr>';
-      }
-    }
-
-    // Tiers: free | pro | max. Legacy docs may still carry 'premium' (the old
-    // single paid tier → shown as Pro) or 'byok' (removed plan).
-    const TIER_LABELS = { free: 'Free', pro: 'Pro', max: 'Max', premium: 'Pro', byok: 'BYOK' };
-
-    function planBadge(d) {
-      const tier  = d.plan_tier || 'free';
-      const label = TIER_LABELS[tier] || tier.charAt(0).toUpperCase() + tier.slice(1);
-      const override = d.admin_plan_override
-        ? `<span class="plan-override-dot" title="Admin override active"></span>`
-        : '';
-      // A still-valid purchase is what actually grants the budget — mark it so a
-      // self-reported "parked as Free" device is still recognisable as paying.
-      const paidValid = d.premium_until && new Date(d.premium_until) > new Date();
-      const title = paidValid
-        ? `Paid ${TIER_LABELS[d.paid_tier] || 'Pro'} until ${fmtDate(d.premium_until)}`
-        : label;
-      return `<span class="plan-badge plan-badge-${tier}" title="${title}">${label}</span>`
-           + (paidValid ? ' <span title="Active purchase">💳</span>' : '')
-           + override;
-    }
-
-    function renderTable(devices) {
-      const tbody = document.getElementById('usersTableBody');
-      if (!devices.length) {
-        tbody.innerHTML = '<tr class="loading-row"><td colspan="11">No devices found.</td></tr>';
-        return;
-      }
-      tbody.innerHTML = devices.map(d => `
-        <tr>
-          <td title="${d.device_id}">${d.device_name || 'Unknown'}</td>
-          <td>${planBadge(d)}</td>
-          <td>${d.android_version || '—'}</td>
-          <td>${fmtDate(d.install_date)}</td>
-          <td>${fmtDate(d.last_use_date)}</td>
-          <td>${d.total_app_opens || 0}</td>
-          <td>${d.total_keyboard_opens || 0}</td>
-          <td><span class="${d.keyboard_enabled ? 'tag-yes' : 'tag-no'}">${d.keyboard_enabled ? '✓ Yes' : 'No'}</span></td>
-          <td><span class="${d.keyboard_selected ? 'tag-yes' : 'tag-no'}">${d.keyboard_selected ? '✓ Yes' : 'No'}</span></td>
-          <td>${d.selected_theme || '—'}</td>
-          <td><button class="btn-detail" onclick="showDetail('${d.device_id}')">Detail</button></td>
-        </tr>
-      `).join('');
-    }
-
-    function renderPagination(p) {
-      if (!p) return;
-      const row = document.getElementById('paginationRow');
-      let html  = `<span class="page-info">Page ${p.page} of ${p.total_pages} (${p.total} total)</span>`;
-      html += `<button class="page-btn" onclick="loadUsers(${p.page - 1})" ${p.page <= 1 ? 'disabled' : ''}>← Prev</button>`;
-      html += `<button class="page-btn" onclick="loadUsers(${p.page + 1})" ${p.page >= p.total_pages ? 'disabled' : ''}>Next →</button>`;
-      row.innerHTML = html;
-    }
-
-    // ── Detail Modal ────────────────────────────────────────
-    let currentDetailDeviceId = null;
-
-    async function showDetail(deviceId) {
-      currentDetailDeviceId = deviceId;
-      document.getElementById('detailModal').classList.add('open');
-      document.getElementById('modalTitle').textContent = 'Loading…';
-      document.getElementById('modalBody').innerHTML = '<p style="color:var(--text2);text-align:center;padding:20px">Loading…</p>';
-
-      try {
-        const res  = await authFetch(`/api/admin/user?id=${encodeURIComponent(deviceId)}`);
-        const data = await res.json();
-        renderDetail(data);
-      } catch (_) {
-        document.getElementById('modalBody').innerHTML = '<p style="color:#FF5252;text-align:center;padding:20px">Failed to load details.</p>';
-      }
-    }
-
-    function renderDetail({ device, recent_events }) {
-      if (!device) return;
-      document.getElementById('modalTitle').textContent = device.device_name || 'Unknown Device';
-
-      const tier = device.plan_tier || 'free';
-      const overrideAt = device.admin_plan_override_at
-        ? fmtDatetime(device.admin_plan_override_at)
-        : null;
-
-      // What the user actually bought (server-set, unforgeable) vs. what the app
-      // self-reports as plan_tier — the two differ when a paid user parks their
-      // plan as Free, or when an admin override is in play.
-      const paidValid = device.premium_until && new Date(device.premium_until) > new Date();
-      const paidTier  = device.paid_tier ? (TIER_LABELS[device.paid_tier] || device.paid_tier) : null;
-
-      const fields = [
-        ['Device ID',        device.device_id],
-        ['Device Name',      device.device_name || '—'],
-        ['Android Version',  device.android_version || '—'],
-        ['Install Date',     fmtDate(device.install_date)],
-        ['Last Active',      fmtDate(device.last_use_date)],
-        ['Plan',             planBadge(device)],
-        ['Purchased Tier',   paidTier
-          ? `${paidTier}${paidValid ? '' : ' <span style="color:var(--dim);font-size:11px">· expired</span>'}`
-          : '—'],
-        ['Purchased Plan',   device.premium_plan || '—'],
-        ['Paid Until',       device.premium_until
-          ? `${fmtDatetime(device.premium_until)}${paidValid ? '' : ' <span style="color:#FF5252;font-size:11px">· expired</span>'}`
-          : '—'],
-        ['Recovery Code',    device.recovery_code || '—'],
-        ...(device.plan_byok_active ? [['BYOK Key Saved (legacy)', '✓ Yes']] : []),
-        ['Admin Override',   device.admin_plan_override
-          ? `${device.admin_plan_override}${overrideAt ? ` <span style="color:var(--dim);font-size:11px">· set ${overrideAt}</span>` : ''}`
-          : '—'],
-        ['Keyboard Enabled', device.keyboard_enabled  ? '✓ Yes' : 'No'],
-        ['Set as Default',   device.keyboard_selected ? '✓ Yes' : 'No'],
-        ['Selected Theme',   device.selected_theme || '—'],
-        ['Total App Opens',  device.total_app_opens      || 0],
-        ['Total KB Opens',   device.total_keyboard_opens || 0],
-        ['Total AI Uses',    device.total_ai_uses        || 0],
-        ['Voice AI Uses',    device.total_voice_ai_uses  || 0],
-        ['Lens Translate',   device.total_lens_translate || 0],
-        ['Lens Reply',       device.total_lens_reply     || 0],
-      ];
-
-      let html = fields.map(([k, v]) =>
-        `<div class="detail-row"><span class="detail-key">${k}</span><span class="detail-value">${v}</span></div>`
-      ).join('');
-
-      // ── Plan management ─────────────────────────────────────
-      html += `
-        <div class="events-title">Change Plan</div>
-        <p style="color:var(--text2);font-size:12px;margin-bottom:4px">
-          Sets an admin override. Applies on the user's next analytics ping (usually within minutes).
-        </p>
-        <p style="color:var(--dim);font-size:11px;margin-bottom:8px">
-          An override outranks the app's self-reported tier. Setting Free while a purchase is still
-          valid does <em>not</em> lower the budget — the server keeps honouring the paid tier until it expires.
-        </p>
-        <div class="plan-actions" id="planActions">
-          <button class="plan-btn ${tier === 'free' ? 'plan-btn-active' : ''}" onclick="setPlan('free')">Free (10k tok/day)</button>
-          <button class="plan-btn ${tier === 'pro' || tier === 'premium' ? 'plan-btn-active' : ''}" onclick="setPlan('pro')">Pro (50k tok/day)</button>
-          <button class="plan-btn ${tier === 'max' ? 'plan-btn-active' : ''}" onclick="setPlan('max')">Max (150k tok/day)</button>
-          ${device.admin_plan_override
-            ? `<button class="plan-btn plan-btn-clear" onclick="clearPlanOverride()">Clear Override</button>`
-            : ''}
-          <span id="planActionStatus" style="font-size:12px;color:var(--text2);align-self:center"></span>
-        </div>
-      `;
-
-      // ── Danger zone ─────────────────────────────────────────
-      html += `
-        <div class="events-title" style="color:#FF5252">Danger Zone</div>
-        <p style="color:var(--text2);font-size:12px;margin-bottom:8px">
-          Permanently deletes ALL data for this user: device records (plan, premium expiry,
-          recovery code, daily AI-token counters), events, crashes and payment records —
-          including every reinstall on the same hardware. Cannot be undone.
-        </p>
-        <div class="plan-actions" id="dangerActions">
-          <button class="plan-btn plan-btn-danger" onclick="deleteUserData()">Delete All User Data</button>
-          <span id="deleteActionStatus" style="font-size:12px;color:var(--text2);align-self:center"></span>
-        </div>
-      `;
-
-      if (recent_events?.length) {
-        html += `<div class="events-title">Recent Activity (last ${recent_events.length})</div>`;
-        html += recent_events.map(e => `
-          <div class="event-item">
-            <span class="event-type">${e.event_type}</span>
-            ${e.metadata ? `<span class="event-meta">${e.metadata}</span>` : ''}
-            <span class="event-time">${fmtDate(e.timestamp)}</span>
-          </div>
-        `).join('');
-      } else {
-        html += '<p style="color:var(--dim);font-size:13px;margin-top:16px">No recent events.</p>';
-      }
-
-      document.getElementById('modalBody').innerHTML = html;
-    }
-
-    // ── Plan management actions ────────────────────────────────
-    async function setPlan(tier) {
-      if (!currentDetailDeviceId) return;
-      const status = document.getElementById('planActionStatus');
-      _disablePlanButtons(true);
-      if (status) { status.style.color = 'var(--text2)'; status.textContent = 'Saving…'; }
-      try {
-        const res = await fetch(`${API_BASE}/api/admin/set-plan`, {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AUTH_TOKEN}` },
-          body:    JSON.stringify({ device_id: currentDetailDeviceId, plan_tier: tier }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || `Error ${res.status}`);
-        if (status) { status.style.color = 'var(--green)'; status.textContent = `✓ Set to ${tier}`; }
-        await showDetail(currentDetailDeviceId);
-        loadUsers(currentPage);
-      } catch (e) {
-        if (status) { status.style.color = '#FF5252'; status.textContent = `Failed: ${e.message}`; }
-        _disablePlanButtons(false);
-      }
-    }
-
-    async function clearPlanOverride() {
-      if (!currentDetailDeviceId) return;
-      const status = document.getElementById('planActionStatus');
-      _disablePlanButtons(true);
-      if (status) { status.style.color = 'var(--text2)'; status.textContent = 'Clearing…'; }
-      try {
-        const res = await fetch(`${API_BASE}/api/admin/set-plan`, {
-          method:  'DELETE',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AUTH_TOKEN}` },
-          body:    JSON.stringify({ device_id: currentDetailDeviceId }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || `Error ${res.status}`);
-        if (status) { status.style.color = 'var(--green)'; status.textContent = '✓ Override cleared'; }
-        await showDetail(currentDetailDeviceId);
-        loadUsers(currentPage);
-      } catch (e) {
-        if (status) { status.style.color = '#FF5252'; status.textContent = `Failed: ${e.message}`; }
-        _disablePlanButtons(false);
-      }
-    }
-
-    function _disablePlanButtons(disabled) {
-      document.querySelectorAll('#planActions .plan-btn, #dangerActions .plan-btn')
-        .forEach(b => b.disabled = disabled);
-    }
-
-    // ── Danger zone: full user-data wipe ───────────────────────
-    async function deleteUserData() {
-      if (!currentDetailDeviceId) return;
-      if (!confirm('Permanently delete ALL data for this user?\n\nDevice records (plan, premium, recovery code, token counters), events, crashes and payment records — including reinstalls on the same hardware.\n\nThis cannot be undone.')) return;
-      const status = document.getElementById('deleteActionStatus');
-      _disablePlanButtons(true);
-      if (status) { status.style.color = 'var(--text2)'; status.textContent = 'Deleting…'; }
-      try {
-        const res = await fetch(`${API_BASE}/api/admin/delete-user`, {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AUTH_TOKEN}` },
-          body:    JSON.stringify({ device_id: currentDetailDeviceId }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || `Error ${res.status}`);
-        const d = data.deleted || {};
-        alert(`Deleted: ${d.devices || 0} device(s), ${d.events || 0} events, ${d.crashes || 0} crashes, ${d.payments || 0} payment record(s).`);
-        closeDetailModal();
-        loadUsers(currentPage);
-      } catch (e) {
-        if (status) { status.style.color = '#FF5252'; status.textContent = `Failed: ${e.message}`; }
-        _disablePlanButtons(false);
-      }
-    }
-
-    function closeDetailModal() {
-      document.getElementById('detailModal').classList.remove('open');
-      // Crash detail uses a wider modal — reset so the next opener (device detail) is normal width
-      document.querySelector('#detailModal .modal-box')?.classList.remove('modal-wide');
-    }
-
-    function closeModal(e) {
-      if (e.target === document.getElementById('detailModal')) closeDetailModal();
-    }
-
-    // ── Helpers ─────────────────────────────────────────────
-    function authFetch(path) {
-      return fetch(`${API_BASE}${path}`, {
-        headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
-      });
-    }
-
-    function fmt(n)         { if (n === undefined || n === null) return '—'; return n >= 1000 ? (n/1000).toFixed(1)+'k' : String(n); }
-    function fmtDate(iso)   { if (!iso) return '—'; return new Date(iso).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }); }
-    function fmtTime(iso)   { if (!iso) return '—'; return new Date(iso).toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit', second:'2-digit' }); }
-    function debounceSearch() { clearTimeout(searchTimer); searchTimer = setTimeout(() => loadUsers(1), 400); }
-
-    // ── Refresh all data ─────────────────────────────────────
-    async function refreshAll() {
-      const btn = document.getElementById('refreshAllBtn');
-      btn.disabled    = true;
-      btn.textContent = '⏳ Refreshing…';
-
-      const activeTab = document.querySelector('.tab-panel.active')?.id;
-
-      const tasks = [loadStats(), loadUsers(currentPage)];
-      if (activeTab === 'tab-apikeys') {
-        tasks.push(checkAllKeys(), loadLimitStatus());
-      } else if (activeTab === 'tab-update') {
-        tasks.push(loadLiveVersion());
-      } else if (activeTab === 'tab-crashes') {
-        tasks.push(loadCrashes(crashCurrentPage));
-      }
-
-      await Promise.allSettled(tasks);
-
-      btn.disabled    = false;
-      btn.textContent = '🔄 Refresh';
-    }
-
-    // ── Tab switching ────────────────────────────────────────
-    function switchTab(name) {
-      const tabs = ['users', 'aitools', 'apikeys', 'crashes', 'update'];
-      document.querySelectorAll('.tab-btn').forEach((btn, i) => {
-        btn.classList.toggle('active', tabs[i] === name);
-      });
-      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-      document.getElementById(`tab-${name}`).classList.add('active');
-      if (name === 'update')  { loadLiveVersion(); loadGlobalConfig(); }
-      if (name === 'crashes') loadCrashes(1);
-      if (name === 'aitools') loadAiTools(1);
-    }
-
-    // ── AI Tools tab ─────────────────────────────────────────
-    let aitoolsCurrentPage = 1;
-    let aitoolsDebounceTimer = null;
-    function debounceAiTools() {
-      clearTimeout(aitoolsDebounceTimer);
-      aitoolsDebounceTimer = setTimeout(() => loadAiTools(1), 350);
-    }
-
-    const TOOL_LABELS = {
-      total_ai_uses:        '⌨️ Keyboard AI',
-      total_voice_ai_uses:  '🎤 Voice AI',
-      total_lens_translate: '🔍 Lens Translate',
-      total_lens_reply:     '💬 Lens Reply',
-    };
-
-    function topTool(d) {
-      const tools = [
-        ['total_ai_uses', d.total_ai_uses || 0],
-        ['total_voice_ai_uses', d.total_voice_ai_uses || 0],
-        ['total_lens_translate', d.total_lens_translate || 0],
-        ['total_lens_reply', d.total_lens_reply || 0],
-      ];
-      const max = tools.reduce((a, b) => b[1] > a[1] ? b : a, ['', 0]);
-      return max[1] === 0 ? '—' : TOOL_LABELS[max[0]];
-    }
-
-    function barCell(val, max) {
-      const pct = max > 0 ? Math.round((val / max) * 100) : 0;
-      return `<td><span style="display:inline-flex;align-items:center;gap:6px;">
-        <span style="display:inline-block;width:${pct}px;max-width:80px;height:6px;background:var(--accent);border-radius:3px;opacity:0.7;"></span>
-        <span>${val}</span>
-      </span></td>`;
-    }
-
-    async function loadAiTools(page = 1) {
-      aitoolsCurrentPage = page;
-      const search = document.getElementById('aitoolsSearch').value.trim();
-      const sort   = document.getElementById('aitoolsSortSelect').value;
-      const params = new URLSearchParams({ page, limit: 50, sort, order: 'desc' });
-      if (search) params.set('search', search);
-
-      const tbody = document.getElementById('aitoolsTableBody');
-      tbody.innerHTML = '<tr class="loading-row"><td colspan="7">Loading…</td></tr>';
-
-      try {
-        const res  = await authFetch(`/api/admin/users?${params}`);
-        const data = await res.json();
-        const devices = data.devices || [];
-
-        if (!devices.length) {
-          tbody.innerHTML = '<tr class="loading-row"><td colspan="7">No devices found.</td></tr>';
-          return;
-        }
-
-        const maxKb    = Math.max(...devices.map(d => d.total_ai_uses        || 0), 1);
-        const maxVoice = Math.max(...devices.map(d => d.total_voice_ai_uses  || 0), 1);
-        const maxLensTr = Math.max(...devices.map(d => d.total_lens_translate || 0), 1);
-        const maxLensRe = Math.max(...devices.map(d => d.total_lens_reply     || 0), 1);
-
-        tbody.innerHTML = devices.map(d => `
-          <tr>
-            <td title="${d.device_id}">${d.device_name || 'Unknown'}</td>
-            ${barCell(d.total_ai_uses        || 0, maxKb)}
-            ${barCell(d.total_voice_ai_uses  || 0, maxVoice)}
-            ${barCell(d.total_lens_translate || 0, maxLensTr)}
-            ${barCell(d.total_lens_reply     || 0, maxLensRe)}
-            <td><span style="color:var(--accent);font-size:11px;font-weight:600;">${topTool(d)}</span></td>
-            <td style="font-weight:600;">${(d.total_ai_uses||0)+(d.total_voice_ai_uses||0)+(d.total_lens_translate||0)+(d.total_lens_reply||0)}</td>
-          </tr>
-        `).join('');
-
-        const p = data.pagination;
-        const row = document.getElementById('aitoolsPaginationRow');
-        let html = `<span class="page-info">Page ${p.page} of ${p.total_pages} (${p.total} total)</span>`;
-        html += `<button class="page-btn" onclick="loadAiTools(${p.page-1})" ${p.page<=1?'disabled':''}>← Prev</button>`;
-        html += `<button class="page-btn" onclick="loadAiTools(${p.page+1})" ${p.page>=p.total_pages?'disabled':''}>Next →</button>`;
-        row.innerHTML = html;
-      } catch (_) {
-        tbody.innerHTML = '<tr class="loading-row"><td colspan="7">Failed to load.</td></tr>';
-      }
-    }
-
-    // ── App Update tab ───────────────────────────────────────
-    async function loadLiveVersion() {
-      document.getElementById('liveVersion').textContent = '…';
-      document.getElementById('liveTitle').textContent   = '';
-      document.getElementById('liveDate').textContent    = '';
-      try {
-        const res  = await fetch(`${API_BASE}/api/updates`);
-        const data = await res.json();
-        document.getElementById('liveVersion').textContent = `v${data.version || '—'}`;
-        document.getElementById('liveTitle').textContent   = data.title || '';
-        document.getElementById('liveDate').textContent    = data.date ? `Published: ${data.date}` : '';
-        if (data.version) {
-          const parts = data.version.split('.').map(Number);
-          parts[2] = (parts[2] || 0) + 1;
-          document.getElementById('uv-version').value = parts.join('.');
-        }
-      } catch (_) {
-        document.getElementById('liveVersion').textContent = 'Failed to load';
-      }
-    }
-
-    async function publishUpdate() {
-      const version    = document.getElementById('uv-version').value.trim();
-      const title      = document.getElementById('uv-title').value.trim();
-      const rawLines   = document.getElementById('uv-highlights').value;
-      const highlights = rawLines.split('\n').map(l => l.trim()).filter(Boolean);
-      const statusEl   = document.getElementById('uv-status');
-
-      if (!version || !title) {
-        statusEl.style.color = '#FF5252';
-        statusEl.textContent = 'Version and title are required.';
-        return;
-      }
-      if (!/^\d+\.\d+\.\d+$/.test(version)) {
-        statusEl.style.color = '#FF5252';
-        statusEl.textContent = 'Version must be like 1.2.0';
-        return;
-      }
-
-      statusEl.style.color = 'var(--text2)';
-      statusEl.textContent = 'Publishing…';
-
-      try {
-        const res = await fetch(`${API_BASE}/api/admin/set-version`, {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AUTH_TOKEN}` },
-          body:    JSON.stringify({ version, title, highlights }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || `Error ${res.status}`);
-
-        statusEl.style.color = 'var(--green)';
-        statusEl.textContent = `✓ Published v${data.saved.version} successfully!`;
-        loadLiveVersion();
-      } catch (e) {
-        statusEl.style.color = '#FF5252';
-        statusEl.textContent = `Failed: ${e.message}`;
-      }
-    }
-
-    // ── Global Config (remote feature switches) ──────────────
-    // `premium_enabled` gates BOTH paid tiers (Pro + Max) — off by default.
-    // `byok_enabled` only reaches legacy builds and defaults ON.
-    let _premiumEnabled = false;
-    let _byokEnabled    = true;
-
-    function renderSwitch(id, on, { onLabel, offLabel }) {
-      const stateEl = document.getElementById(`${id}-state`);
-      const btnEl   = document.getElementById(`${id}-toggle`);
-      if (!stateEl || !btnEl) return;
-      stateEl.textContent    = on ? 'Enabled' : 'Disabled';
-      stateEl.style.color    = on ? 'var(--green)' : '#FF5252';
-      btnEl.textContent      = on ? offLabel : onLabel;
-      btnEl.style.background = on ? '#FF5252' : '';
-    }
-
-    function renderPremiumSwitch() {
-      renderSwitch('premium', _premiumEnabled, { onLabel: 'Enable Paid Plans', offLabel: 'Disable Paid Plans' });
-    }
-
-    function renderByokSwitch() {
-      renderSwitch('byok', _byokEnabled, { onLabel: 'Enable BYOK', offLabel: 'Disable BYOK' });
-    }
-
-    async function loadGlobalConfig() {
-      try {
-        const res  = await authFetch('/api/admin/set-config');
-        const data = await res.json();
-        _premiumEnabled = data.premium_enabled === true; // default off
-        _byokEnabled    = data.byok_enabled    !== false; // default on
-        renderPremiumSwitch();
-        renderByokSwitch();
-      } catch (_) {
-        document.getElementById('premium-state').textContent = 'Failed to load';
-        document.getElementById('byok-state').textContent    = 'Failed to load';
-      }
-    }
-
-    // Shared writer for the boolean switches — one field per call, so each
-    // toggle updates independently on the server.
-    async function setConfigFlag(field, next, { id, label, confirmMsg, doneMsg }) {
-      const statusEl = document.getElementById('config-status');
-      const btnEl    = document.getElementById(`${id}-toggle`);
-      if (!confirm(confirmMsg)) return null;
-
-      btnEl.disabled = true;
-      statusEl.style.color = 'var(--text2)';
-      statusEl.textContent = `${next ? 'Enabling' : 'Disabling'} ${label}…`;
-      try {
-        const res = await fetch(`${API_BASE}/api/admin/set-config`, {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AUTH_TOKEN}` },
-          body:    JSON.stringify({ [field]: next }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || `Error ${res.status}`);
-        statusEl.style.color = 'var(--green)';
-        statusEl.textContent = doneMsg(data);
-        return data;
-      } catch (e) {
-        statusEl.style.color = '#FF5252';
-        statusEl.textContent = `Failed: ${e.message}`;
-        return null;
-      } finally {
-        btnEl.disabled = false;
-      }
-    }
-
-    async function togglePremium() {
-      const next = !_premiumEnabled;
-      const data = await setConfigFlag('premium_enabled', next, {
-        id:    'premium',
-        label: 'paid plans',
-        confirmMsg: next
-          ? 'Make Pro and Max purchasable for ALL users?\n\nRazorpay keys (RAZORPAY_KEY_ID / RAZORPAY_KEY_SECRET) must already be set in Vercel, or checkout will fail.'
-          : 'Hide Pro and Max behind "Coming Soon" for ALL users?\n\nExisting purchases stay valid — only new checkouts are blocked.',
-        doneMsg: (d) => `✓ Paid plans ${d.premium_enabled === true ? 'enabled' : 'disabled'}. Devices apply it on their next ping.`,
-      });
-      if (!data) return;
-      _premiumEnabled = data.premium_enabled === true;
-      renderPremiumSwitch();
-    }
-
-    async function toggleByok() {
-      const next = !_byokEnabled;
-      const data = await setConfigFlag('byok_enabled', next, {
-        id:    'byok',
-        label: 'BYOK',
-        confirmMsg: `Are you sure you want to ${next ? 'enable' : 'disable'} the legacy BYOK plan for ALL users on old builds?`,
-        doneMsg: (d) => `✓ BYOK ${d.byok_enabled !== false ? 'enabled' : 'disabled'}. Devices apply it on their next ping.`,
-      });
-      if (!data) return;
-      _byokEnabled = data.byok_enabled !== false;
-      renderByokSwitch();
-    }
-
-    // ── API Key Health Check ─────────────────────────────────
-    // Backend server-side testing — Groq blocks browser CORS so we proxy through backend.
-
-    async function checkAllKeys() {
-      const btn   = document.getElementById('checkAllBtn');
-      const tbody = document.getElementById('apiKeysTableBody');
-
-      btn.disabled    = true;
-      btn.textContent = '⏳ Testing keys…';
-      tbody.innerHTML = '<tr class="loading-row"><td colspan="8">Running health check on server…</td></tr>';
-      updateApiSummary([], true);
-
-      try {
-        const res = await authFetch('/api/admin/check-keys');
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          throw new Error(err.error || `Server returned ${res.status}`);
-        }
-        const data    = await res.json();
-        const results = data.results || [];
-
-        if (!results.length) {
-          tbody.innerHTML = '<tr class="loading-row"><td colspan="8">No API keys configured on backend. Add GROQ_API_KEY in Vercel env vars.</td></tr>';
-          updateApiSummary([], false);
-        } else {
-          renderApiTable(results);
-          updateApiSummary(results, false);
-        }
-      } catch (e) {
-        tbody.innerHTML = `<tr class="loading-row"><td colspan="8" style="color:#FF5252">Health check failed: ${escHtml(e.message)}</td></tr>`;
-        updateApiSummary([], false);
-      }
-
-      btn.disabled    = false;
-      btn.textContent = '⚡ Re-check All';
-    }
-
-    function renderApiTable(rows) {
-      const tbody = document.getElementById('apiKeysTableBody');
-      tbody.innerHTML = rows.map(r => {
-        let badge = '';
-        if      (r.status === 'working')   badge = '<span class="status-badge status-working">✓ Working</span>';
-        else if (r.status === 'failed')    badge = '<span class="status-badge status-failed">✗ Failed</span>';
-        else if (r.status === 'ratelimit') badge = '<span class="status-badge status-ratelimit">⚠ Rate Limited</span>';
-        else if (r.status === 'checking')  badge = '<span class="status-badge status-checking">… Checking</span>';
-        else                               badge = '<span class="status-badge status-unknown">— Unknown</span>';
-
-        const latency = r.latency != null ? `<span class="latency-badge">${r.latency} ms</span>` : '—';
-        const err     = r.error ? `<span style="color:#FF5252;font-size:11px">${escHtml(r.error)}</span>` : '—';
-
-        return `<tr>
-          <td>${r.index}</td>
-          <td>${escHtml(r.name)}</td>
-          <td><span class="key-masked">${escHtml(r.masked || '—')}</span></td>
-          <td>${badge}</td>
-          <td>${latency}</td>
-          <td style="color:var(--text2);font-size:11px">${escHtml(r.model || '—')}</td>
-          <td style="font-size:11px;color:var(--dim)">${fmtTime(r.checkedAt)}</td>
-          <td>${err}</td>
-        </tr>`;
-      }).join('');
-    }
-
-    function updateApiSummary(rows, checking) {
-      const total   = rows.length;
-      const working = rows.filter(r => r.status === 'working' || r.status === 'ratelimit').length;
-      const failed  = rows.filter(r => r.status === 'failed').length;
-      document.getElementById('chip-total').textContent   = `${total} Total`;
-      document.getElementById('chip-working').textContent = `${working} Working`;
-      document.getElementById('chip-failed').textContent  = `${failed} Failed`;
-    }
-
-    function escHtml(s) {
-      if (!s) return '';
-      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    }
-
-    // ── Rate Limit Status ────────────────────────────────────
-    async function loadLimitStatus() {
-      const btn   = document.getElementById('limitStatusBtn');
-      const tbody = document.getElementById('limitTableBody');
-      btn.disabled    = true;
-      btn.textContent = '⏳ Loading…';
-      tbody.innerHTML = '<tr class="loading-row"><td colspan="6">Fetching from server…</td></tr>';
-      document.getElementById('limitSummaryBar').style.display = 'none';
-
-      try {
-        const res = await authFetch('/api/admin/key-limits');
-        if (!res.ok) throw new Error(`Server returned ${res.status}`);
-        const { keys } = await res.json();
-
-        if (!keys || !keys.length) {
-          tbody.innerHTML = '<tr class="loading-row"><td colspan="6">No API keys configured.</td></tr>';
-        } else {
-          renderLimitTable(keys);
-          const available = keys.filter(k => k.status === 'available').length;
-          const blocked   = keys.filter(k => k.status === 'blocked').length;
-          const invalid   = keys.filter(k => k.status === 'invalid').length;
-          document.getElementById('lchip-available').textContent = `${available} Available`;
-          document.getElementById('lchip-blocked').textContent   = `${blocked} Blocked`;
-          const invalidChip = document.getElementById('lchip-invalid');
-          invalidChip.textContent    = `${invalid} Invalid`;
-          invalidChip.style.display  = invalid > 0 ? '' : 'none';
-          document.getElementById('limitSummaryBar').style.display = 'flex';
-        }
-      } catch (e) {
-        tbody.innerHTML = `<tr class="loading-row"><td colspan="6" style="color:#FF5252">Failed: ${escHtml(e.message)}</td></tr>`;
-      }
-
-      btn.disabled    = false;
-      btn.textContent = '📊 Refresh Status';
-    }
-
-    function renderLimitTable(keys) {
-      const tbody = document.getElementById('limitTableBody');
-      tbody.innerHTML = keys.map(k => {
-        const isBlocked = k.status === 'blocked';
-        const isInvalid = k.status === 'invalid';
-        let badge;
-        if (isBlocked)      badge = '<span class="status-badge status-blocked">🔒 Blocked</span>';
-        else if (isInvalid) badge = '<span class="status-badge status-invalid">✗ Invalid Key</span>';
-        else                badge = '<span class="status-badge status-available">✓ Available</span>';
-
-        const until = isBlocked && k.blocked_until
-          ? `<span style="font-size:12px;color:#FFB300">${fmtDatetime(k.blocked_until)}</span>`
-          : '<span style="color:var(--dim)">—</span>';
-
-        const action = isBlocked
-          ? `<button class="btn-unblock" onclick="unblockKey('${escHtml(k.key_hash)}', this)">Unblock</button>`
-          : '—';
-
-        return `<tr>
-          <td>${k.index}</td>
-          <td>${escHtml(k.name)}</td>
-          <td><span class="key-masked">${escHtml(k.masked)}</span></td>
-          <td>${badge}</td>
-          <td>${until}</td>
-          <td>${action}</td>
-        </tr>`;
-      }).join('');
-    }
-
-    async function unblockKey(keyHash, btn) {
-      btn.disabled    = true;
-      btn.textContent = '…';
-      try {
-        const res = await fetch(`${API_BASE}/api/admin/key-limits`, {
-          method:  'DELETE',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AUTH_TOKEN}` },
-          body:    JSON.stringify({ key_hash: keyHash }),
-        });
-        if (!res.ok) throw new Error('Failed');
-        // Reload the table
-        await loadLimitStatus();
-      } catch (e) {
-        btn.disabled    = false;
-        btn.textContent = 'Retry';
-      }
-    }
-
-    function fmtDatetime(iso) {
-      if (!iso) return '—';
-      return new Date(iso).toLocaleString('en-IN', {
-        day: '2-digit', month: 'short', year: 'numeric',
-        hour: '2-digit', minute: '2-digit',
-      });
-    }
-
-    // ── Crashes tab ──────────────────────────────────────────
-    function debounceCrashSearch() {
-      clearTimeout(crashSearchTimer);
-      crashSearchTimer = setTimeout(() => loadCrashes(1), 400);
-    }
-
-    async function loadCrashes(page = 1) {
-      crashCurrentPage = page;
-      const search = document.getElementById('crashSearchInput').value.trim();
-      const sort   = document.getElementById('crashSortSelect').value;
-
-      const params = new URLSearchParams({ page, limit: 50, sort, order: 'desc' });
-      if (search) params.set('search', search);
-
-      const tbody = document.getElementById('crashesTableBody');
-      tbody.innerHTML = '<tr class="loading-row"><td colspan="7">Loading…</td></tr>';
-
-      try {
-        const res  = await authFetch(`/api/admin/crashes?${params}`);
-        if (!res.ok) throw new Error(`Server returned ${res.status}`);
-        const data = await res.json();
-        renderCrashesTable(data.groups || []);
-        renderCrashPagination(data.pagination);
-      } catch (e) {
-        tbody.innerHTML = `<tr class="loading-row"><td colspan="7" style="color:#FF5252">Failed: ${escHtml(e.message)}</td></tr>`;
-      }
-    }
-
-    function renderCrashesTable(groups) {
-      const tbody = document.getElementById('crashesTableBody');
-      if (!groups.length) {
-        tbody.innerHTML = '<tr class="loading-row"><td colspan="7">No crashes recorded. 🎉</td></tr>';
-        return;
-      }
-      tbody.innerHTML = groups.map(g => {
-        const sample  = g.sample || {};
-        const message = escHtml(sample.message || '(no message)');
-        const preview = sample.stack_trace_preview ? escHtml(sample.stack_trace_preview.split('\n')[0] || '') : '';
-        const type    = escHtml(sample.error_type || 'unknown');
-
-        return `<tr style="cursor:pointer" onclick="showCrashDetail('${escHtml(g.group_hash)}')">
-          <td>
-            <div class="crash-message">${message}</div>
-            ${preview ? `<div class="crash-msg-sub">${preview}</div>` : ''}
-          </td>
-          <td><span class="crash-type-tag">${type}</span></td>
-          <td><span class="crash-count-badge">${g.occurrences || 0}</span></td>
-          <td>${g.affected_devices || 0}</td>
-          <td>${fmtDatetime(g.last_seen)}</td>
-          <td>${fmtDatetime(g.first_seen)}</td>
-          <td><button class="btn-detail" onclick="event.stopPropagation();showCrashDetail('${escHtml(g.group_hash)}')">Detail</button></td>
-        </tr>`;
-      }).join('');
-    }
-
-    function renderCrashPagination(p) {
-      if (!p) return;
-      const row = document.getElementById('crashPaginationRow');
-      let html  = `<span class="page-info">Page ${p.page} of ${p.total_pages} (${p.total} total)</span>`;
-      html += `<button class="page-btn" onclick="loadCrashes(${p.page - 1})" ${p.page <= 1 ? 'disabled' : ''}>← Prev</button>`;
-      html += `<button class="page-btn" onclick="loadCrashes(${p.page + 1})" ${p.page >= p.total_pages ? 'disabled' : ''}>Next →</button>`;
-      row.innerHTML = html;
-    }
-
-    async function showCrashDetail(hash) {
-      const modal = document.getElementById('detailModal');
-      const box   = modal.querySelector('.modal-box');
-      box.classList.add('modal-wide');
-      modal.classList.add('open');
-      document.getElementById('modalTitle').textContent = 'Loading…';
-      document.getElementById('modalBody').innerHTML = '<p style="color:var(--text2);text-align:center;padding:20px">Loading…</p>';
-
-      try {
-        const res  = await authFetch(`/api/admin/crashes?hash=${encodeURIComponent(hash)}`);
-        if (!res.ok) throw new Error(`Server returned ${res.status}`);
-        const data = await res.json();
-        renderCrashDetail(data);
-      } catch (e) {
-        document.getElementById('modalBody').innerHTML = `<p style="color:#FF5252;text-align:center;padding:20px">Failed: ${escHtml(e.message)}</p>`;
-      }
-    }
-
-    function renderCrashDetail({ group, recent_occurrences }) {
-      if (!group) return;
-      const sample = group.sample || {};
-      const fatalSample = (recent_occurrences || []).find(o => o.fatal);
-      const isFatal = !!fatalSample;
-
-      document.getElementById('modalTitle').innerHTML =
-        `<span style="margin-right:10px">${isFatal
-          ? '<span class="crash-fatal-badge">Fatal</span>'
-          : '<span class="crash-handled-badge">Handled</span>'
-        }</span>${escHtml(sample.message || 'Unknown error')}`;
-
-      // Distinct app versions and modes from recent occurrences
-      const versions = [...new Set((recent_occurrences || []).map(o => o.app_version).filter(Boolean))];
-      const modes    = [...new Set((recent_occurrences || []).map(o => o.mode).filter(Boolean))];
-
-      const fields = [
-        ['Error Type',         escHtml(sample.error_type || '—')],
-        ['Total Occurrences',  group.occurrences || 0],
-        ['Affected Devices',   group.affected_devices || 0],
-        ['First Seen',         fmtDatetime(group.first_seen)],
-        ['Last Seen',          fmtDatetime(group.last_seen)],
-        ['App Versions',       versions.length ? versions.map(escHtml).join(', ') : '—'],
-        ['Modes',              modes.length ? modes.map(escHtml).join(', ') : '—'],
-        ['Group Hash',         `<code style="font-size:11px;color:var(--dim)">${escHtml(group.group_hash)}</code>`],
-      ];
-
-      let html = fields.map(([k, v]) =>
-        `<div class="detail-row"><span class="detail-key">${k}</span><span class="detail-value">${v}</span></div>`
-      ).join('');
-
-      // Stack trace
-      html += `<div class="crash-detail-section">
-        <h4>Stack Trace (sample)</h4>
-        <pre class="stack-trace">${escHtml(sample.stack_trace || '(no stack trace)')}</pre>
-      </div>`;
-
-      // Recent occurrences
-      if (recent_occurrences?.length) {
-        html += `<div class="crash-detail-section">
-          <h4>Recent ${recent_occurrences.length} Occurrence${recent_occurrences.length === 1 ? '' : 's'}</h4>`;
-        html += recent_occurrences.map(o => `
-          <div class="event-item">
-            <span class="event-type">${escHtml(o.app_version || '?')}</span>
-            <span class="event-meta" title="${escHtml(o.device_id || '')}">${escHtml((o.device_id || '').slice(0, 8))}… · ${escHtml(o.mode || '?')}${o.fatal ? ' · <span style="color:#FF5252">fatal</span>' : ''}</span>
-            <span class="event-time">${fmtDatetime(o.timestamp)}</span>
-          </div>
-        `).join('');
-        html += '</div>';
-      }
-
-      document.getElementById('modalBody').innerHTML = html;
-    }
-
-  </script>
-
+  <div class="a-full-body"><div class="a-ready-grid" id="readyGrid"></div></div>
+</div>
+
+<!-- ═══ Confirm dialog ═════════════════════════════════════════ -->
+<div class="a-dialog" id="dialog" role="alertdialog" aria-modal="true" aria-labelledby="dialogTitle" aria-hidden="true">
+  <div class="a-dialog-box">
+    <h2 id="dialogTitle">Are you sure?</h2>
+    <p id="dialogText"></p>
+    <div class="a-dialog-actions">
+      <button class="a-btn a-btn-ghost" data-action="dialog-cancel">Cancel</button>
+      <button class="a-btn a-btn-primary" id="dialogConfirm">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<div class="a-toasts" id="toasts" role="status" aria-live="polite"></div>
+
+<script src="admin.js"></script>
 </body>
 </html>

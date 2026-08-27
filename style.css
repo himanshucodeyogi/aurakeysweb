@@ -175,6 +175,12 @@ section[id] { scroll-margin-top: 70px; }
 }
 
 .nav-links { display: flex; gap: 28px; flex: 1; }
+/* The bar carries seven links between a logo and a CTA button, so the gap has
+   to give before the row wraps — it only hides entirely at 900px. */
+@media (max-width: 1120px) {
+  .nav-links { gap: 18px; }
+  .nav-links a { font-size: 13px; }
+}
 
 .nav-links a {
   color: var(--text2); font-size: 14px; font-weight: 500;
@@ -690,6 +696,35 @@ section[id] { scroll-margin-top: 70px; }
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   LANGUAGES  (romanization chip cloud)
+═══════════════════════════════════════════════════════════════ */
+/* A second header inside a section that already has one, so it carries less
+   top space than the section's own and no tag above it. */
+.lang-subhead { margin-top: 64px; }
+
+.lang-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 9px;
+  max-width: 940px;
+  margin: 0 auto;
+}
+/* Wider than an .ai-tag inside a card, because these carry a country after the
+   name and reading them one per line would be worse than the extra height. */
+.lang-chips .ai-tag {
+  padding: 7px 14px;
+  font-size: 12.5px;
+  color: var(--text);
+  white-space: normal;
+}
+.lang-chips .ai-tag small { color: var(--text3); font-weight: 400; }
+.lang-chips .ai-tag:hover {
+  background: rgba(124, 108, 248, 0.10);
+  border-color: var(--border-mid);
+}
+
+/* ═══════════════════════════════════════════════════════════════
    AI TOOLS  (horizontal header + pill tags)
 ═══════════════════════════════════════════════════════════════ */
 .ai-tools-grid {
@@ -1110,8 +1145,13 @@ section[id] { scroll-margin-top: 70px; }
 /* ═══════════════════════════════════════════════════════════════
    STATS
 ═══════════════════════════════════════════════════════════════ */
+/* Five cards, so auto-fit rather than a fixed count — below ~1160px they fall
+   to three then two, which beats a lone card stranded on its own row. The
+   min is the widest the "Keyboard Sessions" label needs on one line. */
 .stats-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 16px;
 }
 
 .stat-card {
@@ -1124,6 +1164,11 @@ section[id] { scroll-margin-top: 70px; }
   position: relative; overflow: hidden;
   transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
 }
+
+/* .stat-card sets display:grid, which beats the UA rule for [hidden] — without
+   this, hiding a card whose stat the deployed backend does not return yet would
+   do nothing. */
+.stat-card[hidden] { display: none; }
 
 .stat-card:hover {
   border-color: var(--border-hi);
