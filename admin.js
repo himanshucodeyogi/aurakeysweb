@@ -1625,7 +1625,7 @@
     const ok = await confirmAsk(
       next ? 'Make Pro and Max purchasable?' : 'Hide the paid plans?',
       next
-        ? 'Both paid tiers become purchasable for every user. Razorpay keys must already be set in Vercel, or checkout will fail.'
+        ? 'Both paid tiers become purchasable for every user. The Google Play service-account creds must already be set in Vercel, or checkout will fail.'
         : 'Pro and Max go back to “Coming Soon” for every user. Existing purchases stay valid — only new checkouts are blocked.',
       next ? 'Enable paid plans' : 'Disable paid plans',
     );
